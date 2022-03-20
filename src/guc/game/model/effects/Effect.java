@@ -34,9 +34,5 @@ public class Effect {
 		return this.type;
 	}
 
-	public void setType(EffectType type) {
-		this.type = type;
-	}
-	
 	// methods
 }
