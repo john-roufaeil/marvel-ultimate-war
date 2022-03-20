@@ -29,7 +29,6 @@ public class Effect {
 	public EffectType getType() {
 		return this.type;
 	}
-	
 	// methods
 	
 }
