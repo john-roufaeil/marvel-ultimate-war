@@ -13,10 +13,6 @@ public class Effect {
 		this.type = type;
 	}
 	
-	public Effect(int duration) {
-		this.duration = duration;
-	}
-	
 	// getters and setters
 	public String getName() {
 		return this.name;
