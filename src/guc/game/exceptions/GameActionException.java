@@ -1,9 +1,12 @@
+package guc.game.exceptions;
 
-public class GameActionException extends exceptions {
-public GameActionException() {
-	super();
-}
-public GameActionException(String s) {
-	super(s);
-}
+public class GameActionException extends Exception {
+
+	public GameActionException() {
+		super();
+	}
+	
+	public GameActionException(String s) {
+		super(s);
+	}
 }

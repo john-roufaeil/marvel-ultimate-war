@@ -1,20 +1,34 @@
+package guc.game.engine;
+
+import java.util.ArrayList;
+
+import guc.game.model.world.*;
 
 public class Player {
   private String name; // read 
-  private String Champion leader; // read and write
+  private Champion leader; // read and write
   private ArrayList<Champion> team; //read
  
-  public player(String name){
+  // constructors
+  public Player(String name){
 	  this.name=name;
   }
+  
+  // getters and setters
   public String getname() {
-	  return player.name;
+	  return name;
   }
-  public String getChampion leader() {
-	  return player.Champion leader;
+
+  public Champion getLeader() {
+	  return leader;
   }
-  public String setChampion leader(String x) {
-	  this.Champion=x;
+  
+  public void setLeader(Champion newLeader) {
+	  this.leader = newLeader;
+  }
+  
+  public ArrayList<Champion> getTeam() {
+	  return this.team;
   }
   
 }

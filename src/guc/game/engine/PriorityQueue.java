@@ -1,3 +1,5 @@
+package guc.game.engine;
+
 
 public class PriorityQueue {
 	private Comparable[] elements;
