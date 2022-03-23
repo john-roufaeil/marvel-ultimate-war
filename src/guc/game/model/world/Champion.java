@@ -3,8 +3,8 @@ package guc.game.model.world;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import guc.game.model.abilities.Ability;
-import guc.game.model.effects.Effect;
+import guc.game.model.abilities.*;
+import guc.game.model.effects.*;
 
 public class Champion {
 	// instance variables
@@ -33,8 +33,18 @@ public class Champion {
 		this.attackDamage = attackDamage;
 	}
 	
+	public Champion(String name, int maxHP, int mana, int maxActions, int speed, int attackRange, int attackDamage, ArrayList<Ability> abilities) {
+		this.name = name;
+		this.maxHP = maxHP;
+		this.mana = mana;
+		this.maxActionPointsPerTurn = maxActions;
+		this.speed = speed;
+		this.attackRange = attackRange;
+		this.attackDamage = attackDamage;
+		this.abilities = abilities;
+	}
+	
 	// getters and setters
-
 	public String getName() {
 		return name;
 	}
@@ -134,6 +144,17 @@ public class Champion {
 		this.location = location;
 	}
 	
-	
+	public static void main(String [] args) {
+		
+		DamagingAbility shieldThrow = new DamagingAbility("shieldThrow", 140, 4, 2, AreaOfEffect.DIRECTIONAL, 2, 150);
+		HealingAbility iCanDoThisAllDay = new HealingAbility("iCanDoThisAllDay", 50, 0, 1, AreaOfEffect.SELFTARGET, 2, 150);
+		CrowdControlAbility shieldUp = new CrowdControlAbility("shieldUp", 90, 0, 2, AreaOfEffect.SELFTARGET, 3, new Shield(2));
+		ArrayList<Ability> array = new ArrayList<Ability>();
+		array.add(shieldThrow);
+		array.add(iCanDoThisAllDay);
+		array.add(shieldUp);
+		Hero CaptainAmerica = new Hero("CaptainAmerica", 1500, 1000, 6, 80, 1, 100, array);
+		System.out.println(CaptainAmerica.getAbilities().get(0));
+	}
 	
 }
