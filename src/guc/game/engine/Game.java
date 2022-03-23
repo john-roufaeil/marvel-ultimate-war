@@ -17,12 +17,16 @@ public class Game {
 	private static int BOARDHEIGHT;
 	private static int BOARDWIDTH;
 
-	//constructor
+	// constructors
 	public Game(Player first,Player second) {
-	   firstPlayer=first;
-	   secondPlayer=second;
-	   
-	}//getters
+	   firstPlayer = first;
+	   secondPlayer = second;
+	   board = new Object[5][5];
+	   BOARDHEIGHT = 5;
+	   BOARDWIDTH = 5;
+	}
+	
+	// getters
 	public Player getfirstPlayer() {
 		return firstPlayer;
 	}
@@ -66,5 +70,33 @@ public class Game {
 	private void placeChampions() {
 		
 	}
+	
+	private void placeCovers() {
+		for (int i = 0; i < 5; i++) {
+			int x;
+			int y;
+			do {
+				x = (int) (Math.random() * BOARDWIDTH); // from 0 inc to 4 inc
+				y = (int) (Math.random() * (BOARDHEIGHT - 2)) + 1; // from 1 inc to 3 inc
+			} while (this.board[x][y] != null);
+			Cover c = new Cover(x,y);
+			this.board[x][y] = c;
+		}
+	}
+	
+//	private void placeCovers() {
+//		for (int i = 0; i < 5; i++) {
+//			int x;
+//			int y;
+//			do {
+//				x = (int) (Math.random() * 5); // from 0 inc to 4 inc
+//				y = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
+//			} while (this.board[x][y] != null);
+//			Cover c = new Cover(x,y);
+//			this.board[x][y] = c;
+//		}
+//	}
+	
+	
 }
 
