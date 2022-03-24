@@ -1,1 +1,6 @@
 /guc/
+/engine/
+/exceptions/
+/model/
+/tests/
+/views/
