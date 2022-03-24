@@ -54,53 +54,46 @@ public class Champion {
 		return maxHP;
 	}
 
-
 	public int getCurrentHP() {
 		return currentHP;
 	}
-
 
 	public void setCurrentHP(int currentHP) {
 		this.currentHP = currentHP;
 	}
 
-	
 
 	public int getMana() {
 		return mana;
 	}
 
-
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
 
 	public int getMaxActionPointsPerTurn() {
 		return maxActionPointsPerTurn;
 	}
 
-	
-
 	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
-
-
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
 	}
-
-
+	
+	public void setCurrentActionPoints(int max) {
+		this.currentActionPoints = max;
+	}
 
 	public int getAttackRange() {
 		return attackRange;
 	}
 
-	
-
 	public int getAttackDamage() {
 		return attackDamage;
 	}
-
-
 
 	public void setAttackDamage(int attackDamage) {
 		this.attackDamage = attackDamage;
