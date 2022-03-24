@@ -96,6 +96,8 @@ public class Game {
 		CrowdControlAbility c;
 		do {
 			s = abilitiesBR.readLine();
+			if (s == null)
+				break;
 			arr =s.split(",");
 			if (arr[0] == "DMG") {
 				d = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
