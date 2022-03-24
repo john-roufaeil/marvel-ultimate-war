@@ -38,11 +38,11 @@ public class Game {
 		return secondPlayer;
 	}
 	
-	public boolean firstLeaderAbilityUsed() {
+	public boolean isFirstLeaderAbilityUsed() {
 		return firstLeaderAbilityUsed;
 	}
 	
-	public boolean secondLeaderAbilityUsed() {
+	public boolean isSecondLeaderAbilityUsed() {
 		return secondLeaderAbilityUsed;
 	}
 	
