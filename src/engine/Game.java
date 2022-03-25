@@ -116,9 +116,9 @@ public class Game {
 				if (line == null)
 					break;
 				else {
-					//System.out.println(line);
+					System.out.println(line);
 					String arr[] =line.split(",");
-					//System.out.println(Arrays.toString(arr));
+					System.out.println(Arrays.toString(arr));
 					
 					AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
 					// load ability
@@ -168,6 +168,8 @@ public class Game {
 		do {
 			try {
 				line = championsBR.readLine();
+				if (line == null) 
+					break;
 				arr = line.split(",");
 				
 				// get champion abilities
@@ -197,7 +199,7 @@ public class Game {
 				e.printStackTrace();
 			}
 					
-		} while ((line=championsBR.readLine()) != null);
+		} while (line != null);
 	}
 	
 	
@@ -205,13 +207,14 @@ public class Game {
 		Player f = new Player("Amir");
 		Player s = new Player("Monsef");
 		Game g = new Game(f, s);
-		System.out.println(g.availableAbilities.toString());
+		System.out.println(g.availableChampions.toString());
 		try {
-			loadAbilities("Abilities.csv");
+			loadAbilities("Ability.csv"); 	
+			loadChampions("Champions.csv");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(g.availableAbilities.toString());
+		System.out.println(g.availableChampions.toString());
 	}
 	
 }
