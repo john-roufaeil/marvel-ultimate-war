@@ -145,7 +145,7 @@ public class Game {
 				e.printStackTrace();
 			}
 	
-		}while (line != null); 
+		}while (abilitiesBR.readLine() != null); 
 
 	}
 	
@@ -161,7 +161,7 @@ public class Game {
 		Villain villain;
 		int i=0;
 		
-		while (line != null){
+		do {
 			try{
 				line = championsBR.readLine();
 				arr = line.split(",");
@@ -194,7 +194,7 @@ public class Game {
 				e.printStackTrace();
 			}
 					
-		}
+		}while (championsBR.readLine() != null);
 	}
 	
 	
