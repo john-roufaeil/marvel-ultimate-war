@@ -49,11 +49,11 @@ public class Game {
 		return board;
 	}
 	
-	public ArrayList<Champion> getavailableChampions(){
+	public ArrayList<Champion> getAvailableChampions(){
 		return availableChampions;
 	}
 	
-	public ArrayList<Ability> getavailableAbilities(){
+	public ArrayList<Ability> getAvailableAbilities(){
 		return availableAbilities;
 	}
 	
