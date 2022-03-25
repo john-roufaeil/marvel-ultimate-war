@@ -9,6 +9,7 @@ import model.effects.EffectType;
 import model.world.*;
 
 public class Game {
+	// attributes
 	private Player firstPlayer;
 	private Player secondPlayer;
 	private boolean firstLeaderAbilityUsed;
@@ -70,6 +71,7 @@ public class Game {
 		return turnOrder;
 	}
 	
+	// methods
 	private void placeChampions() throws Exception {
 		
 	}
