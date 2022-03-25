@@ -130,8 +130,8 @@ public class Game {
 			
 			
 			case "CC":
-				Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
-				crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), e);
+				Effect effect = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
+				crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), effect);
 				availableAbilities.add(crowdControlAbility);
 				break;
 			
