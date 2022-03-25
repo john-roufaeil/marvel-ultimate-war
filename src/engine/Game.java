@@ -26,6 +26,8 @@ public class Game {
 	   firstPlayer = first;
 	   secondPlayer = second;
 	   board = new Object[5][5];
+	   placeChampions();
+	   placeCovers();	
 	}
 	
 	// getters
@@ -73,15 +75,17 @@ public class Game {
 	private void placeChampions() throws Exception {
 		firstPlayer = this.getFirstPlayer();
 		ArrayList<Champion> firstPlayerTeam = firstPlayer.getTeam();
-		board[0][1] = firstPlayerTeam.get(0);
-		board[0][2] = firstPlayerTeam.get(1);
-		board[0][3] = firstPlayerTeam.get(2);
+		int i = 1;
+		while(!firstPlayerTeam.isEmpty()&&i++<=3) {
+			board[0][i] = firstPlayerTeam.remove(0);
+		}
 		
 		secondPlayer = this.getSecondPlayer();
 		ArrayList<Champion> secondPlayerTeam = secondPlayer.getTeam();
-		board[4][1] = secondPlayerTeam.get(0);
-		board[4][2] = secondPlayerTeam.get(1);
-		board[4][3] = secondPlayerTeam.get(2);
+		i = 1;
+		while(!secondPlayerTeam.isEmpty()&&i++<=3) {
+			board[4][i] = secondPlayerTeam.remove(0);
+		}
 	}
 	
 	private void placeCovers() throws Exception {
