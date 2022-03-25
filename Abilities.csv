@@ -3,7 +3,7 @@ HEL,I can do this all day,50,0,1,SELFTARGET,2,150,
 CC,Shield Up,90,0,2,SELFTARGET,3,Shield,2
 HEL,Try Harder,100,0,3,SELFTARGET,2,300,
 DMG,8 bullets left,100,1,3,SURROUND,3,200,
-CC,Can't Catch Me,0,0,3,SELFTARGET,1,Slipperiness,2
+CC,Can't Catch Me,0,0,3,SELFTARGET,1,Dodge,2
 CC,The eye of agamotto,80,8,4,TEAMTARGET,3,PowerUp,3
 DMG,Thousand Hand,120,1,2,SURROUND,3,300,
 CC,Mirror Dimension,100,5,2,SINGLETARGET,3,Stun,2
@@ -25,7 +25,7 @@ DMG,Hail Storm,80,3,3,DIRECTIONAL,2,300,
 DMG,I am Ironman,150,8,4,TEAMTARGET,3,200,
 DMG,Unibeam,150,4,3,DIRECTIONAL,2,200,
 CC,3000,150,8,3,TEAMTARGET,2,PowerUp,2
-CC,God of Mischief,80,0,3,SELFTARGET,3,Slipperiness,2
+CC,God of Mischief,80,0,3,SELFTARGET,3,Dodge,2
 DMG,The Hidden Dagger,100,1,2,SINGLETARGET,2,300,
 HEL,Fake Death,100,0,4,SELFTARGET,3,400,
 CC,Time in a bottle,0,0,1,SELFTARGET,1,SpeedUp,5
