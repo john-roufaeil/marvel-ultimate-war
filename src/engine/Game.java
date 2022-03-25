@@ -29,11 +29,11 @@ public class Game {
 	}
 	
 	// getters
-	public Player getfirstPlayer() {
+	public Player getFirstPlayer() {
 		return firstPlayer;
 	}
 	
-	public Player getsecondPlayer(){
+	public Player getSecondPlayer(){
 		return secondPlayer;
 	}
 	
