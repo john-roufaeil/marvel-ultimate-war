@@ -197,5 +197,15 @@ public class Game {
 		}
 	}
 	
+	
+	public static void main(String[] args) {
+		try {
+			loadAbilities("Abilities.csv");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 
