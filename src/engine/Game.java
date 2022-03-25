@@ -71,7 +71,17 @@ public class Game {
 	
 	// methods
 	private void placeChampions() throws Exception {
+		firstPlayer = this.getFirstPlayer();
+		ArrayList<Champion> firstPlayerTeam = firstPlayer.getTeam();
+		board[0][1] = firstPlayerTeam.get(0);
+		board[0][2] = firstPlayerTeam.get(1);
+		board[0][3] = firstPlayerTeam.get(2);
 		
+		secondPlayer = this.getSecondPlayer();
+		ArrayList<Champion> secondPlayerTeam = secondPlayer.getTeam();
+		board[4][1] = secondPlayerTeam.get(0);
+		board[4][2] = secondPlayerTeam.get(1);
+		board[4][3] = secondPlayerTeam.get(2);
 	}
 	
 	private void placeCovers() throws Exception {
@@ -82,6 +92,7 @@ public class Game {
 				x = (int) (Math.random() * 5); // from 0 inc to 4 inc
 				y = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
 			} while (this.board[x][y] != null);
+			
 			Cover c = new Cover(x,y);
 			this.board[x][y] = c;
 		}
