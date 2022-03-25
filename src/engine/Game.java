@@ -145,7 +145,7 @@ public class Game {
 				e.printStackTrace();
 			}
 	
-		}while (abilitiesBR.readLine() != null); 
+		}while ((line=abilitiesBR.readLine()) != null); 
 
 	}
 	
@@ -194,7 +194,7 @@ public class Game {
 				e.printStackTrace();
 			}
 					
-		}while (championsBR.readLine() != null);
+		}while ((line=championsBR.readLine()) != null);
 	}
 	
 	
