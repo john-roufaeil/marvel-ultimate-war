@@ -18,16 +18,14 @@ public class Game {
 	private static ArrayList<Champion> availableChampions;
 	private static ArrayList<Ability> availableAbilities;
 	private PriorityQueue turnOrder;
-	private static int BOARDHEIGHT;
-	private static int BOARDWIDTH;
+	private final static int BOARDHEIGHT=5;
+	private final static int BOARDWIDTH=5;
 
 	// constructors
 	public Game(Player first,Player second) throws Exception {
 	   firstPlayer = first;
 	   secondPlayer = second;
 	   board = new Object[5][5];
-	   BOARDHEIGHT = 5;
-	   BOARDWIDTH = 5;
 	}
 	
 	// getters
