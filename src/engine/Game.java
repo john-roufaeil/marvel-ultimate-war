@@ -88,13 +88,14 @@ public class Game {
 		for (int i = 0; i < 5; i++) {
 			int x;
 			int y;
+			
 			do {
 				x = (int) (Math.random() * 5); // from 0 inc to 4 inc
 				y = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
-			} while (this.board[x][y] != null);
+			} while (board[y][x] != null);
 			
 			Cover c = new Cover(x,y);
-			this.board[x][y] = c;
+			board[y][x] = c;
 		}
 	}
 	
