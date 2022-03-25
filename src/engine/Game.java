@@ -26,6 +26,7 @@ public class Game {
 	   firstPlayer = first;
 	   secondPlayer = second;
 	   board = new Object[5][5];
+	   availableAbilities = new ArrayList<Ability>();
 	   placeChampions();
 	   placeCovers();	
 	}
@@ -115,31 +116,33 @@ public class Game {
 				line = abilitiesBR.readLine();
 				if (line == null)
 					break;
-				System.out.println(line);
-				String arr[] =line.split(",");
-				System.out.println(Arrays.toString(arr));
-				
-				AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
-				// load ability
-				switch(arr[0]) {
-				case "DMG":
-					damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
-					availableAbilities.add(damagingAbility);
-					break;
-				
-				
-				case "HEL":
-					healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
-					availableAbilities.add(healingAbility);
-					break;
-				
-				
-				case "CC":
-					Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
-					crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), e);
-					availableAbilities.add(crowdControlAbility);
-					break;
-				
+				else {
+					//System.out.println(line);
+					String arr[] =line.split(",");
+					//System.out.println(Arrays.toString(arr));
+					
+					AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
+					// load ability
+					switch(arr[0]) {
+					case "DMG":
+						damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
+						availableAbilities.add(damagingAbility);
+						break;
+					
+					
+					case "HEL":
+						healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
+						availableAbilities.add(healingAbility);
+						break;
+					
+					
+					case "CC":
+						Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
+						crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), e);
+						availableAbilities.add(crowdControlAbility);
+						break;
+					
+					}	
 				}
 			
 			} catch (Exception e) {
@@ -198,12 +201,17 @@ public class Game {
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		Player f = new Player("Amir");
+		Player s = new Player("Monsef");
+		Game g = new Game(f, s);
+		System.out.println(g.availableAbilities.toString());
 		try {
 			loadAbilities("Abilities.csv");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(g.availableAbilities.toString());
 	}
 	
 }
