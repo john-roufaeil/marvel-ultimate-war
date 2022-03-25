@@ -104,40 +104,48 @@ public class Game {
 	}
 	
 	private static void loadAbilities(String filePath) throws Exception {
-		BufferedReader abilitiesBR = new BufferedReader(new FileReader(filePath));
+		BufferedReader abilitiesBR = new BufferedReader(new FileReader("Abilities.csv"));
 		String line="";
-		String arr[];
 		DamagingAbility damagingAbility;
 		HealingAbility healingAbility;
 		CrowdControlAbility crowdControlAbility;
 		
-		while (line != null){
-			line = abilitiesBR.readLine();
-			arr =line.split(",");
+		do {
+			try {
+				line = abilitiesBR.readLine();
+				System.out.println(line);
+				String arr[] =line.split(",");
+				System.out.println(Arrays.toString(arr));
+				
+				AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
+				// load ability
+				switch(arr[0]) {
+				case "DMG":
+					damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
+					availableAbilities.add(damagingAbility);
+					break;
+				
+				
+				case "HEL":
+					healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
+					availableAbilities.add(healingAbility);
+					break;
+				
+				
+				case "CC":
+					Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
+					crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), e);
+					availableAbilities.add(crowdControlAbility);
+					break;
+				
+				}
 			
-			// load ability
-			switch(arr[0]) {
-			case "DMG":
-				damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
-				availableAbilities.add(damagingAbility);
-				break;
-			
-			
-			case "HEL":
-				healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
-				availableAbilities.add(healingAbility);
-				break;
-			
-			
-			case "CC":
-				Effect effect = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
-				crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), effect);
-				availableAbilities.add(crowdControlAbility);
-				break;
-			
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 	
-		} 
+		}while (line != null); 
 
 	}
 	
@@ -145,7 +153,7 @@ public class Game {
 	
 	
 	public static void loadChampions(String filePath) throws Exception{
-		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
+		BufferedReader championsBR = new BufferedReader(new FileReader("Champions.csv"));
 		String line="";
 		String arr[];
 		AntiHero antiHero;
@@ -154,31 +162,37 @@ public class Game {
 		int i=0;
 		
 		while (line != null){
-			line = championsBR.readLine();
-			arr = line.split(",");
-			
-			// get champion abilities
-			ArrayList<Ability> abilities = new ArrayList<Ability>(3);
-			abilities.add(availableAbilities.get(i));
-			abilities.add(availableAbilities.get(++i));
-			abilities.add(availableAbilities.get(++i));
-			++i;
+			try{
+				line = championsBR.readLine();
+				arr = line.split(",");
 				
-			// load champion
-			switch (arr[0]) {
-			case "A":
-		 		antiHero = new AntiHero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
-	            		availableChampions.add(antiHero);
-			 	break;
-	        	case "H":
-	        		hero = new Hero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
-	        		availableChampions.add(hero);
-	        		break;
-	        	case "V":
-	        		villain = new Villain(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
-	        		availableChampions.add(villain);
-	        		break;
-	       		}
+				// get champion abilities
+				ArrayList<Ability> abilities = new ArrayList<Ability>(3);
+				abilities.add(availableAbilities.get(i));
+				abilities.add(availableAbilities.get(++i));
+				abilities.add(availableAbilities.get(++i));
+				++i;
+					
+				// load champion
+				switch (arr[0]) {
+		        case "A":
+		            antiHero = new AntiHero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+		            availableChampions.add(antiHero);
+		            break;
+		        case "H":
+		        	hero = new Hero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+		        	availableChampions.add(hero);
+		        	break;
+		        case "V":
+		        	villain = new Villain(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+		        	availableChampions.add(villain);
+		        	break;
+				}
+			
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 					
 		}
 	}
