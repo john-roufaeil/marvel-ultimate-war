@@ -91,41 +91,83 @@ public class Game {
 	
 	private static void loadAbilities(String filePath) throws Exception {
 		BufferedReader abilitiesBR = new BufferedReader(new FileReader(filePath));
-		String s;
+		String line="";
 		String arr[];
-		DamagingAbility d;
-		HealingAbility h;
-		CrowdControlAbility c;
-		do {
-			s = abilitiesBR.readLine();
-			if (s == null)
+		DamagingAbility damagingAbility;
+		HealingAbility healingAbility;
+		CrowdControlAbility crowdControlAbility;
+		
+		while (line != null){
+			line = abilitiesBR.readLine();
+			arr =line.split(",");
+			
+			// load ability
+			switch(arr[0]) {
+			case "DMG":
+				damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
+				availableAbilities.add(damagingAbility);
 				break;
-			arr =s.split(",");
-			if (arr[0] == "DMG") {
-				d = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
-				availableAbilities.add(d);
-			}
 			
-			else if (arr[0] == "HEL") {
-				h = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
-				availableAbilities.add(h);
-			}
 			
-			else {
-				
+			case "HEL":
+				healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
+				availableAbilities.add(healingAbility);
+				break;
+			
+			
+			case "CC":
 				Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),EffectType.valueOf(arr[7]));
-				c = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), e);
-				availableAbilities.add(c);
+				crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), AreaOfEffect.valueOf(arr[5]), Integer.parseInt(arr[6]), e);
+				availableAbilities.add(crowdControlAbility);
+				break;
+			
 			}
 	
-		} while (s != null);
+		} 
 
 	}
 	
-	private static void loadChampions(String filePath) throws Exception {
-		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
-	}
 	
+	
+	
+	public static void loadChampions(String filePath) throws Exception{
+		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
+		String line="";
+		String arr[];
+		AntiHero antiHero;
+		Hero hero;
+		Villain villain;
+		int i=0;
+		
+		while (line != null){
+			line = championsBR.readLine();
+			arr = line.split(",");
+			
+			// get champion's abilities
+			ArrayList<Ability> abilities = new ArrayList<Ability>(3);
+			abilities.add(availableAbilities.get(i));
+			abilities.add(availableAbilities.get(++i));
+			abilities.add(availableAbilities.get(++i));
+			++i;
+				
+			// load champion
+			switch (arr[0]) {
+			case "A":
+		 		antiHero = new AntiHero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+	            		availableChampions.add(antiHero);
+			 	break;
+	        	case "H":
+	        		hero = new Hero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+	        		availableChampions.add(hero);
+	        		break;
+	        	case "V":
+	        		villain = new Villain(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]),abilities);
+	        		availableChampions.add(villain);
+	        		break;
+	       		}
+					
+		}
+	}
 	
 }
 
