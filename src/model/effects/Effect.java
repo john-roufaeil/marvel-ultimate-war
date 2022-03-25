@@ -1,5 +1,8 @@
 package model.effects;
 
+import engine.Game;
+import engine.Player;
+
 public class Effect {
 	// instance variables
 	private String name;
@@ -30,5 +33,7 @@ public class Effect {
 		return this.type;
 	}
 	// methods
-	
+	public static void main(String[] args) throws Exception {
+		System.out.println(EffectType.valueOf("Shield"));
+	}
 }

@@ -15,8 +15,8 @@ public class Game {
 	private boolean firstLeaderAbilityUsed;
 	private boolean secondLeaderAbilityUsed;
 	private Object[][] board;
-	private static ArrayList<Champion> availableChampions;
-	private static ArrayList<Ability> availableAbilities;
+	private static ArrayList<Champion> availableChampions = new ArrayList<Champion>();
+	private static ArrayList<Ability> availableAbilities = new ArrayList<Ability>();
 	private PriorityQueue turnOrder;
 	private final static int BOARDHEIGHT=5;
 	private final static int BOARDWIDTH=5;
@@ -26,7 +26,6 @@ public class Game {
 	   firstPlayer = first;
 	   secondPlayer = second;
 	   board = new Object[5][5];
-	   availableAbilities = new ArrayList<Ability>();
 	   placeChampions();
 	   placeCovers();	
 	}
