@@ -2,7 +2,7 @@ package model.abilities;
 
 public class Ability {
 	// instance variables
-	String name;
+	private String name;
 	private int manaCost;
 	private int baseCooldown;
 	private int currentCooldown;
