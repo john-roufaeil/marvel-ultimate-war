@@ -113,6 +113,8 @@ public class Game {
 		do {
 			try {
 				line = abilitiesBR.readLine();
+				if (line == null)
+					break;
 				System.out.println(line);
 				String arr[] =line.split(",");
 				System.out.println(Arrays.toString(arr));
@@ -140,12 +142,11 @@ public class Game {
 				
 				}
 			
-			}catch (Exception e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	
-		}while ((line=abilitiesBR.readLine()) != null); 
+		} while (line != null); 
 
 	}
 	
@@ -162,7 +163,7 @@ public class Game {
 		int i=0;
 		
 		do {
-			try{
+			try {
 				line = championsBR.readLine();
 				arr = line.split(",");
 				
@@ -189,12 +190,11 @@ public class Game {
 		        	break;
 				}
 			
-			}catch (Exception e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 					
-		}while ((line=championsBR.readLine()) != null);
+		} while ((line=championsBR.readLine()) != null);
 	}
 	
 	
@@ -202,7 +202,6 @@ public class Game {
 		try {
 			loadAbilities("Abilities.csv");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
