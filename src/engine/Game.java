@@ -22,17 +22,18 @@ public class Game {
 	private final static int BOARDWIDTH=5;
 
 	// constructors
-	public Game(Player first ,Player second) throws Exception {
+	public Game(Player first ,Player second) throws Exception {main
 		this.firstPlayer = first;
 		this.secondPlayer = second;
 		this.firstLeaderAbilityUsed = false;
 		this.secondLeaderAbilityUsed = false;
+
 		availableAbilities.clear();
 		availableChampions.clear();
 		this.turnOrder = new PriorityQueue(6);
 		board = new Object[5][5];
 		if (first.getTeam().size() == 3 && second.getTeam().size() == 3)
-		placeChampions();
+		  placeChampions();
 		placeCovers();	
 	}
 	
@@ -74,6 +75,7 @@ public class Game {
 	
 	// methods
 	private void placeChampions() throws Exception {
+
 		for (int i = 0; i <= 2; i++) {
 			Point p = new Point(0,i+1);
 			firstPlayer.getTeam().get(i).setLocation(p);
@@ -119,13 +121,13 @@ public class Game {
 					// load ability
 					switch(arr[0]) {
 					case "DMG":
-						damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
+						damagingAbility = new DamagingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]), Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 						availableAbilities.add(damagingAbility);
 						break;
 					
 					
 					case "HEL":
-						healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
+						healingAbility = new HealingAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]), Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]), Integer.parseInt(arr[7]));
 						availableAbilities.add(healingAbility);
 						break;
 					
@@ -133,7 +135,7 @@ public class Game {
 					case "CC":
 						EffectType effectType = arr[7].equals("Disarm")?EffectType.DEBUFF:arr[7].equals("PowerUp")?EffectType.BUFF:arr[7].equals("Shield")?EffectType.BUFF:arr[7].equals("Silence")?EffectType.DEBUFF:arr[7].equals("SpeedUp")?EffectType.BUFF:arr[7].equals("Embrace")?EffectType.BUFF:arr[7].equals("Root")?EffectType.DEBUFF:arr[7].equals("Shock")?EffectType.DEBUFF:arr[7].equals("Dodge")?EffectType.BUFF:EffectType.DEBUFF;
 						Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),effectType);
-						crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]), Integer.parseInt(arr[4]), area, Integer.parseInt(arr[6]), e);
+						crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]), Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]), e);
 						availableAbilities.add(crowdControlAbility);
 						break;
 				
