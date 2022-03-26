@@ -23,36 +23,14 @@ public class Game {
 
 	// constructors
 	public Game(Player first,Player second) throws Exception {
-		// load abilities and champions to corresponding ArrayLists
-		try {
-			loadAbilities("Abilities.csv"); 	
-			loadChampions("Champions.csv");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		this.firstPlayer = first;
 		this.secondPlayer = second;
-		// randomly assign unique champions for each player's team
-		for (int i = 0; i < 3; i++) {
-			Champion r = null;
-			do {
-				r = availableChampions.get((int)(Math.random() * 15));
-			} while (firstPlayer.getTeam().contains(r));
-			this.firstPlayer.getTeam().set(i, r);
-		}
-		for (int i = 0; i < 3; i++) {
-			Champion r = null;
-			do {
-				r = availableChampions.get((int)(Math.random() * 15));
-			} while (firstPlayer.getTeam().contains(r) || secondPlayer.getTeam().contains(r));
-			this.secondPlayer.getTeam().set(i, r);
-		}
-		// initialize the rest of the attributes
 		this.firstLeaderAbilityUsed = false;
 		this.secondLeaderAbilityUsed = false;
+		availableAbilities.clear();
+		availableChampions.clear();
 		this.turnOrder = new PriorityQueue(6);
 		board = new Object[5][5];
-		// place champions and covers on the board
 		placeChampions();
 		placeCovers();	
 	}
