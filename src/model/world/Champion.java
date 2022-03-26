@@ -137,17 +137,5 @@ public class Champion {
 		this.location = location;
 	}
 	
-	public static void main(String [] args) {
-		
-		DamagingAbility shieldThrow = new DamagingAbility("shieldThrow", 140, 4, 2, AreaOfEffect.DIRECTIONAL, 2, 150);
-		HealingAbility iCanDoThisAllDay = new HealingAbility("iCanDoThisAllDay", 50, 0, 1, AreaOfEffect.SELFTARGET, 2, 150);
-		CrowdControlAbility shieldUp = new CrowdControlAbility("shieldUp", 90, 0, 2, AreaOfEffect.SELFTARGET, 3, new Shield(2));
-		ArrayList<Ability> array = new ArrayList<Ability>();
-		array.add(shieldThrow);
-		array.add(iCanDoThisAllDay);
-		array.add(shieldUp);
-		Hero CaptainAmerica = new Hero("CaptainAmerica", 1500, 1000, 6, 80, 1, 100, array);
-		System.out.println(CaptainAmerica.getAbilities().get(0));
-	}
 	
 }
