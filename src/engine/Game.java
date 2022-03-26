@@ -102,9 +102,9 @@ public class Game {
 //			board[0][i] = firstPlayerTeam.remove(0);
 //		}
 		for (int i = 0; i <= 2; i++) {
-			Point p = new Point(4,i);
+			Point p = new Point(0,i+1);
 			firstPlayerTeam.get(i).setLocation(p);
-			board[4][i+1] = firstPlayerTeam.get(i);
+			board[0][i+1] = firstPlayerTeam.get(i);
 		}
 		
 		secondPlayer = this.getSecondPlayer();
@@ -114,9 +114,9 @@ public class Game {
 //			board[4][i] = secondPlayerTeam.remove(0);
 //		}
 		for (int i = 0; i <= 2; i++) {
-			Point p = new Point(0,i);
+			Point p = new Point(4,i+1);
 			secondPlayerTeam.get(i).setLocation(p);
-			board[0][i+1] = secondPlayerTeam.get(i);
+			board[4][i+1] = secondPlayerTeam.get(i);
 		}
 	}
 	
@@ -127,9 +127,9 @@ public class Game {
 			do {
 				x = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
 				y = (int) (Math.random() * 5); // from 0 inc to 4 inc
-			} while (board[4-x][y] != null);
+			} while (board[x][y] != null);
 			
-			Cover c = new Cover(4-x,y);
+			Cover c = new Cover(x,y);
 			board[c.getLocation().x][c.getLocation().y] = c;
 		}
 	}
