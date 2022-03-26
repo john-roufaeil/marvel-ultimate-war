@@ -52,4 +52,8 @@ public class Ability {
 	public AreaOfEffect getCastArea() {
 		return this.castArea;
 	}
+	
+	public String toString() {
+		return this.name;
+	}
 }

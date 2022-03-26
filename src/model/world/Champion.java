@@ -28,12 +28,12 @@ public class Champion {
 		this.maxHP = maxHP;
 		this.mana = mana;
 		this.maxActionPointsPerTurn = maxActions;
-		this.speed = speed;
+		this.speed = speed;	
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
 		this.abilities = new ArrayList<Ability>();
 		this.appliedEffects = new ArrayList<Effect>();
-		
+		this.condition = Condition.ACTIVE;
 	}
 	
 	// getters and setters
@@ -127,6 +127,10 @@ public class Champion {
 
 	public void setLocation(Point location) {
 		this.location = location;
+	}
+	
+	public String toString() {
+		return this.name;
 	}
 	
 	

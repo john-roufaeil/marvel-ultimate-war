@@ -4,8 +4,7 @@ import java.util.*;
 import java.io.*;
 
 import model.abilities.*;
-import model.effects.Effect;
-import model.effects.EffectType;
+import model.effects.*;
 import model.world.*;
 
 public class Game {
@@ -125,9 +124,9 @@ public class Game {
 				if (line == null)
 					break;
 				else {
-					System.out.println(line);
+					//System.out.println(line);
 					String arr[] =line.split(",");
-					System.out.println(Arrays.toString(arr));
+					//System.out.println(Arrays.toString(arr));
 					
 					AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
 					// load ability
@@ -179,9 +178,9 @@ public class Game {
 				count++;
 				line = championsBR.readLine();
 				if(line==null) break;
-				System.out.println(line);
+				//System.out.println(line);
 				String arr[] =line.split(",");
-				System.out.println(Arrays.toString(arr));
+				//System.out.println(Arrays.toString(arr));
 				
 				// get champion abilities
 				
@@ -240,7 +239,8 @@ public class Game {
 		Player f = new Player("Amir");
 		Player s = new Player("Monsef");
 		Game g = new Game(f, s);
-		System.out.println(g.availableChampions.toString());
+		System.out.println(Game.availableChampions.get(5).toString());
+		System.out.println(Game.availableChampions.get(5).getAbilities());
 	}
 	
 }
