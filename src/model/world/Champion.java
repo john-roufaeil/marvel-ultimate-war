@@ -54,9 +54,12 @@ public class Champion {
 		this.currentHP = currentHP;
 	}
 
-
 	public int getMana() {
 		return mana;
+	}
+	
+	public void setMana(int mana) {
+		this.mana = mana;
 	}
 
 	public int getMaxActionPointsPerTurn() {
@@ -69,6 +72,10 @@ public class Champion {
 
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
+	}
+	
+	public void setCurrentActionPoints(int currentActionPoints) {
+		this.currentActionPoints = currentActionPoints;
 	}
 
 	public int getAttackRange() {
