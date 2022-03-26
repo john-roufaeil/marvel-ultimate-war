@@ -23,11 +23,20 @@ public class Game {
 
 	// constructors
 	public Game(Player first,Player second) throws Exception {
-	   firstPlayer = first;
-	   secondPlayer = second;
-	   board = new Object[5][5];
-	   placeChampions();
-	   placeCovers();	
+		try {
+			loadAbilities("Abilities.csv"); 	
+			loadChampions("Champions.csv");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.firstPlayer = first;
+		this.secondPlayer = second;
+		this.firstLeaderAbilityUsed = false;
+		this.secondLeaderAbilityUsed = false;
+		this.turnOrder = new PriorityQueue(6);
+		board = new Object[5][5];
+		placeChampions();
+		placeCovers();	
 	}
 	
 	// getters
@@ -104,7 +113,7 @@ public class Game {
 	}
 	
 	private static void loadAbilities(String filePath) throws Exception {
-		BufferedReader abilitiesBR = new BufferedReader(new FileReader("Abilities.csv"));
+		BufferedReader abilitiesBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		DamagingAbility damagingAbility;
 		HealingAbility healingAbility;
@@ -157,7 +166,7 @@ public class Game {
 	
 	
 	public static void loadChampions(String filePath) throws Exception{
-		BufferedReader championsBR = new BufferedReader(new FileReader("Champions.csv"));
+		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		AntiHero antiHero;
 		Hero hero;
@@ -222,7 +231,7 @@ public class Game {
 				e.printStackTrace();
 			}
 					
-		}while (line != null);
+		} while (line != null);
 		System.out.println(count);
 	}
 	
@@ -231,13 +240,6 @@ public class Game {
 		Player f = new Player("Amir");
 		Player s = new Player("Monsef");
 		Game g = new Game(f, s);
-		System.out.println(g.availableChampions.toString());
-		try {
-			loadAbilities("Ability.csv"); 	
-			loadChampions("Champions.csv");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		System.out.println(g.availableChampions.toString());
 	}
 	
