@@ -36,94 +36,77 @@ public class Champion {
 		this.condition = Condition.ACTIVE;
 	}
 	
-	// getters and setters
+	// getters
 	public String getName() {
 		return name;
 	}
-
-
 	public int getMaxHP() {
 		return maxHP;
 	}
-
 	public int getCurrentHP() {
 		return currentHP;
 	}
-
-	public void setCurrentHP(int currentHP) {
-		this.currentHP = currentHP;
-	}
-
-
 	public int getMana() {
 		return mana;
 	}
-
 	public int getMaxActionPointsPerTurn() {
 		return maxActionPointsPerTurn;
 	}
-
-	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
-		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
-	}
-
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
 	}
-
 	public int getAttackRange() {
 		return attackRange;
 	}
-
 	public int getAttackDamage() {
 		return attackDamage;
 	}
-
-	public void setAttackDamage(int attackDamage) {
-		this.attackDamage = attackDamage;
-	}
-
 	public int getSpeed() {
 		return speed;
 	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
-
-
 	public ArrayList<Ability> getAbilities() {
 		return abilities;
 	}
-
-
 	public ArrayList<Effect> getAppliedEffects() {
 		return appliedEffects;
 	}
-
-
 	public Condition getCondition() {
 		return condition;
 	}
-
-
-	public void setCondition(Condition condition) {
-		this.condition = condition;
-	}
-
-
 	public Point getLocation() {
 		return location;
 	}
-
-
+	
+	//setters
+	public void setCurrentHP(int currentHP) {
+		this.currentHP = currentHP;
+	}
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
+		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
+	}
+	public void setCurrentActionPointsPerTurn(int currentActionPoints) {
+		this.currentActionPoints = currentActionPoints;
+	}
+	public void setAttackDamage(int attackDamage) {
+		this.attackDamage = attackDamage;
+	}
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+	public void setCondition(Condition condition) {
+		this.condition = condition;
+	}
 	public void setLocation(Point location) {
 		this.location = location;
 	}
-	
+
+	//overriden methods
 	public String toString() {
 		return this.name;
 	}
 	
-	
+	//methods
 }

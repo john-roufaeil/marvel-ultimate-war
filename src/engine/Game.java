@@ -61,42 +61,37 @@ public class Game {
 	public Player getFirstPlayer() {
 		return firstPlayer;
 	}
-	
 	public Player getSecondPlayer(){
 		return secondPlayer;
 	}
-	
 	public boolean isFirstLeaderAbilityUsed() {
 		return firstLeaderAbilityUsed;
 	}
-	
 	public boolean isSecondLeaderAbilityUsed() {
 		return secondLeaderAbilityUsed;
 	}
-	
 	public Object[][] getBoard() {
 		return board;
 	}
-	
 	public ArrayList<Champion> getAvailableChampions(){
 		return availableChampions;
 	}
-	
 	public ArrayList<Ability> getAvailableAbilities(){
 		return availableAbilities;
 	}
-	
 	public int getBOARDHEIGHT() {
 		return BOARDHEIGHT;
 	}
-	
 	public int getBOARDWIDTH() {
 		return BOARDWIDTH;
 	}
-	
-	public PriorityQueue getturnOrder() {
+	public PriorityQueue getTurnOrder() {
 		return turnOrder;
 	}
+
+	// setters
+	
+	// overriden methods
 	
 	// methods
 	private void placeChampions() throws Exception {
@@ -186,9 +181,6 @@ public class Game {
 		} while (line != null); 
 
 	}
-	
-	
-	
 	
 	public static void loadChampions(String filePath) throws Exception{
 		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
