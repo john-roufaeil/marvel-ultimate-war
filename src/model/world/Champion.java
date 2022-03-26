@@ -19,7 +19,7 @@ public class Champion {
 	private int speed;
 	private ArrayList<Ability> abilities; //
 	private ArrayList<Effect> appliedEffects; //
-	private Condition condition = Condition.Active; //
+	private Condition condition = Condition.ACTIVE; //
 	private Point location; //
 	
 	// constructors
