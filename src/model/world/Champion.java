@@ -81,7 +81,14 @@ public class Champion {
 	
 	//setters
 	public void setCurrentHP(int currentHP) {
-		if (currentHP < 0) {this.currentHP = 0; return;}
+		if (currentHP < 0) {
+			this.currentHP = 0;
+			return;
+		}
+		if (currentHP > maxHP) { 
+			this.currentHP = maxHP;
+			return;
+		}
 		this.currentHP = currentHP;
 	}
 	public void setMana(int mana) {
