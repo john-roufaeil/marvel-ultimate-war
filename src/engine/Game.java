@@ -179,21 +179,19 @@ public class Game {
 			}
 	
 		} while (line != null); 
-
+		abilitiesBR.close();
 	}
 	
-	public static void loadChampions(String filePath) throws Exception{
+	public static void loadChampions(String filePath) throws Exception {
 		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		AntiHero antiHero;
 		Hero hero;
 		Villain villain;
 		int i=0;
-		int count = 0;
 		
 		do {
 			try {
-				count++;
 				line = championsBR.readLine();
 				if(line==null) break;
 				String arr[] =line.split(",");
@@ -245,9 +243,10 @@ public class Game {
 			}
 					
 		} while (line != null);
+		championsBR.close();
 	}
 	
-	public static void printBoard(Game g) {
+	public static void printBoard(Game g) throws Exception {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
 				System.out.print(g.getBoard()[i][j] + " ");
