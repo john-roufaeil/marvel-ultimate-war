@@ -31,6 +31,8 @@ public class Champion {
 		this.speed = speed;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
+		this.abilities = new ArrayList<Ability>();
+		this.appliedEffects = new ArrayList<Effect>();
 	}
 	
 	public Champion(String name, int maxHP, int mana, int maxActions, int speed, int attackRange, int attackDamage, ArrayList<Ability> abilities) {
