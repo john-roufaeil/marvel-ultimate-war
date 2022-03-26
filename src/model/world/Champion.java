@@ -19,7 +19,7 @@ public class Champion {
 	private int speed;
 	private ArrayList<Ability> abilities; //
 	private ArrayList<Effect> appliedEffects; //
-	private Condition condition; //
+	private Condition condition = Condition.Active; //
 	private Point location; //
 	
 	// constructors
@@ -59,10 +59,6 @@ public class Champion {
 		return mana;
 	}
 
-	public void setMana(int mana) {
-		this.mana = mana;
-	}
-
 	public int getMaxActionPointsPerTurn() {
 		return maxActionPointsPerTurn;
 	}
@@ -73,10 +69,6 @@ public class Champion {
 
 	public int getCurrentActionPoints() {
 		return currentActionPoints;
-	}
-	
-	public void setCurrentActionPoints(int max) {
-		this.currentActionPoints = max;
 	}
 
 	public int getAttackRange() {
