@@ -79,10 +79,10 @@ public class Game {
 	public ArrayList<Ability> getAvailableAbilities(){
 		return availableAbilities;
 	}
-	public int getBOARDHEIGHT() {
+	public int getBoardheight() {
 		return BOARDHEIGHT;
 	}
-	public int getBOARDWIDTH() {
+	public int getBoardwidth() {
 		return BOARDWIDTH;
 	}
 	public PriorityQueue getTurnOrder() {
