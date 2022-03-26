@@ -5,31 +5,38 @@ import java.util.ArrayList;
 import model.world.*;
 
 public class Player {
-  private String name; // read 
-  private Champion leader; // read and write
-  private ArrayList<Champion> team; //read
+	// attributes
+	private String name;
+	private Champion leader; 
+	private ArrayList<Champion> team; 
  
-  // constructors
-  public Player(String name){
-	  this.name = name;
-	  this.team = new ArrayList<Champion>();
-  }
+	// constructors
+	public Player(String name){
+		this.name = name;
+		this.team = new ArrayList<Champion>();
+//		// to be removed
+//		this.team.add(null);
+//		this.team.add(null);
+//		this.team.add(null);
+	}
   
-  // getters and setters
-  public String getname() {
-	  return name;
-  }
-
-  public Champion getLeader() {
-	  return leader;
-  }
-  
-  public void setLeader(Champion newLeader) {
-	  this.leader = newLeader;
-  }
-  
-  public ArrayList<Champion> getTeam() {
-	  return this.team;
-  }
-  
+	// getters
+	public String getName() {
+		return name;
+	}
+	public Champion getLeader() {
+		return leader;
+	}
+	public ArrayList<Champion> getTeam() {
+		return this.team;
+	}
+	
+	// setters
+	public void setLeader(Champion newLeader) {
+		this.leader = newLeader;
+	}
+	
+	// overriden methods
+	
+	// methods
 }

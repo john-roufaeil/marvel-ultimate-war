@@ -13,17 +13,23 @@ public class Cover {
 		location = new Point(x,y);
 	}
 	
-	// getters and setters
+	// getters
 	public int getCurrentHP() {
 		return currentHP;
 	}
-
-	public void setCurrentHP(int currentHP) {
-		this.currentHP = currentHP;
-	}
-
-
 	public Point getLocation() {
 		return location;
 	}
+	
+	// setters 
+	public void setCurrentHP(int currentHP) {
+		this.currentHP = currentHP;
+	}
+	
+	// overriden methods
+	public String toString() {
+		return "Cover";
+	}
+	
+	//methods
 }
