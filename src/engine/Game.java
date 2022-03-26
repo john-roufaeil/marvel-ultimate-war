@@ -22,7 +22,7 @@ public class Game {
 	private final static int BOARDWIDTH=5;
 
 	// constructors
-	public Game(Player first,Player second) throws Exception {
+	public Game(Player first ,Player second) throws Exception {
 		this.firstPlayer = first;
 		this.secondPlayer = second;
 		this.firstLeaderAbilityUsed = false;
@@ -31,6 +31,7 @@ public class Game {
 		availableChampions.clear();
 		this.turnOrder = new PriorityQueue(6);
 		board = new Object[5][5];
+		if (first.getTeam().size() == 3 && second.getTeam().size() == 3)
 		placeChampions();
 		placeCovers();	
 	}
@@ -73,28 +74,15 @@ public class Game {
 	
 	// methods
 	private void placeChampions() throws Exception {
-		firstPlayer = this.getFirstPlayer();
-		ArrayList<Champion> firstPlayerTeam = firstPlayer.getTeam();
-//		i = 1;
-//		while(!firstPlayerTeam.isEmpty()&&i++<=3) {
-//			board[0][i] = firstPlayerTeam.remove(0);
-//		}
 		for (int i = 0; i <= 2; i++) {
 			Point p = new Point(0,i+1);
-			firstPlayerTeam.get(i).setLocation(p);
-			board[0][i+1] = firstPlayerTeam.get(i);
+			firstPlayer.getTeam().get(i).setLocation(p);
+			board[0][i+1] = firstPlayer.getTeam().get(i);
 		}
-		
-		secondPlayer = this.getSecondPlayer();
-		ArrayList<Champion> secondPlayerTeam = secondPlayer.getTeam();
-//		i = 1;
-//		while(!secondPlayerTeam.isEmpty()&&i++<=3) {
-//			board[4][i] = secondPlayerTeam.remove(0);
-//		}
 		for (int i = 0; i <= 2; i++) {
 			Point p = new Point(4,i+1);
-			secondPlayerTeam.get(i).setLocation(p);
-			board[4][i+1] = secondPlayerTeam.get(i);
+			secondPlayer.getTeam().get(i).setLocation(p);
+			board[4][i+1] = secondPlayer.getTeam().get(i);
 		}
 	}
 	
@@ -112,7 +100,7 @@ public class Game {
 		}
 	}
 	
-	private static void loadAbilities(String filePath) throws Exception {
+	public static void loadAbilities(String filePath) throws Exception {
 		BufferedReader abilitiesBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		DamagingAbility damagingAbility;
@@ -233,14 +221,7 @@ public class Game {
 		}
 	}
 	
-	public static void main(String[] args) throws Exception {
-		Player f = new Player("Amir");
-		Player s = new Player("Monsef");
-		Game g = new Game(f, s);
-		printBoard(g);
-		System.out.println(f.getTeam());
-		System.out.println(s.getTeam());
-	}
+
 	
 }
 
