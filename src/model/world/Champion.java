@@ -17,9 +17,9 @@ public class Champion {
 	private int attackRange;
 	private int attackDamage;
 	private int speed;
-	private ArrayList<Ability> abilities; //
+	private ArrayList<Ability> abilities;
 	private ArrayList<Effect> appliedEffects; //
-	private Condition condition = Condition.ACTIVE; //
+	private Condition condition = Condition.ACTIVE; 
 	private Point location; //
 	
 	// constructors

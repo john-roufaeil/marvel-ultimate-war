@@ -26,4 +26,8 @@ public class Cover {
 	public Point getLocation() {
 		return location;
 	}
+	
+	public String toString() {
+		return "Cover";
+	}
 }

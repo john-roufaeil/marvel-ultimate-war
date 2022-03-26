@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.*;
+import java.awt.Point;
 import java.io.*;
 
 import model.abilities.*;
@@ -22,6 +23,7 @@ public class Game {
 
 	// constructors
 	public Game(Player first,Player second) throws Exception {
+		// load abilities and champions to corresponding ArrayLists
 		try {
 			loadAbilities("Abilities.csv"); 	
 			loadChampions("Champions.csv");
@@ -30,10 +32,27 @@ public class Game {
 		}
 		this.firstPlayer = first;
 		this.secondPlayer = second;
+		// randomly assign unique champions for each player's team
+		for (int i = 0; i < 3; i++) {
+			Champion r = null;
+			do {
+				r = availableChampions.get((int)(Math.random() * 15));
+			} while (firstPlayer.getTeam().contains(r));
+			this.firstPlayer.getTeam().set(i, r);
+		}
+		for (int i = 0; i < 3; i++) {
+			Champion r = null;
+			do {
+				r = availableChampions.get((int)(Math.random() * 15));
+			} while (firstPlayer.getTeam().contains(r) || secondPlayer.getTeam().contains(r));
+			this.secondPlayer.getTeam().set(i, r);
+		}
+		// initialize the rest of the attributes
 		this.firstLeaderAbilityUsed = false;
 		this.secondLeaderAbilityUsed = false;
 		this.turnOrder = new PriorityQueue(6);
 		board = new Object[5][5];
+		// place champions and covers on the board
 		placeChampions();
 		placeCovers();	
 	}
@@ -83,31 +102,40 @@ public class Game {
 	private void placeChampions() throws Exception {
 		firstPlayer = this.getFirstPlayer();
 		ArrayList<Champion> firstPlayerTeam = firstPlayer.getTeam();
-		int i = 1;
-		while(!firstPlayerTeam.isEmpty()&&i++<=3) {
-			board[0][i] = firstPlayerTeam.remove(0);
+//		i = 1;
+//		while(!firstPlayerTeam.isEmpty()&&i++<=3) {
+//			board[0][i] = firstPlayerTeam.remove(0);
+//		}
+		for (int i = 0; i <= 2; i++) {
+			Point p = new Point(4,i);
+			firstPlayerTeam.get(i).setLocation(p);
+			board[4][i+1] = firstPlayerTeam.get(i);
 		}
 		
 		secondPlayer = this.getSecondPlayer();
 		ArrayList<Champion> secondPlayerTeam = secondPlayer.getTeam();
-		i = 1;
-		while(!secondPlayerTeam.isEmpty()&&i++<=3) {
-			board[4][i] = secondPlayerTeam.remove(0);
+//		i = 1;
+//		while(!secondPlayerTeam.isEmpty()&&i++<=3) {
+//			board[4][i] = secondPlayerTeam.remove(0);
+//		}
+		for (int i = 0; i <= 2; i++) {
+			Point p = new Point(0,i);
+			secondPlayerTeam.get(i).setLocation(p);
+			board[0][i+1] = secondPlayerTeam.get(i);
 		}
 	}
 	
 	private void placeCovers() throws Exception {
+		int x;
+		int y;
 		for (int i = 0; i < 5; i++) {
-			int x;
-			int y;
-			
 			do {
-				x = (int) (Math.random() * 5); // from 0 inc to 4 inc
-				y = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
-			} while (board[y][x] != null);
+				x = (int) (Math.random() * 3) + 1; // from 1 inc to 3 inc
+				y = (int) (Math.random() * 5); // from 0 inc to 4 inc
+			} while (board[4-x][y] != null);
 			
-			Cover c = new Cover(x,y);
-			board[y][x] = c;
+			Cover c = new Cover(4-x,y);
+			board[c.getLocation().x][c.getLocation().y] = c;
 		}
 	}
 	
@@ -124,9 +152,7 @@ public class Game {
 				if (line == null)
 					break;
 				else {
-					//System.out.println(line);
 					String arr[] =line.split(",");
-					//System.out.println(Arrays.toString(arr));
 					
 					AreaOfEffect area = arr[5].equals("SELFTARGET")?AreaOfEffect.SELFTARGET:arr[5].equals("SINGLETARGET")?AreaOfEffect.SINGLETARGET:arr[5].equals("TEAMTARGET")?AreaOfEffect.TEAMTARGET:arr[5].equals("DIRECTIONAL")?AreaOfEffect.DIRECTIONAL:AreaOfEffect.SURROUND;
 					// load ability
@@ -174,17 +200,14 @@ public class Game {
 		int count = 0;
 		
 		do {
-			try{
+			try {
 				count++;
 				line = championsBR.readLine();
 				if(line==null) break;
-				//System.out.println(line);
 				String arr[] =line.split(",");
-				//System.out.println(Arrays.toString(arr));
 				
 				// get champion abilities
 				
-					
 				// load champion
 				switch (arr[0]) {
 		        case "A":
@@ -225,22 +248,29 @@ public class Game {
 		        	break;
 				}
 			
-			}catch (Exception e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 					
 		} while (line != null);
-		System.out.println(count);
 	}
 	
+	public static void printBoard(Game g) {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				System.out.print(g.getBoard()[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
 	
 	public static void main(String[] args) throws Exception {
 		Player f = new Player("Amir");
 		Player s = new Player("Monsef");
 		Game g = new Game(f, s);
-		System.out.println(Game.availableChampions.get(5).toString());
-		System.out.println(Game.availableChampions.get(5).getAbilities());
+		printBoard(g);
+		System.out.println(f.getTeam());
+		System.out.println(s.getTeam());
 	}
 	
 }

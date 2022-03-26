@@ -11,8 +11,12 @@ public class Player {
  
   // constructors
   public Player(String name){
+	  
 	  this.name = name;
 	  this.team = new ArrayList<Champion>();
+	  this.team.add(null);
+	  this.team.add(null);
+	  this.team.add(null);
   }
   
   // getters and setters
