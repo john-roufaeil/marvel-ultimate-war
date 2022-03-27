@@ -20,6 +20,8 @@ public class Ability {
 		this.requiredActionPoints = required;
 	}
 	
+	
+	
 	// setters
 	public String getName() {
 		return this.name;

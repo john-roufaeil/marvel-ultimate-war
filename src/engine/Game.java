@@ -22,7 +22,7 @@ public class Game {
 	private final static int BOARDWIDTH=5;
 
 	// constructors
-	public Game(Player first ,Player second) throws Exception {main
+	public Game(Player first ,Player second) throws Exception {
 		this.firstPlayer = first;
 		this.secondPlayer = second;
 		this.firstLeaderAbilityUsed = false;
@@ -103,6 +103,7 @@ public class Game {
 	}
 	
 	public static void loadAbilities(String filePath) throws Exception {
+		availableAbilities.clear();
 		BufferedReader abilitiesBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		DamagingAbility damagingAbility;
@@ -133,9 +134,22 @@ public class Game {
 					
 					
 					case "CC":
-						EffectType effectType = arr[7].equals("Disarm")?EffectType.DEBUFF:arr[7].equals("PowerUp")?EffectType.BUFF:arr[7].equals("Shield")?EffectType.BUFF:arr[7].equals("Silence")?EffectType.DEBUFF:arr[7].equals("SpeedUp")?EffectType.BUFF:arr[7].equals("Embrace")?EffectType.BUFF:arr[7].equals("Root")?EffectType.DEBUFF:arr[7].equals("Shock")?EffectType.DEBUFF:arr[7].equals("Dodge")?EffectType.BUFF:EffectType.DEBUFF;
-						Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),effectType);
-						crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]), Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]), e);
+						Effect effect = null;
+						switch (arr[7]) {
+							case "Disarm": effect = new Disarm(Integer.parseInt(arr[8])); break;
+							case "PowerUp": effect = new PowerUp(Integer.parseInt(arr[8])); break;
+							case "Shield": effect = new Shield(Integer.parseInt(arr[8])); break;
+							case "Silence": effect = new Silence(Integer.parseInt(arr[8])); break;
+							case "SpeedUp": effect = new SpeedUp(Integer.parseInt(arr[8])); break;
+							case "Embrace": effect = new Embrace(Integer.parseInt(arr[8])); break;
+							case "Root": effect = new Root(Integer.parseInt(arr[8])); break;
+							case "Shock": effect = new Shock(Integer.parseInt(arr[8])); break;
+							case "Dodge": effect = new Dodge(Integer.parseInt(arr[8])); break;
+							case "Stun": effect = new Stun(Integer.parseInt(arr[8])); break;
+						}
+//						EffectType effectType = arr[7].equals("Disarm")?EffectType.DEBUFF:arr[7].equals("PowerUp")?EffectType.BUFF:arr[7].equals("Shield")?EffectType.BUFF:arr[7].equals("Silence")?EffectType.DEBUFF:arr[7].equals("SpeedUp")?EffectType.BUFF:arr[7].equals("Embrace")?EffectType.BUFF:arr[7].equals("Root")?EffectType.DEBUFF:arr[7].equals("Shock")?EffectType.DEBUFF:arr[7].equals("Dodge")?EffectType.BUFF:EffectType.DEBUFF;
+//						Effect e = new Effect(arr[7], Integer.parseInt(arr[8]),effectType);
+						crowdControlAbility = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]), Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]), effect);
 						availableAbilities.add(crowdControlAbility);
 						break;
 				
@@ -151,6 +165,7 @@ public class Game {
 	}
 	
 	public static void loadChampions(String filePath) throws Exception {
+		availableChampions.clear();
 		BufferedReader championsBR = new BufferedReader(new FileReader(filePath));
 		String line="";
 		AntiHero antiHero;

@@ -13,6 +13,12 @@ public class Effect {
 		this.type = type;
 	}
 	
+//	public Effect(String name, int duration, String type) {
+//		this.name = name;
+//		this.duration = duration;
+//		this.type = EffectType.valueOf(type);
+//	}
+	
 	// getters
 	public String getName() {
 		return this.name;
@@ -32,5 +38,4 @@ public class Effect {
 	// overriden methods
 	
 	// methods
-	
 }
