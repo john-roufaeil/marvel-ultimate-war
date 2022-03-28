@@ -50,10 +50,6 @@ public class Ability {
 		this.currentCooldown = currentCooldown;
 	}
 	
-	// overriden methods
-	public String toString() {
-		return this.name;
-	}
 	
 	// methods
 }

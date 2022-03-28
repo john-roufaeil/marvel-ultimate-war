@@ -183,34 +183,25 @@ public class Game {
 		        case "A":
 		            antiHero = new AntiHero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		            ArrayList<Ability> abilities1 = antiHero.getAbilities();
-		            if((i + (3*c))<availableAbilities.size()) {
-	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
-		            if((i + (3*c))<availableAbilities.size()) {
-	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
-		            if((i + (3*c))<availableAbilities.size()) {
-	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
+		            abilities1.add(getAbility(arr[8]));
+		            abilities1.add(getAbility(arr[9]));
+		            abilities1.add(getAbility(arr[10]));
 		            availableChampions.add(antiHero);
 		            break;
 		        case "H":
 		        	hero = new Hero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		        	ArrayList<Ability> abilities2 = hero.getAbilities();
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
+		        	abilities2.add(getAbility(arr[8]));
+		            abilities2.add(getAbility(arr[9]));
+		            abilities2.add(getAbility(arr[10]));
 		        	availableChampions.add(hero);
 		        	break;
 		        case "V":
 		        	villain = new Villain(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		        	ArrayList<Ability> abilities3 = villain.getAbilities();
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
-		        	if((i + (3*c))<availableAbilities.size()) {
-	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
+		        	abilities3.add(getAbility(arr[8]));
+		            abilities3.add(getAbility(arr[9]));
+		            abilities3.add(getAbility(arr[10]));
 		        	availableChampions.add(villain);
 		        	break;
 				}
@@ -233,7 +224,13 @@ public class Game {
 		}
 	}
 	
-
+	public static Ability getAbility(String name) {
+		for (int i = 0; i < availableAbilities.size(); i++) {
+			if (availableAbilities.get(i).getName().equals(name))
+				return availableAbilities.get(i);
+		}
+		return null;
+	}
 	
 }
 
