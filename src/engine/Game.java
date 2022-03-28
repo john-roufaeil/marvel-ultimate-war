@@ -171,60 +171,55 @@ public class Game {
 		AntiHero antiHero;
 		Hero hero;
 		Villain villain;
-		int i=0;
+		int c=0;
 		
 		do {
 			try {
 				line = championsBR.readLine();
 				if(line==null) break;
 				String arr[] =line.split(",");
-				
-				// get champion abilities
-				
-				// load champion
+				int i = 0;
 				switch (arr[0]) {
 		        case "A":
 		            antiHero = new AntiHero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		            ArrayList<Ability> abilities1 = antiHero.getAbilities();
-		            if(i<availableAbilities.size())
-		            	abilities1.add(availableAbilities.get(i));
-		            if(i<availableAbilities.size())
-		            	abilities1.add(availableAbilities.get(++i));
-		            if(i<availableAbilities.size())
-		            	abilities1.add(availableAbilities.get(++i));
-					++i;  
+		            if((i + (3*c))<availableAbilities.size()) {
+	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
+		            if((i + (3*c))<availableAbilities.size()) {
+	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
+		            if((i + (3*c))<availableAbilities.size()) {
+	            	abilities1.add(availableAbilities.get(i + (3*c))); i++; }
 		            availableChampions.add(antiHero);
 		            break;
 		        case "H":
 		        	hero = new Hero(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		        	ArrayList<Ability> abilities2 = hero.getAbilities();
-		        	if(i<availableAbilities.size())
-		        		abilities2.add(availableAbilities.get(i));
-		        	if(i<availableAbilities.size())
-		        		abilities2.add(availableAbilities.get(++i));
-		        	if(i<availableAbilities.size())
-		        		abilities2.add(availableAbilities.get(++i));
-					++i;
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities2.add(availableAbilities.get(i + (3*c))); i++; }
 		        	availableChampions.add(hero);
 		        	break;
 		        case "V":
 		        	villain = new Villain(arr[1],Integer.parseInt(arr[2]),Integer.parseInt(arr[3]),Integer.parseInt(arr[4]),Integer.parseInt(arr[5]),Integer.parseInt(arr[6]),Integer.parseInt(arr[7]));
 		        	ArrayList<Ability> abilities3 = villain.getAbilities();
-		        	if(i<availableAbilities.size())
-		        		abilities3.add(availableAbilities.get(i));
-		        	if(i<availableAbilities.size())
-		        		abilities3.add(availableAbilities.get(++i));
-		        	if(i<availableAbilities.size())
-		        		abilities3.add(availableAbilities.get(++i));
-					++i;
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
+		        	if((i + (3*c))<availableAbilities.size()) {
+	        		abilities3.add(availableAbilities.get(i + (3*c))); i++; }
 		        	availableChampions.add(villain);
 		        	break;
 				}
+				c++;
 			
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-					
+				
 		} while (line != null);
 		championsBR.close();
 	}
