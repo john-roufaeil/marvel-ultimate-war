@@ -145,21 +145,18 @@ public class Game {
 
 					case "CC":
 						Effect effect = null;
-						Class<?> c = Class.forName("model.effects." + arr[7]);
-						Constructor<?> con = c.getConstructor(int.class);
-						effect = (Effect) con.newInstance(Integer.parseInt(arr[8]));
-//						switch (arr[7]) {
-//							case "Disarm": effect = new Disarm(Integer.parseInt(arr[8])); break;
-//							case "PowerUp": effect = new PowerUp(Integer.parseInt(arr[8])); break;
-//							case "Shield": effect = new Shield(Integer.parseInt(arr[8])); break;
-//							case "Silence": effect = new Silence(Integer.parseInt(arr[8])); break;
-//							case "SpeedUp": effect = new SpeedUp(Integer.parseInt(arr[8])); break;
-//							case "Embrace": effect = new Embrace(Integer.parseInt(arr[8])); break;
-//							case "Root": effect = new Root(Integer.parseInt(arr[8])); break;
-//							case "Shock": effect = new Shock(Integer.parseInt(arr[8])); break;
-//							case "Dodge": effect = new Dodge(Integer.parseInt(arr[8])); break;
-//							case "Stun": effect = new Stun(Integer.parseInt(arr[8])); break;
-//						}
+						switch (arr[7]) {
+							case "Disarm": effect = new Disarm(Integer.parseInt(arr[8])); break;
+							case "PowerUp": effect = new PowerUp(Integer.parseInt(arr[8])); break;
+							case "Shield": effect = new Shield(Integer.parseInt(arr[8])); break;
+							case "Silence": effect = new Silence(Integer.parseInt(arr[8])); break;
+							case "SpeedUp": effect = new SpeedUp(Integer.parseInt(arr[8])); break;
+							case "Embrace": effect = new Embrace(Integer.parseInt(arr[8])); break;
+							case "Root": effect = new Root(Integer.parseInt(arr[8])); break;
+							case "Shock": effect = new Shock(Integer.parseInt(arr[8])); break;
+							case "Dodge": effect = new Dodge(Integer.parseInt(arr[8])); break;
+							case "Stun": effect = new Stun(Integer.parseInt(arr[8])); break;
+						}
 						ability = new CrowdControlAbility(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[4]),
 								Integer.parseInt(arr[3]), area, Integer.parseInt(arr[6]), effect);
 						break;
@@ -187,7 +184,6 @@ public class Game {
 				if (line == null)
 					break;
 				String arr[] = line.split(",");
-				int i = 0;
 				switch (arr[0]) {
 				case "A":
 					champion = new AntiHero(arr[1], Integer.parseInt(arr[2]), Integer.parseInt(arr[3]),
