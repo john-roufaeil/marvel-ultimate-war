@@ -1,0 +1,8 @@
+bin/*
+.git/*
+
+.settings/*
+.classpath
+.project
+test_abilities.csv
+test_champions.csv
