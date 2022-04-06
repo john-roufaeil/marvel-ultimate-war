@@ -1,17 +1,14 @@
 package exceptions;
 
-public class GameActionException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+@SuppressWarnings("serial")
+public abstract class GameActionException extends Exception {
 
 	public GameActionException() {
 		super();
 	}
-	
+
 	public GameActionException(String s) {
 		super(s);
 	}
+
 }

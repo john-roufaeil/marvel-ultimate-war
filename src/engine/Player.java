@@ -2,37 +2,36 @@ package engine;
 
 import java.util.ArrayList;
 
-import model.world.*;
+import model.world.Champion;
 
 public class Player {
-	// attributes
 	private String name;
-	private Champion leader; 
-	private ArrayList<Champion> team; 
- 
-	// constructors
-	public Player(String name){
+	private ArrayList<Champion> team;
+	private Champion leader;
+	
+
+	public Player(String name) {
 		this.name = name;
-		this.team = new ArrayList<Champion>();
+		team = new ArrayList<Champion>();
+		
 	}
-  
-	// getters
-	public String getName() {
-		return name;
-	}
+
+
 	public Champion getLeader() {
 		return leader;
 	}
+
+	public void setLeader(Champion leader) {
+		this.leader = leader;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	public ArrayList<Champion> getTeam() {
-		return this.team;
+		return team;
 	}
-	
-	// setters
-	public void setLeader(Champion newLeader) {
-		this.leader = newLeader;
-	}
-	
-	// overriden methods
-	
-	// methods
+
+
 }
