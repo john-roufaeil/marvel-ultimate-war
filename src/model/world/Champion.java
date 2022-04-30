@@ -50,11 +50,12 @@ public class Champion {
 
 		if (hp < 0) {
 			currentHP = 0;
-		}
-		else if (hp > maxHP) {
+			
+		} 
+		else if (hp > maxHP)
 			currentHP = maxHP;
-		}
-		else	currentHP = hp;
+		else
+			currentHP = hp;
 
 	}
 
