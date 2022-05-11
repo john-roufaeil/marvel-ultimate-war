@@ -255,14 +255,12 @@ public class Game {
 		
 		if (team1.get(0).getCurrentHP() == team1.get(1).getCurrentHP() && 
 				team1.get(1).getCurrentHP() == team1.get(2).getCurrentHP() &&
-				team1.get(2).getCurrentHP() == team1.get(3).getCurrentHP() &&
-				team1.get(3).getCurrentHP() == 0)
+				team1.get(2).getCurrentHP() == 0)
 			return this.secondPlayer;
 		
 		if (team2.get(0).getCurrentHP() == team2.get(1).getCurrentHP() && 
 				team2.get(1).getCurrentHP() == team2.get(2).getCurrentHP() &&
-				team2.get(2).getCurrentHP() == team2.get(3).getCurrentHP() &&
-				team2.get(3).getCurrentHP() == 0)
+				team2.get(2).getCurrentHP() == 0)
 			return this.secondPlayer;
 		
 		return null;
