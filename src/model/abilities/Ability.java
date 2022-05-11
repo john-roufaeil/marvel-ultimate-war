@@ -1,6 +1,10 @@
 package model.abilities;
 
-public class Ability {
+import java.util.ArrayList;
+
+import model.world.Damageable;
+
+public abstract class Ability {
 	private String name;
 	private int manaCost;
 	private int baseCooldown;
@@ -19,6 +23,10 @@ public class Ability {
 		this.requiredActionPoints = required;
 	}
 
+	
+	abstract void execute(ArrayList<Damageable> targets);
+	
+	
 	public int getCurrentCooldown() {
 		return currentCooldown;
 	}

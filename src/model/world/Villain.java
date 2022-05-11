@@ -1,6 +1,10 @@
 package model.world;
 
+import java.util.ArrayList;
 
+import model.effects.Effect;
+import model.effects.EffectType;
+import model.effects.Embrace;
 
 public class Villain extends Champion {
 
@@ -8,6 +12,15 @@ public class Villain extends Champion {
 		super(name, maxHP, maxMana, actions, speed, attackRange, attackDamage);
 
 	}
-
+	
+	public void useLeaderAbility(ArrayList<Champion> targets) throws CloneNotSupportedException{
+		for(Champion c : targets) {
+			
+			if (c.getCurrentHP() < 0.3* c.getMaxHP())
+				c.setCondition(Condition.KNOCKEDOUT);
+		}
+	}
+	
+	
 	
 }

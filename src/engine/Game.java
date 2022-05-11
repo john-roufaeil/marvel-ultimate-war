@@ -243,4 +243,45 @@ public class Game {
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
 	}
+	
+	
+	
+	public Champion getCurrentChampion() {
+			return (Champion)turnOrder.peekMin();
+	}
+	
+	
+	public Player checkGameOver() {
+		Player f = this.firstPlayer;
+		Player s = this.secondPlayer;
+		boolean ff = false;
+		boolean ss = false;
+		
+		for(Champion c : f.getTeam()) {
+			if(c.getCurrentHP()!=0) {
+				ff = true;
+			}
+		}
+		
+		for(Champion c : s.getTeam()) {
+			if(c.getCurrentHP()!=0) {
+				ss = true;
+			}
+		}
+		
+		
+		if(!ff&&!ss) return null;
+		
+		return !ff?s:f;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
