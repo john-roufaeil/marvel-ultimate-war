@@ -51,6 +51,47 @@ public class Game {
 		placeChampions();
 		placeCovers();
 	}
+	
+	public static ArrayList<Champion> getAvailableChampions() {
+		return availableChampions;
+	}
+
+	public static ArrayList<Ability> getAvailableAbilities() {
+		return availableAbilities;
+	}
+
+	public Player getFirstPlayer() {
+		return firstPlayer;
+	}
+
+	public Player getSecondPlayer() {
+		return secondPlayer;
+	}
+
+	public Object[][] getBoard() {
+		return board;
+	}
+
+	public PriorityQueue getTurnOrder() {
+		return turnOrder;
+	}
+
+	public boolean isFirstLeaderAbilityUsed() {
+		return firstLeaderAbilityUsed;
+	}
+
+	public boolean isSecondLeaderAbilityUsed() {
+		return secondLeaderAbilityUsed;
+	}
+
+	public static int getBoardwidth() {
+		return BOARDWIDTH;
+	}
+
+	public static int getBoardheight() {
+		return BOARDHEIGHT;
+	}
+
 
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -203,79 +244,29 @@ public class Game {
 		}
 	
 	}
-
-	public static ArrayList<Champion> getAvailableChampions() {
-		return availableChampions;
-	}
-
-	public static ArrayList<Ability> getAvailableAbilities() {
-		return availableAbilities;
-	}
-
-	public Player getFirstPlayer() {
-		return firstPlayer;
-	}
-
-	public Player getSecondPlayer() {
-		return secondPlayer;
-	}
-
-	public Object[][] getBoard() {
-		return board;
-	}
-
-	public PriorityQueue getTurnOrder() {
-		return turnOrder;
-	}
-
-	public boolean isFirstLeaderAbilityUsed() {
-		return firstLeaderAbilityUsed;
-	}
-
-	public boolean isSecondLeaderAbilityUsed() {
-		return secondLeaderAbilityUsed;
-	}
-
-	public static int getBoardwidth() {
-		return BOARDWIDTH;
-	}
-
-	public static int getBoardheight() {
-		return BOARDHEIGHT;
-	}
-	
-	
 	
 	public Champion getCurrentChampion() {
 			return (Champion)turnOrder.peekMin();
 	}
-	
-	
+
 	public Player checkGameOver() {
-		Player f = this.firstPlayer;
-		Player s = this.secondPlayer;
-		boolean ff = false;
-		boolean ss = false;
+		ArrayList<Champion> team1 = this.firstPlayer.getTeam();
+		ArrayList<Champion> team2 = this.secondPlayer.getTeam();
 		
-		for(Champion c : f.getTeam()) {
-			if(c.getCurrentHP()!=0) {
-				ff = true;
-			}
-		}
+		if (team1.get(0).getCurrentHP() == team1.get(1).getCurrentHP() && 
+				team1.get(1).getCurrentHP() == team1.get(2).getCurrentHP() &&
+				team1.get(2).getCurrentHP() == team1.get(3).getCurrentHP() &&
+				team1.get(3).getCurrentHP() == 0)
+			return this.secondPlayer;
 		
-		for(Champion c : s.getTeam()) {
-			if(c.getCurrentHP()!=0) {
-				ss = true;
-			}
-		}
+		if (team2.get(0).getCurrentHP() == team2.get(1).getCurrentHP() && 
+				team2.get(1).getCurrentHP() == team2.get(2).getCurrentHP() &&
+				team2.get(2).getCurrentHP() == team2.get(3).getCurrentHP() &&
+				team2.get(3).getCurrentHP() == 0)
+			return this.secondPlayer;
 		
-		
-		if(!ff&&!ss) return null;
-		
-		return !ff?s:f;
-		
+		return null;
 	}
-	
 	
 	
 	
