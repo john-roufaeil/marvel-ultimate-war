@@ -25,8 +25,13 @@ public class Root extends Effect {
 	public void remove(Champion c) {
 		if(c.getCondition()==Condition.ROOTED) {
 			c.setCondition(Condition.ACTIVE);
+<<<<<<< HEAD
 			ArrayList<Effect> effects = c.getAppliedEffects();
 			effects.remove(this);
+=======
+//			ArrayList<Effect> effects = c.getAppliedEffects();
+//			effects.remove(this);
+>>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 		}
 	}
 }

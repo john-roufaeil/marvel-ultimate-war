@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-public abstract class Champion implements Comparable{
+public abstract class Champion implements Comparable, Damageable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -145,10 +145,12 @@ public abstract class Champion implements Comparable{
 	public int compareTo(Object o) {
 		Champion c = (Champion)o;
 		return this.speed<c.speed?-1: this.speed<c.speed?1:this.name.compareTo(c.name);
+		// return this.speed < c.speed?-1: this.speed > c.speed?1:this.name.compareTo(c.name);
+	
 	}
 	
 	public abstract void useLeaderAbility(ArrayList<Champion> targets) throws CloneNotSupportedException;
-
+	
 	
 
 }

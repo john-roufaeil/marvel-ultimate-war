@@ -32,8 +32,13 @@ public class Silence extends Effect {
 		
 		c.setMaxActionPointsPerTurn(maxActionPointsPerTurn);
 		c.setCurrentActionPoints(currentActionPoints);
+<<<<<<< HEAD
 		ArrayList<Effect> effects = c.getAppliedEffects();
 		effects.remove(this);
+=======
+//		ArrayList<Effect> effects = c.getAppliedEffects();
+//		effects.remove(this);
+>>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 	}
 
 }

@@ -40,8 +40,13 @@ public class PowerUp extends Effect {
 				((HealingAbility) a).setHealAmount((int)(((HealingAbility) a).getHealAmount() / (1.2)));
 		}
 		
+<<<<<<< HEAD
 		ArrayList<Effect> effects = c.getAppliedEffects();
 		effects.remove(this);
+=======
+//		ArrayList<Effect> effects = c.getAppliedEffects();
+//		effects.remove(this);
+>>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 	}
 	
 }

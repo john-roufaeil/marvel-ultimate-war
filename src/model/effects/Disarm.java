@@ -34,9 +34,21 @@ public class Disarm extends Effect {
 				
 		}
 		
+<<<<<<< HEAD
 		ArrayList<Effect> effects = c.getAppliedEffects();
 		effects.remove(this);
 		
+=======
+//		ArrayList<Effect> effects = c.getAppliedEffects();
+//		//remove the first instance you find of this effect
+//		for(Effect effect : effects) {
+//			if(effect instanceof Disarm) {
+//				effects.remove(effect);
+//				break;
+//			}
+//
+//		}
+>>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 	}
 	
 }
