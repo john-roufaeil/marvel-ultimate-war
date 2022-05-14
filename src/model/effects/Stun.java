@@ -16,12 +16,12 @@ public class Stun extends Effect {
 		
 		c.setCondition(Condition.INACTIVE);
 		// Target is not allowed to play their turn for the duration.
-		ArrayList<Effect> effects = c.getAppliedEffects();
-		effects.add(this);
+//		ArrayList<Effect> effects = c.getAppliedEffects();
+//		effects.add(this);
 	}
 	
 	public void remove(Champion c) {
-		c.setCondition(Condition.ACTIVE);
+		c.setCondition(Condition.ROOTED);
 		// Target is not allowed to play their turn for the duration.
 //		ArrayList<Effect> effects = c.getAppliedEffects();
 //		effects.remove(this);

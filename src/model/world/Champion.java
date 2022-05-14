@@ -47,19 +47,15 @@ public abstract class Champion implements Comparable, Damageable{
 	}
 
 	public void setCurrentHP(int hp) {
-
 		if (hp < 0) {
 			currentHP = 0;
-			
 		} 
 		else if (hp > maxHP)
 			currentHP = maxHP;
 		else
 			currentHP = hp;
-
 	}
 
-	
 	public int getCurrentHP() {
 
 		return currentHP;
@@ -141,14 +137,11 @@ public abstract class Champion implements Comparable, Damageable{
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
-	
 	public int compareTo(Object o) {
 		Champion c = (Champion)o;
 		return this.speed < c.speed?-1: this.speed > c.speed?1:this.name.compareTo(c.name);
 	}
 	
 	public abstract void useLeaderAbility(ArrayList<Champion> targets);
-
 	
-
 }

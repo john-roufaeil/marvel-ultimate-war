@@ -255,8 +255,6 @@ public class Game {
 		return BOARDHEIGHT;
 	}
 	
-	
-	
 	public Champion getCurrentChampion() {
 		return (Champion)this.turnOrder.peekMin();
 	}
@@ -340,8 +338,6 @@ public class Game {
     }
 	 
 	public void attack(Direction d) throws ChampionDisarmedException, NotEnoughResourcesException {
-		 ArrayList<Champion> team1 = this.firstPlayer.getTeam();
-		 ArrayList<Champion> team2 = this.secondPlayer.getTeam();
 		 Champion c = this.getCurrentChampion();
 		 if (c.getCurrentActionPoints() < 2) 
 	        	throw new NotEnoughResourcesException("Not enough action points available to attack.");
@@ -349,109 +345,68 @@ public class Game {
 		 int damage = c.getAttackDamage();
 		 int x = c.getLocation().x;
 		 int y = c.getLocation().y;
-		 Damageable target = null;
+		 Champion target = null;
+		 Cover cover = null;
 		 ArrayList<Effect> applied = c.getAppliedEffects();
 		 
 		 // Check if disarmed effect applied
 		 for(Effect effect : applied)
-			 
 			 if(effect instanceof Disarm) {
 				 throw new ChampionDisarmedException("Champion is disarmed.");
 			 }
 		 
-		 // find target
-		 for(int i=0;i<range;i++) {
-			 
-			 if(d==Direction.UP && x<4) {
-				 x++;
-				 if(board[x][y] instanceof Damageable) {
-					 if(!(board[x][y] instanceof Cover)) {
-						 Champion attacked = (Champion)board[x][y];
-						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
-							 target = attacked;
-							 break;
-						 }
-						 
-					 }
-					 
-					 else {
-						 target = (Damageable) board[x][y];
-							 break;
-					 }
-					
-				 }
+		 // find first target
+		 boolean found = false;
+		 for (int i = 0; i < range; i++) {
+			 switch(d) {
+				 case UP: x++; break;
+				 case DOWN: x--; break;
+				 case RIGHT: y++; break;
+				 case LEFT: y--; break;
 			 }
-			 
-			 if(d==Direction.DOWN && x>0) {
-				 x--;
-				 if(board[x][y] instanceof Damageable) {
-					 if(!(board[x][y] instanceof Cover)) {
-						 Champion attacked = (Champion)board[x][y];
-						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
-							 target = attacked;
-							 break;
-						 }
-						 
-					 }
-					 
-					 else {
-						 target = (Damageable) board[x][y];
-							 break;
-					 }
-					
-				 }
+			 if (board[x][y] == null) {
+				 continue;
 			 }
-			 
-			 if(d==Direction.LEFT && y>0) {
-				 y--;
-				 if(board[x][y] instanceof Damageable) {
-					 if(!(board[x][y] instanceof Cover)) {
-						 Champion attacked = (Champion)board[x][y];
-						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
-							 target = attacked;
-							 break;
-						 }
-						 
-					 }
-					 
-					 else {
-						 target = (Damageable) board[x][y];
-							 break;
-					 }
-					
-				 }
+			 else if (board[x][y] instanceof Cover) {
+				 cover = (Cover) board[x][y];
+				 found = true;
+				 break;
 			 }
-			 
-			 if(d==Direction.RIGHT && y<4) {
-				 y++;
-				 if(board[x][y] instanceof Damageable) {
-					 if(!(board[x][y] instanceof Cover)) {
-						 Champion attacked = (Champion)board[x][y];
-						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
-							 target = attacked;
-							 break;
-						 }
-						 
-					 }
-					 
-					 else {
-						 target = (Damageable) board[x][y];
-							 break;
-					 }
+			 else if (board [x][y] instanceof Champion) {
+				 // check if friendly, do no harm AND DECREASE ACTION POINTS
+				 if ((this.getFirstPlayer().getTeam().contains(c) && this.getFirstPlayer().getTeam().contains((Champion)board[x][y]))
+						 || (this.getSecondPlayer().getTeam().contains(c) && this.getSecondPlayer().getTeam().contains((Champion)board[x][y]))) {
+					 found = true; // found an obstacle
+					 c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+					 return;
+				 }
+				 else {
+					 found = true;
+					 target = (Champion) board[x][y];
+					 break;
 				 }
 			 }
 		 }
+		 // no target found within the attack range, DECREASE ACTION POINTS
+		 if (found == false) {
+			 c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+			 return;
+		 }
 		 
-		 // if the object is cover
-		 if(target instanceof Cover) {
-			 target.setCurrentHP(target.getCurrentHP()-damage);
-			 if(target.getCurrentHP()==0) {
+		 // now target is only enemy champion or cover (no null or friendly champion)
+		 
+		 // if target is cover
+		 if(cover != null) {
+			 target.setCurrentHP(((Champion) target).getCurrentHP() - damage);
+			 if(target.getCurrentHP() <= 0) {
 				 Point location = target.getLocation();
 				 board[location.x][location.y] = null;
 			 }
+			 c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
+			 return;
 		 }
 		 
-		 // if the object is champion
+		 // if target is enemy champion
 		 else if(target instanceof Champion) {
 			 Champion attacked = (Champion)target;
 			 ArrayList<Effect> appliedOnAttacked = attacked.getAppliedEffects();
@@ -479,19 +434,18 @@ public class Game {
 				 }
 			 }
 			 
-			
 			 attacked.setCurrentHP(attacked.getCurrentHP() - damage);
-			 // extra damage?
+			 // extra damage
 			 if(c instanceof Hero && (attacked instanceof Villain || attacked instanceof AntiHero)) {
-				 attacked.setCurrentHP((int)(attacked.getCurrentHP() - 0.5 * damage));
+				 attacked.setCurrentHP(attacked.getCurrentHP() - (int)(0.5 * damage));
 			 }
 			 
 			 else if(c instanceof Villain && (attacked instanceof Hero || attacked instanceof AntiHero)) {
-				 attacked.setCurrentHP((int)(attacked.getCurrentHP() - 0.5 * damage));
+				 attacked.setCurrentHP(attacked.getCurrentHP() - (int)(0.5 * damage));
 			 }
 			 
 			 else if(c instanceof AntiHero && (attacked instanceof Villain || attacked instanceof Hero)) {
-				 attacked.setCurrentHP((int)(attacked.getCurrentHP() - 0.5 * damage));
+				 attacked.setCurrentHP(attacked.getCurrentHP() - (int)(0.5 * damage));
 			 }
 			 
 			 if (attacked.getCurrentHP() <= 0) {
@@ -500,9 +454,7 @@ public class Game {
 				 board[p.x][p.y] = null; 
 			 }
 		 }
-		 
 		 c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
-	
  }
 	
 	public void  castAbiliity(Ability a) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException, CloneNotSupportedException {
