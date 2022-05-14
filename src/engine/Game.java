@@ -62,47 +62,6 @@ public class Game {
 		placeChampions();
 		placeCovers();
 	}
-	
-	public static ArrayList<Champion> getAvailableChampions() {
-		return availableChampions;
-	}
-
-	public static ArrayList<Ability> getAvailableAbilities() {
-		return availableAbilities;
-	}
-
-	public Player getFirstPlayer() {
-		return firstPlayer;
-	}
-
-	public Player getSecondPlayer() {
-		return secondPlayer;
-	}
-
-	public Object[][] getBoard() {
-		return board;
-	}
-
-	public PriorityQueue getTurnOrder() {
-		return turnOrder;
-	}
-
-	public boolean isFirstLeaderAbilityUsed() {
-		return firstLeaderAbilityUsed;
-	}
-
-	public boolean isSecondLeaderAbilityUsed() {
-		return secondLeaderAbilityUsed;
-	}
-
-	public static int getBoardwidth() {
-		return BOARDWIDTH;
-	}
-
-	public static int getBoardheight() {
-		return BOARDHEIGHT;
-	}
-
 
 	public static void loadAbilities(String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -255,10 +214,52 @@ public class Game {
 		}
 	
 	}
+
+	public static ArrayList<Champion> getAvailableChampions() {
+		return availableChampions;
+	}
+
+	public static ArrayList<Ability> getAvailableAbilities() {
+		return availableAbilities;
+	}
+
+	public Player getFirstPlayer() {
+		return firstPlayer;
+	}
+
+	public Player getSecondPlayer() {
+		return secondPlayer;
+	}
+
+	public Object[][] getBoard() {
+		return board;
+	}
+
+	public PriorityQueue getTurnOrder() {
+		return turnOrder;
+	}
+
+	public boolean isFirstLeaderAbilityUsed() {
+		return firstLeaderAbilityUsed;
+	}
+
+	public boolean isSecondLeaderAbilityUsed() {
+		return secondLeaderAbilityUsed;
+	}
+
+	public static int getBoardwidth() {
+		return BOARDWIDTH;
+	}
+
+	public static int getBoardheight() {
+		return BOARDHEIGHT;
+	}
+	
+	
 	
 	public Champion getCurrentChampion() {
-			return (Champion)turnOrder.peekMin();
-	}		
+		return (Champion)this.turnOrder.peekMin();
+	}
 	
 	public Player checkGameOver() {
         ArrayList<Champion> team1 = this.firstPlayer.getTeam();
@@ -1050,6 +1051,5 @@ public class Game {
 		}
 		
 	}
->>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 	
 }

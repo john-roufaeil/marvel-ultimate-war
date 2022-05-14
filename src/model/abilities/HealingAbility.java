@@ -21,10 +21,7 @@ public  class HealingAbility extends Ability {
 	}
 
 	
-<<<<<<< HEAD
-=======
 	// even if cover???
->>>>>>> 2adee0810328c8e24d197ccd9af140f976b89927
 	public void execute(ArrayList<Damageable> targets) {
 		for(Damageable d : targets) {
 			d.setCurrentHP(d.getCurrentHP() + this.healAmount);
