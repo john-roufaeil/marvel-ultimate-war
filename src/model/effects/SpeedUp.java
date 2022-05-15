@@ -22,8 +22,8 @@ public class SpeedUp extends Effect{
 			c.setMaxActionPointsPerTurn(maxActionPointsPerTurn);
 			c.setCurrentActionPoints(currentActionPoints);
 			
-			ArrayList<Effect> effects = c.getAppliedEffects();
-			effects.add(this);
+//			ArrayList<Effect> effects = c.getAppliedEffects();
+//			effects.add(this);
 	
 	}
 	

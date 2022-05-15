@@ -25,8 +25,8 @@ public class Shock extends Effect {
 		c.setCurrentActionPoints(currentActionPoints);
 		
 		
-		ArrayList<Effect> effects = c.getAppliedEffects();
-		effects.add(this);
+//		ArrayList<Effect> effects = c.getAppliedEffects();
+//		effects.add(this);
 	}
 	
 	public void remove(Champion c) {
