@@ -338,6 +338,8 @@ public class Game {
     }
 	 
 	public void attack(Direction d) throws ChampionDisarmedException, NotEnoughResourcesException {
+		 ArrayList<Champion> team1 = this.firstPlayer.getTeam();
+		 ArrayList<Champion> team2 = this.secondPlayer.getTeam();
 		 Champion c = this.getCurrentChampion();
 		 if (c.getCurrentActionPoints() < 2) 
 	        	throw new NotEnoughResourcesException("Not enough action points available to attack.");
@@ -345,68 +347,109 @@ public class Game {
 		 int damage = c.getAttackDamage();
 		 int x = c.getLocation().x;
 		 int y = c.getLocation().y;
-		 Champion target = null;
-		 Cover cover = null;
+		 Damageable target = null;
 		 ArrayList<Effect> applied = c.getAppliedEffects();
 		 
 		 // Check if disarmed effect applied
 		 for(Effect effect : applied)
+			 
 			 if(effect instanceof Disarm) {
 				 throw new ChampionDisarmedException("Champion is disarmed.");
 			 }
 		 
-		 // find first target
-		 boolean found = false;
-		 for (int i = 0; i < range; i++) {
-			 switch(d) {
-				 case UP: x++; break;
-				 case DOWN: x--; break;
-				 case RIGHT: y++; break;
-				 case LEFT: y--; break;
-			 }
-			 if (board[x][y] == null) {
-				 continue;
-			 }
-			 else if (board[x][y] instanceof Cover) {
-				 cover = (Cover) board[x][y];
-				 found = true;
-				 break;
-			 }
-			 else if (board [x][y] instanceof Champion) {
-				 // check if friendly, do no harm AND DECREASE ACTION POINTS
-				 if ((this.getFirstPlayer().getTeam().contains(c) && this.getFirstPlayer().getTeam().contains((Champion)board[x][y]))
-						 || (this.getSecondPlayer().getTeam().contains(c) && this.getSecondPlayer().getTeam().contains((Champion)board[x][y]))) {
-					 found = true; // found an obstacle
-					 c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
-					 return;
+		 // find target
+		 for(int i=0;i<range;i++) {
+			 
+			 if(d==Direction.UP && x<4) {
+				 x++;
+				 if(board[x][y] instanceof Damageable) {
+					 if(!(board[x][y] instanceof Cover)) {
+						 Champion attacked = (Champion)board[x][y];
+						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
+							 target = attacked;
+							 break;
+						 }
+						 
+					 }
+					 
+					 else {
+						 target = (Damageable) board[x][y];
+							 break;
+					 }
+					
 				 }
-				 else {
-					 found = true;
-					 target = (Champion) board[x][y];
-					 break;
+			 }
+			 
+			 if(d==Direction.DOWN && x>0) {
+				 x--;
+				 if(board[x][y] instanceof Damageable) {
+					 if(!(board[x][y] instanceof Cover)) {
+						 Champion attacked = (Champion)board[x][y];
+						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
+							 target = attacked;
+							 break;
+						 }
+						 
+					 }
+					 
+					 else {
+						 target = (Damageable) board[x][y];
+							 break;
+					 }
+					
+				 }
+			 }
+			 
+			 if(d==Direction.LEFT && y>0) {
+				 y--;
+				 if(board[x][y] instanceof Damageable) {
+					 if(!(board[x][y] instanceof Cover)) {
+						 Champion attacked = (Champion)board[x][y];
+						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
+							 target = attacked;
+							 break;
+						 }
+						 
+					 }
+					 
+					 else {
+						 target = (Damageable) board[x][y];
+							 break;
+					 }
+					
+				 }
+			 }
+			 
+			 if(d==Direction.RIGHT && y<4) {
+				 y++;
+				 if(board[x][y] instanceof Damageable) {
+					 if(!(board[x][y] instanceof Cover)) {
+						 Champion attacked = (Champion)board[x][y];
+						 if((team1.contains(c)&&team2.contains(attacked)) || (team2.contains(c)&&team1.contains(attacked))){
+							 target = attacked;
+							 break;
+						 }
+						 
+					 }
+					 
+					 else {
+						 target = (Damageable) board[x][y];
+							 break;
+					 }
 				 }
 			 }
 		 }
-		 // no target found within the attack range, DECREASE ACTION POINTS
-		 if (found == false) {
-			 c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
-			 return;
-		 }
 		 
-		 // now target is only enemy champion or cover (no null or friendly champion)
-		 
-		 // if target is cover
-		 if(cover != null) {
-			 target.setCurrentHP(((Champion) target).getCurrentHP() - damage);
-			 if(target.getCurrentHP() <= 0) {
+		 // if the object is cover
+		 if(target instanceof Cover) {
+			 target.setCurrentHP(target.getCurrentHP()-damage);
+			 if(target.getCurrentHP()==0) {
 				 Point location = target.getLocation();
 				 board[location.x][location.y] = null;
 			 }
-			 c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
-			 return;
 		 }
 		 
-		 // if target is enemy champion
+		 // if the object is champion
 		 else if(target instanceof Champion) {
 			 Champion attacked = (Champion)target;
 			 ArrayList<Effect> appliedOnAttacked = attacked.getAppliedEffects();
@@ -434,8 +477,9 @@ public class Game {
 				 }
 			 }
 			 
+			
 			 attacked.setCurrentHP(attacked.getCurrentHP() - damage);
-			 // extra damage
+			 // extra damage?
 			 if(c instanceof Hero && (attacked instanceof Villain || attacked instanceof AntiHero)) {
 				 attacked.setCurrentHP(attacked.getCurrentHP() - (int)(0.5 * damage));
 			 }
@@ -454,10 +498,12 @@ public class Game {
 				 board[p.x][p.y] = null; 
 			 }
 		 }
+		 
 		 c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
+	
  }
 	
-	public void  castAbiliity(Ability a) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException, CloneNotSupportedException {
+	public void  castAbility(Ability a) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException, CloneNotSupportedException {
 		if(this.turnOrder.isEmpty()) return;
 		if(a.getCastArea() == AreaOfEffect.DIRECTIONAL || a.getCastArea() == AreaOfEffect.SINGLETARGET)
 			throw new AbilityUseException("Invalid ability use.");
@@ -570,7 +616,7 @@ public class Game {
 		c.setMana(c.getMana() - a.getManaCost());
 	}
 	
-	public void  castAbiliity(Ability a, Direction d) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException ,CloneNotSupportedException{
+	public void  castAbility(Ability a, Direction d) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException ,CloneNotSupportedException{
 		if(this.turnOrder.isEmpty()) return;
 		if (a.getCastArea() != AreaOfEffect.DIRECTIONAL)
 			throw new AbilityUseException("Invalid ability use.");
@@ -764,25 +810,18 @@ public class Game {
 		c.setMana(c.getMana() - a.getManaCost());
 	}
 	
-	public void  castAbiliity(Ability a, int x, int y) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException, CloneNotSupportedException {
-		if(this.turnOrder.isEmpty()) return;
-		if (a.getCastArea() != AreaOfEffect.SINGLETARGET)
-			throw new AbilityUseException("Invalid ability use.");
+	public void  castAbility(Ability a, int x, int y) throws AbilityUseException, InvalidTargetException, NotEnoughResourcesException, CloneNotSupportedException {
 		Champion c = this.getCurrentChampion();
-		
-		
+		int range = a.getCastRange();
+		Damageable castedOn = null;
+		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		// check enough action points available
-		if ((c.getCurrentActionPoints() < a.getRequiredActionPoints()) && (c.getMana() <= a.getManaCost()))
-        	throw new NotEnoughResourcesException("Not enough resources available to cast ability.");
-		
-		if(c.getAbilities().contains(a)) {
-			throw new AbilityUseException("Ability cannot be casted in this turn.");
-		}
-		
-//		int currentCooldown = a.getCurrentCooldown();
-//		if(currentCooldown>0 && currentCooldown <= a.getBaseCooldown()) {
-//			throw new AbilityUseException("Champion cannot cast such an ability in this turn");
-//		}
+		if (c.getCurrentActionPoints() < a.getRequiredActionPoints())
+        	throw new NotEnoughResourcesException("Not enough action points to cast ability.");
+		if (c.getMana() < a.getManaCost())
+			throw new NotEnoughResourcesException("Not enough mana available to cast ability.");
+//		if (a.getBaseCooldown() != a.getCurrentCooldown())
+//			throw new NotEnoughResourcesException("Cannot cast ability yet!");
 		
 		// check if silence effect applied
 		for (Effect e : c.getAppliedEffects()) {
@@ -791,41 +830,62 @@ public class Game {
 			}
 		}
 		
-		Point location = new Point(x,y);
-		Damageable castedOn = null;
-		
-		// check valid target !!VALIDATE: CHECK FOR VALID TARGET IF SAME TEAM OR OPPOSITE TEAM (HEL, DMG???)!!
-		if (board[x][y] == null ) {//|| board[x][y] instanceof Cover) {
+		if (board[x][y] == null ) {
 			throw new InvalidTargetException("Invalid target.");
 		}
 		
-		if(board[x][y] instanceof Cover && (a instanceof HealingAbility || a instanceof CrowdControlAbility)) {
-			throw new InvalidTargetException("Invalid target.");
-		}
-		
-		if(board[x][y] instanceof Cover && a instanceof DamagingAbility) {
-			castedOn = (Damageable)board[x][y];
-			int range = a.getCastRange();
-			if ((Math.abs(c.getLocation().x - castedOn.getLocation().x) + Math.abs(c.getLocation().y - castedOn.getLocation().y) > range))
-				throw new AbilityUseException("Cannot apply effect on selected target.");
+		if (board[x][y] instanceof Cover) {
+			if (a instanceof HealingAbility)
+				throw new InvalidTargetException("Invalid target.");
+			if (a instanceof CrowdControlAbility)
+				throw new InvalidTargetException("Invalid target.");
+			castedOn = (Cover)board[x][y];
+			if (Math.abs(c.getLocation().x - x) + Math.abs(c.getLocation().y - y) > range)
+				throw new AbilityUseException("Cannot reach selected target.");
+			targets.add(castedOn);
+			a.execute(targets);
+			return;
 		}
 		
 		else if (board[x][y] instanceof Champion){
 			castedOn = (Champion) board[x][y];
-		
-			if ((this.firstPlayer.getTeam().contains(c) && this.firstPlayer.getTeam().contains(castedOn)) ||
-					(this.secondPlayer.getTeam().contains(c) && this.secondPlayer.getTeam().contains(castedOn))
-					&& (a instanceof DamagingAbility || a instanceof CrowdControlAbility && ((CrowdControlAbility)(a)).getEffect().getType() == EffectType.DEBUFF))
-				throw new InvalidTargetException("Cannot invoke negative ability on team target.");
-			if ((this.firstPlayer.getTeam().contains(c) && this.secondPlayer.getTeam().contains(castedOn)) ||
-					(this.secondPlayer.getTeam().contains(c) && this.firstPlayer.getTeam().contains(castedOn))
-					&& (a instanceof HealingAbility || a instanceof CrowdControlAbility && ((CrowdControlAbility)(a)).getEffect().getType() == EffectType.BUFF))
-				throw new InvalidTargetException("Cannot invoke positive ability on enemy target");
+			if (a instanceof DamagingAbility) {
+				if (inTeam1(c) && inTeam1((Champion) castedOn)) {
+					throw new InvalidTargetException("Cannot invoke negative ability on team target.");
+				}
+				if (inTeam2(c) && inTeam2((Champion) castedOn)) {
+					throw new InvalidTargetException("Cannot invoke negative ability on team target.");
+				}
+			}
+			if (a instanceof HealingAbility) {
+				if (inTeam1(c) && inTeam2((Champion) castedOn)) {
+					throw new InvalidTargetException("Cannot invoke positive ability on enemy target");
+				}
+				if (inTeam2(c) && inTeam1((Champion) castedOn)) {
+					throw new InvalidTargetException("Cannot invoke positive ability on enemy target");
+				}
+			}
+			if (a instanceof CrowdControlAbility) {
+				if (((CrowdControlAbility)a).getEffect().getType() == EffectType.DEBUFF) {
+					if (inTeam1(c) && inTeam1((Champion) castedOn)) {
+						throw new InvalidTargetException("Cannot invoke negative ability on team target.");
+					}
+					if (inTeam2(c) && inTeam2((Champion) castedOn)) {
+						throw new InvalidTargetException("Cannot invoke negative ability on team target.");
+					}
+				}
+				if (((CrowdControlAbility)a).getEffect().getType() == EffectType.BUFF) {
+					if (inTeam1(c) && inTeam2((Champion) castedOn)) {
+						throw new InvalidTargetException("Cannot invoke positive ability on enemy target");
+					}
+					if (inTeam2(c) && inTeam1((Champion) castedOn)) {
+						throw new InvalidTargetException("Cannot invoke positive ability on enemy target");
+					}
+				}
+			}
 			
-			// check for ability range
-			int range = a.getCastRange();
-			if ((Math.abs(c.getLocation().x - castedOn.getLocation().x) + Math.abs(c.getLocation().y - castedOn.getLocation().y) > range))
-				throw new AbilityUseException("Cannot apply effect on selected target.");
+			if (Math.abs(c.getLocation().x - x) + Math.abs(c.getLocation().y - y) > range)
+				throw new AbilityUseException("Cannot reach selected target.");
 			
 			// check if shield effect applied
 			for (Effect effect : ((Champion)castedOn).getAppliedEffects()) {
@@ -833,18 +893,18 @@ public class Game {
 					((Champion)castedOn).getAppliedEffects().remove(effect);
 					c.setCurrentActionPoints(c.getCurrentActionPoints() - a.getRequiredActionPoints());
 					c.setMana(c.getMana() - a.getManaCost());
+//					a.setCurrentCooldown(0);
 					return;
 				}
 			}
 		}
 		
 		// proceed with casting the ability
-		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		targets.add(castedOn);
 		a.execute(targets);
-		c.getAbilities().add(a);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - a.getRequiredActionPoints());
 		c.setMana(c.getMana() - a.getManaCost());
+//		a.setCurrentCooldown(0);
 	}
 	
 	public void  useLeaderAbility() throws LeaderAbilityAlreadyUsedException, LeaderNotCurrentException {
@@ -931,6 +991,7 @@ public class Game {
 		
 	}
 	
+
 	public void endTurn() {
 		// decrease the duration of all applied effects by 1
 		for(Champion c : this.firstPlayer.getTeam()) {
@@ -991,6 +1052,7 @@ public class Game {
 		
 	}
 	
+
 	private void prepareChampionTurns() {
 		
 		for(Champion c : this.firstPlayer.getTeam()) {
@@ -1004,4 +1066,23 @@ public class Game {
 		
 	}
 	
+
+	public boolean inTeam1(Champion c) {
+		ArrayList<Champion> team1 = this.getFirstPlayer().getTeam();
+		for (Champion a : team1) {
+			if (a.equals(c))
+				return true;
+		}
+		return false;
+	}
+	
+	
+	public boolean inTeam2(Champion c) {
+		ArrayList<Champion> team2 = this.getSecondPlayer().getTeam();
+		for (Champion a : team2) {
+			if (a.equals(c))
+				return true;
+		}
+		return false;
+	}
 }

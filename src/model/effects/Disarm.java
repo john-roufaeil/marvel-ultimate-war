@@ -8,14 +8,9 @@ import model.abilities.DamagingAbility;
 import model.world.Champion;
 
 public class Disarm extends Effect {
-	
-
 	public Disarm( int duration) {
 		super("Disarm", duration, EffectType.DEBUFF);
-		
 	}
-	
-	
 	
 	public void apply(Champion c) {
 		DamagingAbility ability = new DamagingAbility("Punch",0,1,1,AreaOfEffect.SINGLETARGET,1,50);
@@ -33,7 +28,7 @@ public class Disarm extends Effect {
 			}
 				
 		}
-		
+	}
 //		ArrayList<Effect> effects = c.getAppliedEffects();
 //		//remove the first instance you find of this effect
 //		for(Effect effect : effects) {
@@ -43,6 +38,5 @@ public class Disarm extends Effect {
 //			}
 //
 //		}
-	}
 	
 }

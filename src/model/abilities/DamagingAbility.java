@@ -2,6 +2,8 @@ package model.abilities;
 
 import java.util.ArrayList;
 
+import model.world.Champion;
+import model.world.Condition;
 import model.world.Damageable;
 
 public class DamagingAbility extends Ability {
@@ -20,10 +22,14 @@ public class DamagingAbility extends Ability {
 		this.damageAmount = damageAmount;
 	}
 	
-	
 	public void execute(ArrayList<Damageable> targets) {		
 		for(Damageable d : targets) {
-			d.setCurrentHP(d.getCurrentHP()- this.damageAmount);
+			d.setCurrentHP(d.getCurrentHP() - this.damageAmount);
+//			if (d.getCurrentHP() <= 0) {
+//				System.out.println("HI");
+//				((Champion)d).setCondition(Condition.KNOCKEDOUT);
+//				((Champion)d).setLocation(null);
+//			}
 		}
 	}
 
