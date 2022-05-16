@@ -907,88 +907,69 @@ public class Game {
 //		a.setCurrentCooldown(0);
 	}
 	
-	public void  useLeaderAbility() throws LeaderAbilityAlreadyUsedException, LeaderNotCurrentException {
+	public void useLeaderAbility() throws LeaderAbilityAlreadyUsedException, LeaderNotCurrentException {
 		Champion c = this.getCurrentChampion();
-		Champion team1_leader = this.firstPlayer.getLeader();
-		Champion team2_leader = this.secondPlayer.getLeader();
+		Champion l1 = this.getFirstPlayer().getLeader();
+		Champion l2 = this.getSecondPlayer().getLeader();
+		ArrayList<Champion> targets = new ArrayList<Champion>();
 		
-		if(this.firstPlayer.getTeam().contains(c)){
-			if(!c.equals(team1_leader)) {
-				throw new LeaderNotCurrentException("The current champion is not the leader.");
-			}
-			
-			if(this.firstLeaderAbilityUsed) {
-				throw new LeaderAbilityAlreadyUsedException("Leader ability has already been used.");
-			}
-			
+		if (!c.equals(l1) && !c.equals(l2)) {
+			throw new LeaderNotCurrentException("Current champion is not a leader.");
+		}
+		
+		else if (c.equals(l1)) {
+			if (this.isFirstLeaderAbilityUsed())
+				throw new LeaderAbilityAlreadyUsedException("Team leader's ability already used!");
 			this.firstLeaderAbilityUsed = true;
-			ArrayList<Champion> targets = new ArrayList<Champion>();
-			if(c instanceof Hero) {
-				for(Champion champion : this.firstPlayer.getTeam()) {
-					targets.add(champion);
+			if (c instanceof Hero) {
+				for (Champion a : this.getFirstPlayer().getTeam())
+					targets.add(a);
+			}
+			else if (c instanceof Villain) {
+				for (Champion a : this.getSecondPlayer().getTeam())
+					targets.add(a);
+			}
+			else if (c instanceof AntiHero) {
+				for (Champion a : this.getFirstPlayer().getTeam()) {
+					if (!a.equals(l1)) {
+						targets.add(a);
+					}
+				}
+				for (Champion b : this.getSecondPlayer().getTeam()) {
+					if (!b.equals(l2)) {
+						targets.add(b);
+					}
 				}
 			}
-			
-			else if(c instanceof Villain) {
-				for(Champion champion : this.secondPlayer.getTeam()) {
-					targets.add(champion);
-				}
-			}
-			
-			else if(c instanceof AntiHero) {
-				for(Champion champion : this.firstPlayer.getTeam()) {
-					if(!champion.equals(team1_leader))
-						targets.add(champion);
-				}
-				
-				for(Champion champion : this.secondPlayer.getTeam()) {
-					if(!champion.equals(team2_leader))
-						targets.add(champion);
-				}
-			}
-			
-			c.useLeaderAbility(targets);
-			
 		}
 		
-		else if(this.secondPlayer.getTeam().contains(c)){
-			if(!c.equals(team2_leader)) {
-				throw new LeaderNotCurrentException("The current champion is not the leader.");
-			}
-			
-			if(this.secondLeaderAbilityUsed) {
-				throw new LeaderAbilityAlreadyUsedException("Leader ability has already been used.");
-			}
-			
+		else if (c.equals(l2)) {
+			if (this.isSecondLeaderAbilityUsed())
+				throw new LeaderAbilityAlreadyUsedException("Team leader's ability already used!");
 			this.secondLeaderAbilityUsed = true;
-			ArrayList<Champion> targets = new ArrayList<Champion>();
-			if(c instanceof Hero) {
-				for(Champion champion : this.secondPlayer.getTeam()) {
-					targets.add(champion);
+			if (c instanceof Hero) {
+				for (Champion a : this.getSecondPlayer().getTeam())
+					targets.add(a);
+			}
+			else if (c instanceof Villain) {
+				for (Champion a : this.getFirstPlayer().getTeam())
+					targets.add(a);
+			}
+			else if (c instanceof AntiHero) {
+				for (Champion a : this.getFirstPlayer().getTeam()) {
+					if (!a.equals(l1)) {
+						targets.add(a);
+					}
+				}
+				for (Champion b : this.getSecondPlayer().getTeam()) {
+					if (!b.equals(l2)) {
+						targets.add(b);
+					}
 				}
 			}
-			
-			else if(c instanceof Villain) {
-				for(Champion champion : this.firstPlayer.getTeam()) {
-					targets.add(champion);
-				}
-			}
-			
-			else if(c instanceof AntiHero) {
-				for(Champion champion : this.secondPlayer.getTeam()) {
-					if(!champion.equals(team2_leader))
-						targets.add(champion);
-				}
-				
-				for(Champion champion : this.firstPlayer.getTeam()) {
-					if(!champion.equals(team1_leader))
-						targets.add(champion);
-				}
-			}
-			
-			c.useLeaderAbility(targets);	
 		}
 		
+		c.useLeaderAbility(targets);		
 	}
 	
 
@@ -1050,6 +1031,14 @@ public class Game {
 		if(this.turnOrder.isEmpty())
 			prepareChampionTurns();
 		
+		for (Champion a : this.firstPlayer.getTeam()) {
+			if (a.getCondition() == Condition.KNOCKEDOUT)
+				this.board[a.getLocation().x][a.getLocation().y] = null;
+		}
+		for (Champion a : this.secondPlayer.getTeam()) {
+			if (a.getCondition() == Condition.KNOCKEDOUT)
+				this.board[a.getLocation().x][a.getLocation().y] = null;
+		}
 	}
 	
 

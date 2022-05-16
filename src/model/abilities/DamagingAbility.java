@@ -25,11 +25,9 @@ public class DamagingAbility extends Ability {
 	public void execute(ArrayList<Damageable> targets) {		
 		for(Damageable d : targets) {
 			d.setCurrentHP(d.getCurrentHP() - this.damageAmount);
-//			if (d.getCurrentHP() <= 0) {
-//				System.out.println("HI");
-//				((Champion)d).setCondition(Condition.KNOCKEDOUT);
-//				((Champion)d).setLocation(null);
-//			}
+			if (d.getCurrentHP() <= 0) {
+				((Champion)d).setCondition(Condition.KNOCKEDOUT);
+			}
 		}
 	}
 

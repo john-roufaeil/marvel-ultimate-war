@@ -15,18 +15,15 @@ public class Hero extends Champion {
 	
 	public void useLeaderAbility(ArrayList<Champion> targets) {
 		for(Champion c : targets) {
+			System.out.println("HI");
 			ArrayList<Effect> appliedEffects = c.getAppliedEffects();
-			for(Effect effect :appliedEffects ) {
+			for(Effect effect : appliedEffects ) {
 				if(effect.getType() == EffectType.DEBUFF) {
-					appliedEffects.remove(effect);
+					effect.remove(c);
 				}
 			}
-			
-			// add embrace to each champion in the targets (E.B Amir)
 			Embrace embrace = new Embrace(2);
-			appliedEffects.add(embrace);
-				
-			
+			embrace.apply(c);
 		}
 	}
 		

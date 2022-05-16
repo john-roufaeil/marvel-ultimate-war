@@ -28,8 +28,8 @@ public class Dodge extends Effect {
 		// I casted it to int as setSpeed() takes int as parameter
 		int speed = (int)(c.getSpeed() / (1.05));
 		c.setSpeed(speed);
-//		ArrayList<Effect> effects = c.getAppliedEffects();
-//		effects.remove(this);
+		ArrayList<Effect> effects = c.getAppliedEffects();
+		effects.remove(this);
 	}
 	
 }
