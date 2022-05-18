@@ -6,7 +6,7 @@ import exceptions.*;
 
 
 public class Main {
-	public static void main(String [] args) throws IOException {
+	public static void main(String [] args) throws Exception {
 		Player first = new Player("Youssef");
 		Player second = new Player("Husseiny");
 		Game.loadAbilities("Abilities.csv");
