@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-public class Champion {
+public abstract class Champion implements Comparable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -22,7 +22,6 @@ public class Champion {
 	private Condition condition;
 	private Point location;
 	
-
 	public Champion(String name, int maxHP, int mana, int actions, int speed, int attackRange, int attackDamage) {
 		this.name = name;
 		this.maxHP = maxHP;
@@ -58,7 +57,6 @@ public class Champion {
 			currentHP = hp;
 
 	}
-
 	
 	public int getCurrentHP() {
 
@@ -141,7 +139,11 @@ public class Champion {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
+	public int compareTo(Object o) {
+		Champion c = (Champion)o;
+		return (this.speed < c.speed?1: this.speed > c.speed?-1:this.name.compareTo(c.name));
+	}
 	
+	public abstract void useLeaderAbility(ArrayList<Champion> targets);
 	
-
 }
