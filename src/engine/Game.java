@@ -356,7 +356,7 @@ public class Game {
 				 throw new ChampionDisarmedException("Champion is disarmed, cannot attack!");
 		
 		while (range-- > 0) {
-			if (d == Direction.UP) {
+			if (d == Direction.UP && x < 4) {
 				x++;
 				if (board[x][y] == null) 
 					continue;
@@ -372,7 +372,7 @@ public class Game {
 					}
 				}
 			}
-			else if (d == Direction.DOWN) {
+			else if (d == Direction.DOWN && x > 0) {
 				x--;
 				if (board[x][y] == null) 
 					continue;
@@ -388,7 +388,7 @@ public class Game {
 					}
 				}
 			}
-			else if (d == Direction.RIGHT) {
+			else if (d == Direction.RIGHT && y < 4) {
 				y++;
 				if (board[x][y] == null) 
 					continue;
@@ -404,7 +404,7 @@ public class Game {
 					}
 				}
 			}
-			else if (d == Direction.LEFT) {
+			else if (d == Direction.LEFT && y > 0) {
 				y--;
 				if (board[x][y] == null) 
 					continue;
