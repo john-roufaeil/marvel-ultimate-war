@@ -27,9 +27,4 @@ public class Cover implements Damageable {
 	public Point getLocation() {
 		return location;
 	}
-
-	
-
-	
-
 }

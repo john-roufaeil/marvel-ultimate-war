@@ -258,6 +258,8 @@ public class Game {
 		return BOARDHEIGHT;
 	}
 
+	
+	
 	public Champion getCurrentChampion() {
 		return (Champion) turnOrder.peekMin();
 	}
@@ -288,7 +290,9 @@ public class Game {
 			throw new UnallowedMovementException("Current champion is rooted, cannot move!");
 		
 		int x = current.getLocation().x;
+		int originalX = x;
 		int y = current.getLocation().y;
+		int originalY = y;
 		if (d == Direction.UP && x == 4) 
 			throw new UnallowedMovementException("Champion cannot move up any more!");
 		if (d == Direction.DOWN && x == 0) 
@@ -331,6 +335,7 @@ public class Game {
     			throw new UnallowedMovementException("Champion cannot move left, the cell is occupied!");
 		}
 		
+		board[originalX][originalY] = null;
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 1);
 	}
 	
@@ -638,14 +643,14 @@ public class Game {
 		for (Effect e : appliedEffects) 
 			if (e instanceof Silence) 
 				throw new AbilityUseException("Cannot cast ability, champion is silenced!");
-		if (d == Direction.UP && x == 4) 
-			throw new InvalidTargetException("There is no cell upside to apply " + a.getName() + " on!");
-		if (d == Direction.DOWN && x == 0) 
-			throw new InvalidTargetException("There is no cell downside to apply " + a.getName() + " on!");
-		if (d == Direction.RIGHT && y == 4) 
-			throw new InvalidTargetException("There is no cell on the right to apply " + a.getName() + " on!");
-		if (d == Direction.LEFT && y == 0) 
-			throw new InvalidTargetException("There is no cell on the left to apply " + a.getName() + " on!");
+//		if (d == Direction.UP && x == 4) 
+//			throw new InvalidTargetException("There is no cell upside to apply " + a.getName() + " on!");
+//		if (d == Direction.DOWN && x == 0) 
+//			throw new InvalidTargetException("There is no cell downside to apply " + a.getName() + " on!");
+//		if (d == Direction.RIGHT && y == 4) 
+//			throw new InvalidTargetException("There is no cell on the right to apply " + a.getName() + " on!");
+//		if (d == Direction.LEFT && y == 0) 
+//			throw new InvalidTargetException("There is no cell on the left to apply " + a.getName() + " on!");
 
 		while (range-- > 0) {
 			if (d == Direction.UP && x < 4)
@@ -931,6 +936,9 @@ public class Game {
 		}
 		
 	}
+
+	
+	
 	
 	private boolean team1(Champion c) {
 		for (Champion o : this.getFirstPlayer().getTeam()) {
@@ -1044,4 +1052,25 @@ public class Game {
 			this.turnOrder.insert(q.remove());
 	}
 	
+	public void printBoard() {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (board[i][j] == null)
+					System.out.print("null00");
+				else if (board[i][j] instanceof Cover) {
+					System.out.print("Cov" + ((Cover)board[i][j]).getCurrentHP());
+				}
+				else if (board[i][j] instanceof Hero)
+					System.out.print("He" + ((Hero)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof Villain)
+					System.out.print("Vi" + ((Villain)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof AntiHero)
+					System.out.print("Ah" + ((AntiHero)board[i][j]).getCurrentHP());
+				
+				System.out.print(" ");
+			}
+			System.out.println();
+		}
+		System.out.println("___________________________________");
+	}
 }
