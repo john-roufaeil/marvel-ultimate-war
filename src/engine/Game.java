@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import exceptions.ChampionDisarmedException;
 import exceptions.GameActionException;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
@@ -29,6 +30,7 @@ import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Condition;
 import model.world.Cover;
+import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
@@ -327,6 +329,137 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 1);
 	}
 	
+	public void attack(Direction d) throws GameActionException {
+		Champion current = getCurrentChampion();
+		Damageable target = null;
+		ArrayList<Effect> appliedEffects = current.getAppliedEffects();
+		int range = current.getAttackRange();
+		int damage = current.getAttackDamage();
+		int x = current.getLocation().x;
+		int y = current.getLocation().y;
+		
+		if (current.getCurrentActionPoints() < 2)
+			throw new NotEnoughResourcesException("You need 2 Action Point to attack!");
+		for (Effect e : appliedEffects)
+			if (e instanceof Disarm) 
+				 throw new ChampionDisarmedException("Champion is disarmed.");
+		
+		while (range-- > 0) {
+			if (d == Direction.UP) {
+				x++;
+				if (board[x][y] == null) 
+					continue;
+				else if (board[x][y] instanceof Cover) {
+					target = (Damageable) board[x][y];
+					break;
+				}
+				else if (board[x][y] instanceof Champion) {
+					Champion spot = (Champion) board[x][y];
+					if (!sameTeam(current, spot)) {
+						target = (Damageable) board[x][y];
+						break;
+					}
+				}
+			}
+			else if (d == Direction.DOWN) {
+				x--;
+				if (board[x][y] == null) 
+					continue;
+				else if (board[x][y] instanceof Cover) {
+					target = (Damageable) board[x][y];
+					break;
+				}
+				else if (board[x][y] instanceof Champion) {
+					Champion spot = (Champion) board[x][y];
+					if (!sameTeam(current, spot)) {
+						target = (Damageable) board[x][y];
+						break;
+					}
+				}
+			}
+			else if (d == Direction.RIGHT) {
+				y++;
+				if (board[x][y] == null) 
+					continue;
+				else if (board[x][y] instanceof Cover) {
+					target = (Damageable) board[x][y];
+					break;
+				}
+				else if (board[x][y] instanceof Champion) {
+					Champion spot = (Champion) board[x][y];
+					if (!sameTeam(current, spot)) {
+						target = (Damageable) board[x][y];
+						break;
+					}
+				}
+			}
+			else if (d == Direction.LEFT) {
+				y--;
+				if (board[x][y] == null) 
+					continue;
+				else if (board[x][y] instanceof Cover) {
+					target = (Damageable) board[x][y];
+					break;
+				}
+				else if (board[x][y] instanceof Champion) {
+					Champion spot = (Champion) board[x][y];
+					if (!sameTeam(current, spot)) {
+						target = (Damageable) board[x][y];
+						break;
+					}
+				}
+			}
+		}
+		
+		
+		if (target instanceof Cover) {
+			Cover spot = (Cover) target;
+			spot.setCurrentHP(spot.getCurrentHP() - damage);
+		}
+		else if (target instanceof Champion) {
+			Champion spot = (Champion) target;
+			ArrayList<Effect> appliedEffectsOnAttacked = spot.getAppliedEffects();
+			ArrayList<Effect> clonedAppliedEffectsOnAttacked = (ArrayList<Effect>) spot.getAppliedEffects().clone();
+			
+			// check if attacked champion has Dodge Effect
+			int dodge = 0;
+			for (Effect e : appliedEffectsOnAttacked) 
+				if (e instanceof Dodge)
+					dodge = (int)(Math.random() * 2);
+			if (dodge == 1) {
+				 current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
+				return;
+			}
+			
+			// check if attacked champion has Shield Effect
+			for (Effect e : clonedAppliedEffectsOnAttacked)
+				if (e instanceof Shield) {
+					appliedEffectsOnAttacked.remove(e);
+					e.remove(spot);
+					current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
+					return;
+				}
+					
+			 if(current instanceof Hero && (spot instanceof Villain || spot instanceof AntiHero)) {
+				 spot.setCurrentHP((int)(spot.getCurrentHP() * 1.5));
+			 }
+			 
+			 else if(current instanceof Villain && (spot instanceof Hero || spot instanceof AntiHero)) {
+				 spot.setCurrentHP((int)(spot.getCurrentHP() * 1.5));
+			 }
+			 
+			 else if(current instanceof AntiHero && (spot instanceof Villain || spot instanceof Hero)) {
+				 spot.setCurrentHP((int)(spot.getCurrentHP() * 1.5));
+			 }
+			
+			if(spot.getCurrentHP()==0)
+				 removeFromTurnOrder((Champion) spot);
+		}
+		
+		killDead(target);
+		current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
+	}
+	
 	private void prepareChampionTurns() {
 		
 	}
@@ -354,4 +487,56 @@ public class Game {
 			return true;
 		return false;
 	}
+
+	private void killDead(ArrayList<Damageable> list) {
+		for (Damageable d : list) {
+			if (d instanceof Cover) {
+				if (((Cover)d).getCurrentHP() == 0)
+					board[((Cover)d).getLocation().x][((Cover)d).getLocation().y] = null;
+			}
+			else if (d instanceof Champion) {
+				Champion spot = (Champion) d;
+				if (spot.getCurrentHP() == 0 || spot.getCondition() == Condition.KNOCKEDOUT) {
+					spot.setCurrentHP(0);
+					spot.setCondition(Condition.KNOCKEDOUT);
+					board[spot.getLocation().x][spot.getLocation().y] = null;
+					if (team1(spot)) 
+						getFirstPlayer().getTeam().remove(spot);
+					else if (team2(spot))
+						getSecondPlayer().getTeam().remove(spot);
+				}
+			}
+		}
+	}
+	
+	private void killDead(Damageable d) {
+		if (d instanceof Cover) {
+			if (((Cover)d).getCurrentHP() == 0)
+				board[((Cover)d).getLocation().x][((Cover)d).getLocation().y] = null;
+		}
+		else if (d instanceof Champion) {
+			Champion spot = (Champion) d;
+			if (spot.getCurrentHP() == 0 || spot.getCondition() == Condition.KNOCKEDOUT) {
+				spot.setCurrentHP(0);
+				spot.setCondition(Condition.KNOCKEDOUT);
+				board[spot.getLocation().x][spot.getLocation().y] = null;
+				if (team1(spot)) 
+					getFirstPlayer().getTeam().remove(spot);
+				else if (team2(spot))
+					getSecondPlayer().getTeam().remove(spot);
+			}
+		}
+	}
+
+	private void removeFromTurnOrder(Champion c) {
+		PriorityQueue q = new PriorityQueue(this.turnOrder.size());
+		while(((Champion)this.turnOrder.peekMin()).compareTo(c)!=0) {
+			q.insert(this.turnOrder.remove());
+		}
+		
+		this.turnOrder.remove();
+		while(!q.isEmpty())
+			this.turnOrder.insert(q.remove());
+	}
+	
 }
