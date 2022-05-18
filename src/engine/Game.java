@@ -6,6 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import exceptions.GameActionException;
+import exceptions.NotEnoughResourcesException;
+import exceptions.UnallowedMovementException;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
@@ -24,7 +27,9 @@ import model.effects.SpeedUp;
 import model.effects.Stun;
 import model.world.AntiHero;
 import model.world.Champion;
+import model.world.Condition;
 import model.world.Cover;
+import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
 
@@ -266,6 +271,60 @@ public class Game {
 		if (getSecondPlayer().getTeam().isEmpty() || alldead2) 
 			return firstPlayer;
 		return null;
+	}
+	
+	public void move(Direction d) throws GameActionException {
+		Champion current = getCurrentChampion();
+		if (current.getCurrentActionPoints() < 1)
+			throw new NotEnoughResourcesException("You need 1 Action Point to move!");
+		if (current.getCondition() == Condition.ROOTED)
+			throw new UnallowedMovementException("Current champion is rooted, cannot move!");
+		
+		int x = current.getLocation().x;
+		int y = current.getLocation().y;
+		if (d == Direction.UP && x == 4) 
+			throw new UnallowedMovementException("Champion cannot move up any more!");
+		if (d == Direction.DOWN && x == 0) 
+			throw new UnallowedMovementException("Champion cannot move down any more!");
+		if (d == Direction.RIGHT && y == 4) 
+			throw new UnallowedMovementException("Champion cannot move right any more!");
+		if (d == Direction.LEFT && y == 0) 
+			throw new UnallowedMovementException("Champion cannot move left any more!");
+		
+		if (d == Direction.UP) {
+    		if(board[x + 1][y] == null) {
+    			current.setLocation(new Point(x + 1, y));
+    			board[x + 1][y] = current;
+    		}
+    		else 
+    			throw new UnallowedMovementException("Champion cannot move up, the cell is occupied!");
+		}
+		else if (d == Direction.DOWN) {
+    		if(board[x - 1][y] == null) {
+    			current.setLocation(new Point(x - 1, y));
+    			board[x - 1][y] = current;
+    		}
+    		else 
+    			throw new UnallowedMovementException("Champion cannot move down, the cell is occupied!");
+		}
+		if (d == Direction.RIGHT) {
+    		if(board[x][y + 1] == null) {
+    			current.setLocation(new Point(x, y + 1));
+    			board[x][y + 1] = current;
+    		}
+    		else 
+    			throw new UnallowedMovementException("Champion cannot move right, the cell is occupied!");
+		}
+		if (d == Direction.LEFT) {
+    		if(board[x][y - 1] == null) {
+    			current.setLocation(new Point(x, y - 1));
+    			board[x][y - 1] = current;
+    		}
+    		else 
+    			throw new UnallowedMovementException("Champion cannot move left, the cell is occupied!");
+		}
+		
+		current.setCurrentActionPoints(current.getCurrentActionPoints() - 1);
 	}
 	
 	private void prepareChampionTurns() {
