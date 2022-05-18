@@ -42,14 +42,16 @@ public class Game {
 
 	public Game(Player first, Player second) {
 		firstPlayer = first;
-
 		secondPlayer = second;
+		
 		availableChampions = new ArrayList<Champion>();
 		availableAbilities = new ArrayList<Ability>();
+		
 		board = new Object[BOARDWIDTH][BOARDHEIGHT];
 		turnOrder = new PriorityQueue(6);
 		placeChampions();
 		placeCovers();
+		prepareChampionTurns();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
@@ -242,5 +244,33 @@ public class Game {
 
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
+	}
+
+	private void prepareChampionTurns() {
+		
+	}
+
+	private boolean team1(Champion c) {
+		for (Champion o : this.getFirstPlayer().getTeam()) {
+			if (c == o)
+				return true;
+		}
+		return false;
+	}
+	
+	private boolean team2(Champion c) {
+		for (Champion o : this.getSecondPlayer().getTeam()) {
+			if (c.equals(o))
+				return true;
+		}
+		return false;
+	}
+	
+	private boolean sameTeam(Champion c, Champion o) {
+		if (team1(c) && team1(o))
+			return true;
+		if (team2(c) && team2(o))
+			return true;
+		return false;
 	}
 }
