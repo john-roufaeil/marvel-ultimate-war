@@ -3,6 +3,7 @@ package model.abilities;
 import java.util.ArrayList;
 
 import model.effects.Effect;
+import model.world.Champion;
 import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
@@ -20,6 +21,10 @@ public class CrowdControlAbility extends Ability {
 	}
 
 	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
-		
+		for (Damageable d : targets) {
+			Effect appliedEffect = (Effect) (this.effect).clone();
+			appliedEffect.apply((Champion) d);
+			((Champion) d).getAppliedEffects().add(appliedEffect);
+		}
 	}
 }

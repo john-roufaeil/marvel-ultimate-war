@@ -19,6 +19,8 @@ public class DamagingAbility extends Ability {
 	}
 	
 	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
-		
+		for(Damageable d : targets) {
+			d.setCurrentHP(d.getCurrentHP()- this.damageAmount);
+		}
 	}
 }
