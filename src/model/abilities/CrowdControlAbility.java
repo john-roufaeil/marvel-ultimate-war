@@ -1,6 +1,9 @@
 package model.abilities;
 
+import java.util.ArrayList;
+
 import model.effects.Effect;
+import model.world.Damageable;
 
 public class CrowdControlAbility extends Ability {
 	private Effect effect;
@@ -16,4 +19,7 @@ public class CrowdControlAbility extends Ability {
 		return effect;
 	}
 
+	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
+		
+	}
 }
