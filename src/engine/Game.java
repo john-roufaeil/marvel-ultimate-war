@@ -246,6 +246,28 @@ public class Game {
 		return BOARDHEIGHT;
 	}
 
+	public Champion getCurrentChampion() {
+		return (Champion) turnOrder.peekMin();
+	}
+	
+	public Player checkGameOver() {
+		boolean alldead1 = true;
+		boolean alldead2 = true;
+		for (Champion c : getFirstPlayer().getTeam()) {
+			if (c.getCurrentHP() != 0)
+				alldead1 = false;
+		}
+		for (Champion c : getSecondPlayer().getTeam()) {
+			if (c.getCurrentHP() != 0)
+				alldead2 = false;
+		}
+		if (getFirstPlayer().getTeam().isEmpty() || alldead1)
+			return secondPlayer;
+		if (getSecondPlayer().getTeam().isEmpty() || alldead2) 
+			return firstPlayer;
+		return null;
+	}
+	
 	private void prepareChampionTurns() {
 		
 	}
@@ -260,7 +282,7 @@ public class Game {
 	
 	private boolean team2(Champion c) {
 		for (Champion o : this.getSecondPlayer().getTeam()) {
-			if (c.equals(o))
+			if (c == o)
 				return true;
 		}
 		return false;
