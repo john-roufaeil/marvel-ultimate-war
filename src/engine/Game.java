@@ -661,6 +661,8 @@ public class Game {
 				y++;
 			else if (d == Direction.LEFT && y > 0) 
 				y--;
+			else
+				break;
 			
 			if (board[x][y] == null)
 				continue;
@@ -1060,12 +1062,18 @@ public class Game {
 				else if (board[i][j] instanceof Cover) {
 					System.out.print("Cov" + ((Cover)board[i][j]).getCurrentHP());
 				}
-				else if (board[i][j] instanceof Hero)
-					System.out.print("He" + ((Hero)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof Villain)
-					System.out.print("Vi" + ((Villain)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof AntiHero)
-					System.out.print("Ah" + ((AntiHero)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof Hero && team1((Hero)board[i][j]))
+					System.out.print("1H" + ((Hero)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof Hero && team2((Hero)board[i][j]))
+					System.out.print("2H" + ((Hero)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof Villain && team1((Villain)board[i][j]))
+					System.out.print("1V" + ((Villain)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof Villain && team2((Villain)board[i][j]))
+					System.out.print("2V" + ((Villain)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof AntiHero && team1((AntiHero)board[i][j]))
+					System.out.print("1A" + ((AntiHero)board[i][j]).getCurrentHP());
+				else if (board[i][j] instanceof AntiHero && team2((AntiHero)board[i][j]))
+					System.out.print("2A" + ((AntiHero)board[i][j]).getCurrentHP());
 				
 				System.out.print(" ");
 			}

@@ -2,6 +2,8 @@ import java.io.IOException;
 
 import engine.*;
 import model.*;
+import model.abilities.Ability;
+import model.abilities.DamagingAbility;
 import model.world.Champion;
 import model.world.Direction;
 import exceptions.*;
@@ -16,7 +18,7 @@ public class Main {
 		Game.loadAbilities("Abilities.csv");
 		Game.loadChampions("Champions.csv");
 		
-		g.getFirstPlayer().getTeam().add(Game.getAvailableChampions().get(8));
+		g.getFirstPlayer().getTeam().add(Game.getAvailableChampions().get(0));
 		g.getFirstPlayer().getTeam().add(Game.getAvailableChampions().get(9));
 		g.getFirstPlayer().getTeam().add(Game.getAvailableChampions().get(7));
 		g.getSecondPlayer().getTeam().add(Game.getAvailableChampions().get(13));
@@ -28,7 +30,15 @@ public class Main {
 			g.getTurnOrder().insert(c);
 		for (Champion c: g.getSecondPlayer().getTeam())
 			g.getTurnOrder().insert(c);
-		g.attack(Direction.LEFT);
+		g.move(Direction.DOWN);
+		g.move(Direction.DOWN);
+		g.move(Direction.DOWN);
+		Ability a = Game.getAvailableAbilities().get(35);
+		System.out.println(g.getFirstPlayer().getTeam().get(2).getCurrentHP());
+		System.out.println(a.getName());
+		System.out.println(((DamagingAbility)a).getDamageAmount());
+		g.castAbility(a, Direction.DOWN);
+//		System.out.println(g.getFirstPlayer().getTeam().get(2).getCurrentHP());
 		g.printBoard();
 
 	}
