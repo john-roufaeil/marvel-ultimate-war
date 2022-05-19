@@ -34,11 +34,24 @@ public class Main {
 		g.move(Direction.DOWN);
 		g.move(Direction.DOWN);
 		Ability a = Game.getAvailableAbilities().get(35);
-		System.out.println(g.getFirstPlayer().getTeam().get(2).getCurrentHP());
-		System.out.println(a.getName());
-		System.out.println(((DamagingAbility)a).getDamageAmount());
 		g.castAbility(a, Direction.DOWN);
-//		System.out.println(g.getFirstPlayer().getTeam().get(2).getCurrentHP());
+		g.move(Direction.LEFT);
+		g.endTurn();
+		g.move(Direction.UP);
+		Ability a2 = Game.getAvailableAbilities().get(2);
+		g.castAbility(a2);
+		Ability a3 = Game.getAvailableAbilities().get(1);
+		g.castAbility(a3);
+		g.endTurn();
+//		g.move(Direction.LEFT);
+		Ability a4 = Game.getAvailableAbilities().get(28);
+		g.printBoard();
+
+		g.castAbility(a4, 1, 2);
+		
+		System.out.println(g.getCurrentChampion().getCurrentActionPoints());
+
+		System.out.println(g.getFirstPlayer().getTeam().get(2).getCurrentHP());
 		g.printBoard();
 
 	}

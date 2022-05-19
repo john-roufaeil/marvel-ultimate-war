@@ -63,7 +63,6 @@ public class Game {
 		turnOrder = new PriorityQueue(6);
 		placeChampions();
 		placeCovers();
-		prepareChampionTurns();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
@@ -261,6 +260,8 @@ public class Game {
 	
 	
 	public Champion getCurrentChampion() {
+		if (turnOrder.isEmpty()) 
+			prepareChampionTurns();
 		return (Champion) turnOrder.peekMin();
 	}
 	
