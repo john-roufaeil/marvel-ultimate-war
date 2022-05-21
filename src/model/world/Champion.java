@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-public abstract class Champion implements Comparable, Damageable {
+@SuppressWarnings("rawtypes")
+public abstract class Champion implements Damageable,Comparable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -22,6 +23,7 @@ public abstract class Champion implements Comparable, Damageable {
 	private Condition condition;
 	private Point location;
 	
+
 	public Champion(String name, int maxHP, int mana, int actions, int speed, int attackRange, int attackDamage) {
 		this.name = name;
 		this.maxHP = maxHP;
@@ -47,8 +49,9 @@ public abstract class Champion implements Comparable, Damageable {
 
 	public void setCurrentHP(int hp) {
 
-		if (hp < 0) {
+		if (hp <= 0) {
 			currentHP = 0;
+			condition=Condition.KNOCKEDOUT;
 			
 		} 
 		else if (hp > maxHP)
@@ -57,6 +60,7 @@ public abstract class Champion implements Comparable, Damageable {
 			currentHP = hp;
 
 	}
+
 	
 	public int getCurrentHP() {
 
@@ -139,11 +143,13 @@ public abstract class Champion implements Comparable, Damageable {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
-	public int compareTo(Object o) {
+	public int compareTo(Object o)
+	{
 		Champion c = (Champion)o;
-		return (this.speed < c.speed?1: this.speed > c.speed?-1:this.name.compareTo(c.name));
+		if(speed==c.speed)
+			return name.compareTo(c.name);
+		return -1 * (speed-c.speed);
 	}
 	
-	public abstract void useLeaderAbility(ArrayList<Champion> targets);
-	
+public abstract void useLeaderAbility(ArrayList<Champion> targets);
 }

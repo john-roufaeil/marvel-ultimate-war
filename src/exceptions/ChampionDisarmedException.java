@@ -1,5 +1,6 @@
 package exceptions;
 
+@SuppressWarnings("serial")
 public class ChampionDisarmedException extends GameActionException {
 
 	public ChampionDisarmedException() {
@@ -9,4 +10,5 @@ public class ChampionDisarmedException extends GameActionException {
 	public ChampionDisarmedException(String s) {
 		super(s);
 	}
+
 }

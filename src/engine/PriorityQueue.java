@@ -2,6 +2,7 @@ package engine;
 
 public class PriorityQueue {
 
+	@SuppressWarnings("rawtypes")
 	private Comparable[] elements;
 	private int nItems;
 	private int maxSize;
@@ -12,6 +13,7 @@ public class PriorityQueue {
 		nItems = 0;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void insert(Comparable item) {
 
 		int i;
@@ -22,6 +24,7 @@ public class PriorityQueue {
 		nItems++;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Comparable remove() {
 		nItems--;
 		return elements[nItems];
@@ -35,6 +38,7 @@ public class PriorityQueue {
 		return (nItems == maxSize);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Comparable peekMin() {
 		return elements[nItems - 1];
 	}

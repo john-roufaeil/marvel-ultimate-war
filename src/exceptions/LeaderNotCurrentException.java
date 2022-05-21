@@ -1,5 +1,6 @@
 package exceptions;
 
+@SuppressWarnings("serial")
 public class LeaderNotCurrentException extends GameActionException {
 
 	public LeaderNotCurrentException() {
@@ -8,5 +9,7 @@ public class LeaderNotCurrentException extends GameActionException {
 
 	public LeaderNotCurrentException(String s) {
 		super(s);
+
 	}
+
 }

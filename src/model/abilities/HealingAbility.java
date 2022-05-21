@@ -20,9 +20,14 @@ public  class HealingAbility extends Ability {
 		this.healAmount = healAmount;
 	}
 
-	public void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException {
-		for(Damageable d : targets) {
-			d.setCurrentHP(d.getCurrentHP() + this.healAmount);
-		}	
+	
+	@Override
+	public void execute(ArrayList<Damageable> targets) {
+		for (Damageable d : targets)
+
+			d.setCurrentHP(d.getCurrentHP() + healAmount);
+
 	}
+	
+
 }
