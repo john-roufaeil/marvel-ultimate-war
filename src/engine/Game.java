@@ -210,8 +210,8 @@ public class Game {
 		}
 		i = 1;
 		for (Champion c : secondPlayer.getTeam()) {
-			board[BOARDHEIGHT - 1][i] = c;
-			c.setLocation(new Point(BOARDHEIGHT - 1, i));
+			board[4][i] = c;
+			c.setLocation(new Point(4, i));
 			i++;
 		}
 	
@@ -467,14 +467,16 @@ public class Game {
 				 spot.setCurrentHP(spot.getCurrentHP() - (int)(damage * 0.5));
 			 }
 			
-			if(spot.getCurrentHP()==0) {
+//			if(spot.getCurrentHP()==0) {
 //				spot.setCondition(Condition.KNOCKEDOUT);
 //				Point p = spot.getLocation();
 //				board[p.x][p.y] = null; 
-				removeFromTurnOrder((Champion) spot);
-			}
+//				removeFromTurnOrder((Champion) spot);
+//			}
 		}
-		killDead();
+		ArrayList<Damageable> targets = new ArrayList<Damageable>();
+		targets.add(target);
+		killDead(targets);
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
 	}
 	
@@ -618,14 +620,14 @@ public class Game {
 		
 		// execute and check for dead
 		a.execute(targets);
-		killDead();
+		killDead(targets);
 		
 		// end method
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
 	}
-	
+	 
 	public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException, CloneNotSupportedException {
 		Champion current = getCurrentChampion();
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
@@ -702,7 +704,7 @@ public class Game {
 				}
 		
 		a.execute(targets);
-		killDead();
+		killDead(targets);
 		
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
@@ -773,7 +775,7 @@ public class Game {
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		targets.add(target);
 		a.execute(targets);
-		killDead();
+		killDead(targets);
 		
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
@@ -786,16 +788,14 @@ public class Game {
 		Champion team2_leader = this.secondPlayer.getLeader();
 		
 		if (team1(c)) {
-			if(!c.equals(team1_leader)) {
+			if(!c.equals(team1_leader))
 				throw new LeaderNotCurrentException("The current champion is not the leader.");
-			}
-			
-			if(this.firstLeaderAbilityUsed) {
+			if(this.firstLeaderAbilityUsed)
 				throw new LeaderAbilityAlreadyUsedException("Leader ability has already been used.");
-			}
 			
 			this.firstLeaderAbilityUsed = true;
 			ArrayList<Champion> targets = new ArrayList<Champion>();
+			
 			if(c instanceof Hero) {
 				for(Champion champion : this.firstPlayer.getTeam()) {
 					if(champion.getCondition() != Condition.KNOCKEDOUT)
@@ -831,16 +831,14 @@ public class Game {
 		}
 
 		else if (team2(c)) {
-			if(!c.equals(team2_leader)) {
+			if(!c.equals(team2_leader))
 				throw new LeaderNotCurrentException("The current champion is not the leader.");
-			}
-			
-			if(this.secondLeaderAbilityUsed) {
+			if(this.secondLeaderAbilityUsed)
 				throw new LeaderAbilityAlreadyUsedException("Leader ability has already been used.");
-			}
 			
 			this.secondLeaderAbilityUsed = true;
 			ArrayList<Champion> targets = new ArrayList<Champion>();
+			
 			if(c instanceof Hero) {
 				for(Champion champion : this.secondPlayer.getTeam()) {
 					if(champion.getCondition() != Condition.KNOCKEDOUT)
@@ -967,46 +965,6 @@ public class Game {
 		return false;
 	}
 
-	private void killDead(ArrayList<Damageable> list) {
-		for (Damageable d : list) {
-			if (d instanceof Cover) {
-				if (((Cover)d).getCurrentHP() == 0)
-					board[((Cover)d).getLocation().x][((Cover)d).getLocation().y] = null;
-			}
-			else if (d instanceof Champion) {
-				Champion spot = (Champion) d;
-				if (spot.getCurrentHP() == 0 || spot.getCondition() == Condition.KNOCKEDOUT) {
-					spot.setCurrentHP(0);
-					spot.setCondition(Condition.KNOCKEDOUT);
-					board[spot.getLocation().x][spot.getLocation().y] = null;
-					if (team1(spot)) 
-						getFirstPlayer().getTeam().remove(spot);
-					else if (team2(spot))
-						getSecondPlayer().getTeam().remove(spot);
-				}
-			}
-		}
-	}
-	
-	private void killDead(Damageable d)  {
-		if (d instanceof Cover) {
-			if (((Cover)d).getCurrentHP() == 0)
-				board[((Cover)d).getLocation().x][((Cover)d).getLocation().y] = null;
-		}
-		else if (d instanceof Champion) {
-			Champion spot = (Champion) d;
-			if (spot.getCurrentHP() == 0 || spot.getCondition() == Condition.KNOCKEDOUT) {
-				spot.setCurrentHP(0);
-				spot.setCondition(Condition.KNOCKEDOUT);
-				board[spot.getLocation().x][spot.getLocation().y] = null;
-				if (team1(spot)) 
-					getFirstPlayer().getTeam().remove(spot);
-				else if (team2(spot))
-					getSecondPlayer().getTeam().remove(spot);
-			}
-		}
-	}
-	
 	private void killDead() {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -1033,6 +991,30 @@ public class Game {
 		}
 	}
 
+	private void killDead(ArrayList<Damageable> targets) {
+		for (Damageable d : targets) {
+			if (d instanceof Cover) {
+				if (((Cover) d).getCurrentHP() == 0) {
+					Point p = ((Cover) d).getLocation();
+					board[p.x][p.y] = null; 
+				}
+			}
+			else if (d instanceof Champion) {
+				Point p = ((Champion)d).getLocation();
+				if (((Champion)d).getCurrentHP() == 0 || ((Champion)d).getCondition() == Condition.KNOCKEDOUT) {
+					((Champion)d).setCurrentHP(0);
+					((Champion)d).setCondition(Condition.KNOCKEDOUT);
+					board[p.x][p.y] = null;
+					if (team1(((Champion)d))) 
+						getFirstPlayer().getTeam().remove(((Champion)d));
+					else if (team2(((Champion)d)))
+						getSecondPlayer().getTeam().remove(((Champion)d));
+					removeFromTurnOrder((Champion) d);
+				}
+			}
+		}
+	}
+	
 	public void checkLeaderTargets(ArrayList<Champion> targets) {
 		for(Champion c : targets) {
 			if((c).getCondition() == Condition.KNOCKEDOUT) {
@@ -1046,17 +1028,17 @@ public class Game {
 	
 	private void removeFromTurnOrder(Champion c) {
 		PriorityQueue q = new PriorityQueue(this.turnOrder.size());
-		while(((Champion)this.turnOrder.peekMin()).compareTo(c)!=0) {
+		while(!turnOrder.isEmpty() && !((Champion)turnOrder.peekMin()).equals(c)) {
 			q.insert(this.turnOrder.remove());
 		}
-		
-		this.turnOrder.remove();
+		if (!turnOrder.isEmpty())
+			this.turnOrder.remove();
 		while(!q.isEmpty())
 			this.turnOrder.insert(q.remove());
 	}
 	
 	public void printBoard() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 4; i > -1; i--) {
 			for (int j = 0; j < 5; j++) {
 				if (board[i][j] == null)
 					System.out.print("null00");
