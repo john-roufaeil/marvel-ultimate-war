@@ -60,5 +60,4 @@ public abstract class Ability {
 	}
 	
 	public abstract void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
-
 }

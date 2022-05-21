@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
-import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.LeaderAbilityAlreadyUsedException;
 import exceptions.LeaderNotCurrentException;
@@ -256,8 +255,6 @@ public class Game {
 	public static int getBoardheight() {
 		return BOARDHEIGHT;
 	}
-
-	
 	
 	public Champion getCurrentChampion() {
 		if (turnOrder.isEmpty()) 
@@ -340,6 +337,7 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 1);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void attack(Direction d) throws ChampionDisarmedException, NotEnoughResourcesException, CloneNotSupportedException {
 		Champion current = getCurrentChampion();
 		Damageable target = null;
@@ -480,6 +478,7 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void castAbility(Ability a) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException, CloneNotSupportedException {
 		Champion current = getCurrentChampion();
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
@@ -628,6 +627,7 @@ public class Game {
 		a.setCurrentCooldown(a.getBaseCooldown());
 	}
 	 
+	@SuppressWarnings("unchecked")
 	public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException, CloneNotSupportedException {
 		Champion current = getCurrentChampion();
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
@@ -711,6 +711,7 @@ public class Game {
 		a.setCurrentCooldown(a.getBaseCooldown());
 	}
 
+	@SuppressWarnings("unchecked")
 	public void castAbility(Ability a, int x, int y) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException, CloneNotSupportedException {
 		Champion current = getCurrentChampion();
 		Damageable target = null;
@@ -877,6 +878,7 @@ public class Game {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void endTurn() {
 		turnOrder.remove();
 		if(turnOrder.isEmpty())
@@ -937,9 +939,6 @@ public class Game {
 		}
 		
 	}
-
-	
-	
 	
 	private boolean team1(Champion c) {
 		for (Champion o : this.getFirstPlayer().getTeam()) {
@@ -963,32 +962,6 @@ public class Game {
 		if (team2(c) && team2(o))
 			return true;
 		return false;
-	}
-
-	private void killDead() {
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				if (board[i][j] == null)
-					continue;
-				if (board[i][j] instanceof Cover) {
-					Cover cover = (Cover) board[i][j];
-					if (cover.getCurrentHP() == 0)
-						board[i][j] = null;
-				}
-				if (board[i][j] instanceof Champion) {
-					Champion champion = (Champion) board[i][j];
-					if (champion.getCurrentHP() == 0 || champion.getCondition() == Condition.KNOCKEDOUT) {
-						champion.setCurrentHP(0);
-						champion.setCondition(Condition.KNOCKEDOUT);
-						board[champion.getLocation().x][champion.getLocation().y] = null;
-						if (team1(champion)) 
-							getFirstPlayer().getTeam().remove(champion);
-						else if (team2(champion))
-							getSecondPlayer().getTeam().remove(champion);
-					}
-				}
-			}
-		}
 	}
 
 	private void killDead(ArrayList<Damageable> targets) {
@@ -1037,31 +1010,4 @@ public class Game {
 			this.turnOrder.insert(q.remove());
 	}
 	
-	public void printBoard() {
-		for (int i = 4; i > -1; i--) {
-			for (int j = 0; j < 5; j++) {
-				if (board[i][j] == null)
-					System.out.print("null00");
-				else if (board[i][j] instanceof Cover) {
-					System.out.print("Cov" + ((Cover)board[i][j]).getCurrentHP());
-				}
-				else if (board[i][j] instanceof Hero && team1((Hero)board[i][j]))
-					System.out.print("1H" + ((Hero)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof Hero && team2((Hero)board[i][j]))
-					System.out.print("2H" + ((Hero)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof Villain && team1((Villain)board[i][j]))
-					System.out.print("1V" + ((Villain)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof Villain && team2((Villain)board[i][j]))
-					System.out.print("2V" + ((Villain)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof AntiHero && team1((AntiHero)board[i][j]))
-					System.out.print("1A" + ((AntiHero)board[i][j]).getCurrentHP());
-				else if (board[i][j] instanceof AntiHero && team2((AntiHero)board[i][j]))
-					System.out.print("2A" + ((AntiHero)board[i][j]).getCurrentHP());
-				
-				System.out.print(" ");
-			}
-			System.out.println();
-		}
-		System.out.println("___________________________________");
-	}
 }
