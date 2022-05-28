@@ -25,6 +25,7 @@ public class Shock extends Effect {
 		c.setCurrentActionPoints(c.getCurrentActionPoints()+1);
 		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn()+1);
 		
+		
 	}
 
 }
