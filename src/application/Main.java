@@ -136,6 +136,15 @@ public class Main extends Application {
 
 	    
 		
+		// Show Details
+		VBox msg = new VBox();
+		msg.setPadding(new Insets(10, 10, 10, 10));
+		msg.setAlignment(Pos.CENTER);
+		Label clickMsg = new Label("Click on a champion to show details.");
+		msg.getChildren().add(clickMsg);
+		root2.setCenter(msg);
+		
+		
 	    // Champions Buttons
 		GridPane champsgrid = new GridPane();
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
@@ -148,7 +157,7 @@ public class Main extends Application {
 		for (int i = 1; i <= 15; i++) {
 			ArrayList<Champion> champions = Game.getAvailableChampions();
 			String name = champions.get(i-1).getName();
-			Image ch = new Image("./application/media/12.jpeg");
+			Image ch = new Image("./application/media/" + 1 + ".jpeg");
 			ImageView iv = new ImageView(ch);
 			iv.setFitHeight(50);
 			iv.setFitWidth(50);
@@ -156,6 +165,25 @@ public class Main extends Application {
 			Button btn = new Button();
 			btn.setPrefSize(50, 50);
 		    btn.setGraphic(iv);
+		    btn.setOnAction(e -> {
+		    	VBox details = new VBox();
+		    	details.setPadding(new Insets(10, 10, 10, 10));
+		    	details.setAlignment(Pos.CENTER);
+//		    	Label championType = new Label(champions.get(i).getClass().toString());
+				Label championName = new Label(champions.get(i).getName());
+				Label championMaxHP = new Label(champions.get(i).getMaxHP() + "");
+				Label championMana = new Label(champions.get(i).getMana() + "");
+				Label championActions = new Label(champions.get(i).getMaxActionPointsPerTurn() + "");
+				Label championSpeed = new Label (champions.get(i).getSpeed() + "");
+				Label championRange = new Label (champions.get(i).getAttackRange() + "");
+				Label championDamage = new Label (champions.get(i).getAttackDamage() + "");
+				Label championA1 = new Label (champions.get(i).getAbilities().get(0).getName());
+				Label championA2 = new Label (champions.get(i).getAbilities().get(1).getName());
+				Label championA3 = new Label (champions.get(i).getAbilities().get(2).getName());
+				details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
+						championSpeed, championRange, championDamage,championA1, championA2, championA3);
+				root2.setCenter(details);
+		    });
 		    champsgrid.add(btn, a, b);
 		    a++;
 		    if (a == 5) {
@@ -164,19 +192,27 @@ public class Main extends Application {
 		    }
 		    buttons.add(btn);
 		}
-		
-		
-		
-		// Show Attributes
-		VBox details = new VBox();
-		details.setPadding(new Insets(10, 10, 10, 10));
-		details.setAlignment(Pos.CENTER);
-		Label clickMsg = new Label("Click on a champion to show details.");
-		details.getChildren().add(clickMsg);
-		root2.setCenter(details);
 	}
 	
-	public static void show(String name) {
+	public static void show(Champion champion, VBox details) {
+		if (champion == null) {                                                                                             
+//			champion                                                                                                                                                                                                                                                                                                                                                             b
+			Label clickMsg = new Label("Click on a champion to show details.");
+			details.getChildren().add(clickMsg);
+			return;
+		}
+		
+		Label championType = new Label(champion.getClass().toString());
+		Label championName = new Label(champion.getName());
+		Label championMaxHP = new Label(champion.getMaxHP() + "");
+		Label championMana = new Label(champion.getMana() + "");
+		Label championActions = new Label(champion.getMaxActionPointsPerTurn() + "");
+		Label championSpeed = new Label (champion.getSpeed() + "");
+		Label championRange = new Label (champion.getAttackRange() + "");
+		Label championDamage = new Label (champion.getAttackDamage() + "");
+		Label championA1 = new Label (champion.getAbilities().get(0).getName());
+		Label championA2 = new Label (champion.getAbilities().get(1).getName());
+		Label championA3 = new Label (champion.getAbilities().get(2).getName());
 		
 	}
 	
