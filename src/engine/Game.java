@@ -50,7 +50,7 @@ public class Game {
 	private final static int BOARDWIDTH = 5;
 	private final static int BOARDHEIGHT = 5;
 
-	public Game(Player first, Player second) {
+	public Game(Player first, Player second) throws IOException {
 		firstPlayer = first;
 
 		secondPlayer = second;
@@ -58,6 +58,8 @@ public class Game {
 		availableAbilities = new ArrayList<Ability>();
 		board = new Object[BOARDWIDTH][BOARDHEIGHT];
 		turnOrder = new PriorityQueue(6);
+		loadChampions("Champions.csv");
+		loadAbilities("Abilities.csv");
 		placeChampions();
 		placeCovers();
 		prepareChampionTurns();

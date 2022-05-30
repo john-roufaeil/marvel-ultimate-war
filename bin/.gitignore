@@ -1,8 +1,9 @@
-/application/
 /engine/
 /exceptions/
+/icon.png
+/images.jpeg
 /model/
 /tests/
-/icon.png
-/download.jpeg
-/images.jpeg
+/application/
+/1.jpeg
+/empty.fxml
