@@ -42,6 +42,8 @@ public class Main extends Application {
 	static HashMap<Champion,Boolean> map;
 	static ArrayList<Button> chooseLeaderButtons;
 	static boolean full = false;
+	static int idx1 = 0;
+	static int idx2 = 0;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -172,13 +174,13 @@ public class Main extends Application {
 		for (int i = 1; i <= 15; i++) {
 //			ArrayList<Champion> champions = Game.getAvailableChampions();
 			Champion champion = champions.get(i-1);
-			Image ch = new Image("./application/media/" + 1 + ".jpeg");
+			Image ch = new Image("./application/media/" + i + ".jpeg");
 			ImageView iv = new ImageView(ch);
 			iv.setFitHeight(50);
 			iv.setFitWidth(50);
 			images.add(iv);
 			Button btn = new Button();
-			btn.setPrefSize(50, 50);
+			btn.setPrefSize(80, 80);
 		    btn.setGraphic(iv);
 		    btn.setOnAction((e) -> {
 		    	show(champion, root2, chosenChampions,ch,btn);
@@ -285,22 +287,28 @@ public class Main extends Application {
 				details.getChildren().clear();
 				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
 				details.getChildren().add(chooseLeaderLabel1);
+				
 				for (int i = 1; i <= 3; i++) {
+					idx1 = i-1;
 					Button button = new Button();
 					button.setOnAction(event -> {
-						chooseLeader();
+						chooseLeader(player1, player1.getTeam().get(idx1), details);
 					});
 					button.setPrefSize(50, 50);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
 				    button.setGraphic(img);
 					details.getChildren().add(button);
 				}
+				
 				Label chooseLeaderLabel2 = new Label("Choose a leader for the second team");
-				details.getChildren().add(chooseLeaderLabel2);
+				details.getChildren().add(chooseLeaderLabel2); 
+			
+				
 				for (int i = 5; i <= 7; i++) {
+					idx2 = i-5;
 					Button button = new Button();
 					button.setOnAction(event -> {
-						chooseLeader();
+						chooseLeader(player2,player2.getTeam().get(idx2), details);
 					});
 					button.setPrefSize(50, 50);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
@@ -321,8 +329,29 @@ public class Main extends Application {
 		root2.setCenter(details);
 	}
 	
-	public static void chooseLeader() {
+	public static void chooseLeader(Player player, Champion c, VBox details) {
 		
+		player.setLeader(c);
+		if (player == player1) {
+			details.getChildren().get(1).setDisable(true);
+			details.getChildren().get(2).setDisable(true);
+			details.getChildren().get(3).setDisable(true);
+		}
+
+		else if (player == player2) {
+			details.getChildren().get(5).setDisable(true);
+			details.getChildren().get(6).setDisable(true);
+			details.getChildren().get(7).setDisable(true);
+			
+			
+		}
+
+		
+		if(player1.getLeader()!=null && player2.getLeader()!=null) {
+			
+			Button play = new Button("Play");
+			details.getChildren().add(play);
+		}
 	}
 	
 	public static void main(String[] args) {
