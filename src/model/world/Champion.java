@@ -18,8 +18,8 @@ public abstract class Champion implements Damageable,Comparable {
 	private int attackRange;
 	private int attackDamage;
 	private int speed;
-	private ArrayList<Ability> abilities;
-	private ArrayList<Effect> appliedEffects;
+	private ArrayList<Ability> abilities = new ArrayList<Ability>();;
+	private ArrayList<Effect> appliedEffects = new ArrayList<Effect>();;
 	private Condition condition;
 	private Point location;
 	
@@ -34,8 +34,8 @@ public abstract class Champion implements Damageable,Comparable {
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
 		this.condition = Condition.ACTIVE;
-		this.abilities = new ArrayList<Ability>();
-		this.appliedEffects = new ArrayList<Effect>();
+//		this.abilities = new ArrayList<Ability>();
+//		this.appliedEffects = new ArrayList<Effect>();
 		this.currentActionPoints=maxActionPointsPerTurn;
 	}
 

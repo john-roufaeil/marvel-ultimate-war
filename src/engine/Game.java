@@ -58,15 +58,15 @@ public class Game {
 		availableAbilities = new ArrayList<Ability>();
 		board = new Object[BOARDWIDTH][BOARDHEIGHT];
 		turnOrder = new PriorityQueue(6);
-		loadChampions("Champions.csv");
 		loadAbilities("Abilities.csv");
+		loadChampions("Champions.csv");
 		placeChampions();
 		placeCovers();
 		prepareChampionTurns();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		BufferedReader br = new BufferedReader(new FileReader("Abilities.csv"));
 		String line = br.readLine();
 		while (line != null) {
 			String[] content = line.split(",");
@@ -146,7 +146,7 @@ public class Game {
 	}
 
 	public static void loadChampions(String filePath) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		BufferedReader br = new BufferedReader(new FileReader("Champions.csv"));
 		String line = br.readLine();
 		while (line != null) {
 			String[] content = line.split(",");

@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import engine.Game;
 import engine.Player;
@@ -35,12 +37,17 @@ public class Main extends Application {
 	static Game game;
 	static Player player1, player2;
 	static Scene homepage, begin, gameview;
+	static Champion leader1;
+	static Champion leader2;
+	static HashMap<Champion,Boolean> map;
+	static ArrayList<Button> chooseLeaderButtons;
+	static boolean full = false;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
-		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+//		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("icon.png");
 		primaryStage.getIcons().add(icon);
 		
@@ -77,6 +84,7 @@ public class Main extends Application {
 			player2 = new Player(name2TextField.getText());
 			try {
 				game = new Game(player1, player2);
+				
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -97,10 +105,10 @@ public class Main extends Application {
 		primaryStage.setFullScreen(true);
 
 		// Chosen Bar
-		HBox chosen = new HBox();
-		chosen.setAlignment(Pos.CENTER);
-		chosen.setSpacing(10);
-		chosen.setPadding(new Insets(15, 15, 15, 15));
+		HBox chosenChampions = new HBox();
+		chosenChampions.setAlignment(Pos.CENTER);
+		chosenChampions.setSpacing(10);
+		chosenChampions.setPadding(new Insets(15, 15, 15, 15));
 		Label l2_1 = new Label(player1.getName());
 		Image chosen1_1 = new Image("icon.png");
 		ImageView chosen1_1v = new ImageView(chosen1_1);
@@ -131,8 +139,8 @@ public class Main extends Application {
 		ImageView chosen2_3v = new ImageView(chosen2_3);
 		chosen2_3v.setFitWidth(50);
 		chosen2_3v.setFitHeight(50);
-		chosen.getChildren().addAll(l2_1, chosen1_1v, chosen1_2v, chosen1_3v, region, chosen2_1v, chosen2_2v, chosen2_3v, l2_2);
-		root2.setTop(chosen);
+		chosenChampions.getChildren().addAll(l2_1, chosen1_1v, chosen1_2v, chosen1_3v, region, chosen2_1v, chosen2_2v, chosen2_3v, l2_2);
+		root2.setTop(chosenChampions);
 
 	    
 		
@@ -154,8 +162,15 @@ public class Main extends Application {
 		ArrayList<Button> buttons = new ArrayList<>();
 		ArrayList<ImageView> images = new ArrayList<>();
 		int a = 0; int b = 0;
+		
+		ArrayList<Champion> champions = Game.getAvailableChampions();
+		map = new HashMap<Champion,Boolean>();
+		for(Champion c : champions) {
+			map.put(c, false);
+		}
+		
 		for (int i = 1; i <= 15; i++) {
-			ArrayList<Champion> champions = Game.getAvailableChampions();
+//			ArrayList<Champion> champions = Game.getAvailableChampions();
 			Champion champion = champions.get(i-1);
 			Image ch = new Image("./application/media/" + 1 + ".jpeg");
 			ImageView iv = new ImageView(ch);
@@ -166,8 +181,11 @@ public class Main extends Application {
 			btn.setPrefSize(50, 50);
 		    btn.setGraphic(iv);
 		    btn.setOnAction((e) -> {
-		    	show(champion, root2);
+		    	show(champion, root2, chosenChampions,ch,btn);
 		    });
+		    
+		    
+		    
 		    champsgrid.add(btn, a, b);
 		    a++;
 		    if (a == 5) {
@@ -176,13 +194,22 @@ public class Main extends Application {
 		    }
 		    buttons.add(btn);
 		}
+		
+		
+		
+	
+//		while ((player1.getTeam().size() == 3 && player2.getTeam().size() == 3)) {
+//			System.out.println("DONE");
+//			return;
+//		}
+		
+		
 	}
 	
-	public static void show(Champion champion, BorderPane root2) {
+	public static void show(Champion champion, BorderPane root2, HBox chosenChampions,Image ch,Button btn) {
 		VBox details = new VBox();
     	details.setPadding(new Insets(10, 10, 10, 10));
     	details.setAlignment(Pos.CENTER);
-    	System.out.println(champion.getClass().toString());
     	String type = "";
     	if (champion.getClass().toString().equals("class model.world.AntiHero"))
     		type = "AntiHero";
@@ -198,30 +225,103 @@ public class Main extends Application {
 		Label championSpeed = new Label ("Champion's Speed: " + champion.getSpeed() + "");
 		Label championRange = new Label ("Champion's Attack Range: " + champion.getAttackRange() + "");
 		Label championDamage = new Label ("Champion's Attack Damage: " + champion.getAttackDamage() + "");
-//		Label championA1 = new Label (champion.getAbilities().get(0).getName());
-//		Label championA2 = new Label (champion.getAbilities().get(1).getName());
-//		Label championA3 = new Label (champion.getAbilities().get(2).getName());
-		details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
-				championSpeed, championRange, championDamage);//,championA1, championA2, championA3);
+		Label championA1 = new Label (champion.getAbilities().get(0).getName());
+		Label championA2 = new Label (champion.getAbilities().get(1).getName());
+		Label championA3 = new Label (champion.getAbilities().get(2).getName());
+		Button choose = new Button("Confirm Champion");
+		
+		boolean chosen = map.get(champion);
+		if(chosen) choose.setDisable(true);
+		
+		choose.setOnAction(e -> {
+			if(player1.getTeam().size()<3) {
+				player1.getTeam().add(champion);
+				if(player1.getTeam().size()==1) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(1));
+					img.setImage(ch);
+				}
+				
+				else if(player1.getTeam().size()==2) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(2));
+					img.setImage(ch);
+				}
+				
+				else if(player1.getTeam().size()==3) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(3));
+					img.setImage(ch);					
+				}
+			}
+			
+			else {
+				player2.getTeam().add(champion);
+				if(player2.getTeam().size()==1) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(5));
+					img.setImage(ch);
+				}
+				
+				else if(player2.getTeam().size()==2) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(6));
+					img.setImage(ch);
+				}
+				
+				else if(player2.getTeam().size()==3) {
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(7));
+					img.setImage(ch);					
+				}
+				
+				
+			}
+			choose.setDisable(true);
+						
+			
+			for(Map.Entry<Champion,Boolean> m : map.entrySet()) {
+				if(m.getKey() == champion) {
+					map.put(m.getKey(),true);
+				}
+			}
+
+			if (player1.getTeam().size() + player2.getTeam().size() == 6) {
+				full = true;
+				details.getChildren().clear();
+				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
+				details.getChildren().add(chooseLeaderLabel1);
+				for (int i = 1; i <= 3; i++) {
+					Button button = new Button();
+					button.setOnAction(event -> {
+						chooseLeader();
+					});
+					button.setPrefSize(50, 50);
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
+				    button.setGraphic(img);
+					details.getChildren().add(button);
+				}
+				Label chooseLeaderLabel2 = new Label("Choose a leader for the second team");
+				details.getChildren().add(chooseLeaderLabel2);
+				for (int i = 5; i <= 7; i++) {
+					Button button = new Button();
+					button.setOnAction(event -> {
+						chooseLeader();
+					});
+					button.setPrefSize(50, 50);
+					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
+				    button.setGraphic(img);
+					details.getChildren().add(button);
+				}
+			    chosenChampions.getChildren().clear();
+
+			}
+		});
+		
+		if (!full)
+				details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
+				championSpeed, championRange, championDamage,championA1,championA2,championA3, choose);
+		
+		
+		
 		root2.setCenter(details);
-//		if (champion == null) {                                                                                             
-////			champion                                                                                                                                                                                                                                                                                                                                                             b
-//			Label clickMsg = new Label("Click on a champion to show details.");
-//			details.getChildren().add(clickMsg);
-//			return;
-//		}
-//		
-//		Label championType = new Label(champion.getClass().toString());
-//		Label championName = new Label(champion.getName());
-//		Label championMaxHP = new Label(champion.getMaxHP() + "");
-//		Label championMana = new Label(champion.getMana() + "");
-//		Label championActions = new Label(champion.getMaxActionPointsPerTurn() + "");
-//		Label championSpeed = new Label (champion.getSpeed() + "");
-//		Label championRange = new Label (champion.getAttackRange() + "");
-//		Label championDamage = new Label (champion.getAttackDamage() + "");
-//		Label championA1 = new Label (champion.getAbilities().get(0).getName());
-//		Label championA2 = new Label (champion.getAbilities().get(1).getName());
-//		Label championA3 = new Label (champion.getAbilities().get(2).getName());
+	}
+	
+	public static void chooseLeader() {
 		
 	}
 	
