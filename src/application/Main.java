@@ -403,8 +403,24 @@ public class Main extends Application {
 		gameStatus.getChildren().add(player2Name);
 		gameStatus.setPadding(new Insets(10,10,10,10));
 		gameStatus.setSpacing(10);
-		
 		gameStatus.setAlignment(Pos.CENTER);
+		
+		
+		
+		
+		
+		// Turn Order Status Bar
+		Label turnLabel = new Label("Next in Turn: ");
+		turnOrderStatus.getChildren().add(turnLabel);
+		ArrayList<Champion> championsInTurn = new ArrayList<>();
+		while (!game.getTurnOrder().isEmpty()) {
+			championsInTurn.add((Champion)(game.getTurnOrder().remove()));
+		}
+		for (int i = 0; i < championsInTurn.size(); i++) {
+			game.getTurnOrder().insert(championsInTurn.get(i));
+//			Image
+//			turnOrderStatus.getChildren().add();
+		}
 	}
 	
 	public static void main(String[] args) {
