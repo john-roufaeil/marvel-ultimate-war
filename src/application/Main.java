@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
@@ -44,18 +45,18 @@ public class Main extends Application {
 	static boolean full = false;
 	static int idx1 = 0;
 	static int idx2 = 0;
+//	static Stage primaryStage;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
-//		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("icon.png");
 		primaryStage.getIcons().add(icon);
 		
 		scene1(primaryStage);
 		
-		primaryStage.setScene(homepage);
 		primaryStage.show();
 	}
 	
@@ -88,7 +89,6 @@ public class Main extends Application {
 				game = new Game(player1, player2);
 				
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			scene2(primaryStage);
@@ -97,6 +97,8 @@ public class Main extends Application {
 		btn.setAlignment(Pos.CENTER);
 		btn.getChildren().add(startBtn);
 		root1.getChildren().addAll(firstPlayer, secondPlayer, btn);
+		primaryStage.setScene(homepage);
+
 	}
 	
 	public static void scene2(Stage primaryStage){
@@ -143,8 +145,6 @@ public class Main extends Application {
 		chosen2_3v.setFitHeight(50);
 		chosenChampions.getChildren().addAll(l2_1, chosen1_1v, chosen1_2v, chosen1_3v, region, chosen2_1v, chosen2_2v, chosen2_3v, l2_2);
 		root2.setTop(chosenChampions);
-
-	    
 		
 		// Show Details
 		VBox msg = new VBox();
@@ -176,18 +176,15 @@ public class Main extends Application {
 			Champion champion = champions.get(i-1);
 			Image ch = new Image("./application/media/" + i + ".jpeg");
 			ImageView iv = new ImageView(ch);
-			iv.setFitHeight(50);
-			iv.setFitWidth(50);
+			iv.setFitHeight(70);
+			iv.setFitWidth(70);
 			images.add(iv);
 			Button btn = new Button();
-			btn.setPrefSize(80, 80);
+			btn.setPrefSize(70, 70);
 		    btn.setGraphic(iv);
 		    btn.setOnAction((e) -> {
-		    	show(champion, root2, chosenChampions,ch,btn);
+		    	show(champion, root2, chosenChampions,ch, btn, primaryStage);
 		    });
-		    
-		    
-		    
 		    champsgrid.add(btn, a, b);
 		    a++;
 		    if (a == 5) {
@@ -195,20 +192,10 @@ public class Main extends Application {
 		    	b++;
 		    }
 		    buttons.add(btn);
-		}
-		
-		
-		
-	
-//		while ((player1.getTeam().size() == 3 && player2.getTeam().size() == 3)) {
-//			System.out.println("DONE");
-//			return;
-//		}
-		
-		
+		}		
 	}
 	
-	public static void show(Champion champion, BorderPane root2, HBox chosenChampions,Image ch,Button btn) {
+	public static void show(Champion champion, BorderPane root2, HBox chosenChampions,Image ch,Button btn, Stage primaryStage) {
 		VBox details = new VBox();
     	details.setPadding(new Insets(10, 10, 10, 10));
     	details.setAlignment(Pos.CENTER);
@@ -292,7 +279,7 @@ public class Main extends Application {
 					idx1 = i-1;
 					Button button = new Button();
 					button.setOnAction(event -> {
-						chooseLeader(player1, player1.getTeam().get(idx1), details);
+						chooseLeader(player1, player1.getTeam().get(idx1), details, primaryStage);
 					});
 					button.setPrefSize(50, 50);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
@@ -308,7 +295,7 @@ public class Main extends Application {
 					idx2 = i-5;
 					Button button = new Button();
 					button.setOnAction(event -> {
-						chooseLeader(player2,player2.getTeam().get(idx2), details);
+						chooseLeader(player2,player2.getTeam().get(idx2), details, primaryStage);
 					});
 					button.setPrefSize(50, 50);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
@@ -329,7 +316,7 @@ public class Main extends Application {
 		root2.setCenter(details);
 	}
 	
-	public static void chooseLeader(Player player, Champion c, VBox details) {
+	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
 		
 		player.setLeader(c);
 		if (player == player1) {
@@ -342,16 +329,82 @@ public class Main extends Application {
 			details.getChildren().get(5).setDisable(true);
 			details.getChildren().get(6).setDisable(true);
 			details.getChildren().get(7).setDisable(true);
-			
-			
 		}
 
-		
 		if(player1.getLeader()!=null && player2.getLeader()!=null) {
-			
 			Button play = new Button("Play");
+			play.setOnAction(e -> scene3(primaryStage));
 			details.getChildren().add(play);
 		}
+	}
+	
+	public static void scene3(Stage primaryStage) {
+		// Scene organisation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+		BorderPane root3 = new BorderPane();
+		gameview = new Scene(root3);
+		primaryStage.setScene(gameview);
+		primaryStage.setFullScreen(true);
+		
+		VBox turnOrderStatus = new VBox();
+		HBox gameStatus = new HBox();
+		HBox currentControls = new HBox();
+		GridPane boardView = new GridPane();
+		VBox currentInformation = new VBox();
+		root3.setTop(gameStatus);
+		root3.setRight(turnOrderStatus);
+		root3.setLeft(currentControls);
+		root3.setBottom(currentInformation);
+		root3.setCenter(boardView);
+		
+		// Game Status Bar
+		Label player1Name = new Label(player1.getName());
+		gameStatus.getChildren().add(player1Name);
+		ArrayList<ImageView> player1Images = new ArrayList<>();
+		for (Champion c : player1.getTeam()) {
+			for (int i = 0; i < 15; i++) {
+				if (c == Game.getAvailableChampions().get(i)) {
+					int a = i+1;
+					Image image = new Image("./application/media/" + a + ".jpeg");
+					ImageView iv = new ImageView(image);
+					iv.setFitHeight(50);
+					iv.setFitWidth(50);
+					gameStatus.getChildren().add(iv);
+					player1Images.add(iv);
+					break;
+				}
+			}
+		}
+		Image usedLeaderAbility = new Image("./application/media/pow.jpeg");
+		ImageView firstLeaderAbility = new ImageView(usedLeaderAbility);
+		Region r = new Region();
+		r.setMinWidth(100);
+		ImageView secondLeaderAbility = new ImageView(usedLeaderAbility);
+		firstLeaderAbility.setFitHeight(50);
+		firstLeaderAbility.setFitWidth(50);
+		secondLeaderAbility.setFitHeight(50);
+		secondLeaderAbility.setFitWidth(50);
+		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
+		ArrayList<ImageView> player2Images = new ArrayList<>();
+		for (Champion c : player2.getTeam()) {
+			for (int i = 0; i < 15; i++) {
+				if (c == Game.getAvailableChampions().get(i)) {
+					int a = i+1;
+					Image image = new Image("./application/media/" + a + ".jpeg");
+					ImageView iv = new ImageView(image);
+					iv.setFitHeight(50);
+					iv.setFitWidth(50);
+					gameStatus.getChildren().add(iv);
+					player2Images.add(iv);
+					break;
+				}
+			}
+		}
+		Label player2Name = new Label(player2.getName());
+		gameStatus.getChildren().add(player2Name);
+		gameStatus.setPadding(new Insets(10,10,10,10));
+		gameStatus.setSpacing(10);
+		
+		gameStatus.setAlignment(Pos.CENTER);
 	}
 	
 	public static void main(String[] args) {
