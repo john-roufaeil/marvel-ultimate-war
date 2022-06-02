@@ -471,7 +471,7 @@ public class Main extends Application {
 			
 			// Board View
 			Button[][] boardButtons = new Button[5][5];
-			prepareBoard(map,boardButtons);
+			prepareBoard(map,boardButtons, q);
 		
 			boardView.setAlignment(Pos.CENTER);
 			
@@ -481,10 +481,11 @@ public class Main extends Application {
 			attack.setMinHeight(30);
 			attack.setMinWidth(30);
 			actions.add(attack);
-			PriorityQueue Q = q;
+			PriorityQueue Q1 = q;
 			attack.setOnAction(e->{
 				Button up = new Button("Attack Up");
 				
+				PriorityQueue Q = Q1;
 				up.setOnAction(ee ->{
 					boolean f = true;
 					
@@ -499,7 +500,7 @@ public class Main extends Application {
 					
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 					
@@ -521,7 +522,7 @@ public class Main extends Application {
 					
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 									
 				});
@@ -542,7 +543,7 @@ public class Main extends Application {
 					
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 					
@@ -562,7 +563,7 @@ public class Main extends Application {
 					
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 				});
@@ -585,14 +586,8 @@ public class Main extends Application {
 			move.setMinWidth(30);
 			actions.add(move);
 			
-//			prepareTurns(map,turnOrderStatus,q,tmp);
-//			q = tmp;
-			
-			
+			PriorityQueue Q = q;
 			move.setOnAction(e->{
-//				for(Button b : actions) {
-//					b.setDisable(true);
-//				}
 				
 				Button up = new Button("UP");
 				
@@ -609,7 +604,7 @@ public class Main extends Application {
 					
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 					
@@ -627,7 +622,7 @@ public class Main extends Application {
 					}
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 									
 				});
@@ -645,7 +640,7 @@ public class Main extends Application {
 					}
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 					
@@ -664,7 +659,7 @@ public class Main extends Application {
 					}
 					
 					if(f) {
-						prepareChampions(map,boardButtons);
+						prepareChampions(map,boardButtons, Q);
 					}
 					
 				});
@@ -795,7 +790,7 @@ public class Main extends Application {
 		
 	}
 	
-	public static void prepareBoard(HashMap<Champion,String> map,Button[][] boardButtons) {
+	public static void prepareBoard(HashMap<Champion,String> map,Button[][] boardButtons, PriorityQueue q) {
 		
 		board = game.getBoard();
 		for(int i=0;i<5;i++) {
@@ -839,6 +834,12 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					if (((Champion)board[i][j]) == q.peekMin() && player1.getTeam().contains(q.peekMin())) {
+						btn.setStyle("-fx-background-color: #010098;");
+					}
+					else if (((Champion)board[i][j]) == q.peekMin() && player2.getTeam().contains(q.peekMin())) {
+						btn.setStyle("-fx-background-color: #9a0000; ");
+					}
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
@@ -852,6 +853,11 @@ public class Main extends Application {
 						cuurentHealth.setScene(scene);
 						cuurentHealth.setMinWidth(400);
 						cuurentHealth.setMinHeight(200);
+						Text teamText;
+						if (player1.getTeam().contains((Champion)(board[a][b])))
+							teamText = new Text("Belonging to first team");
+						else 
+							teamText = new Text("Belonging to second team");
 						Text healthText =new Text("Champion's health: " + ((Champion)(board[a][b])).getCurrentHP()
 								+ "/" + ((Champion)(board[a][b])).getMaxHP());
 						Text conditionText =new Text("Champion's condition: " + ((Champion)(board[a][b])).getCondition());
@@ -862,7 +868,7 @@ public class Main extends Application {
 						if (effects.length() >= 2)
 							effects = effects.substring(0, effects.length()-2);
 						Text effectsText =new Text("Effects on Champion: " + effects);
-						window.getChildren().addAll(healthText, conditionText, effectsText, OK);
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, OK);
 						window.setPadding(new Insets(10,10,10,10));
 						cuurentHealth.show();
 					});
@@ -872,7 +878,7 @@ public class Main extends Application {
 		}	
 	}
 	
-	public static void prepareChampions(HashMap<Champion,String> map,Button[][] boardButtons) {
+	public static void prepareChampions(HashMap<Champion,String> map,Button[][] boardButtons, PriorityQueue q) {
 		board = game.getBoard();
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
@@ -915,6 +921,12 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					if (((Champion)board[i][j]) == q.peekMin() && player1.getTeam().contains(q.peekMin())) {
+						btn.setStyle("-fx-background-color: #010098;");
+					}
+					else if (((Champion)board[i][j]) == q.peekMin() && player2.getTeam().contains(q.peekMin())) {
+						btn.setStyle("-fx-background-color: #9a0000; ");
+					}
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
@@ -928,6 +940,11 @@ public class Main extends Application {
 						cuurentHealth.setScene(scene);
 						cuurentHealth.setMinWidth(400);
 						cuurentHealth.setMinHeight(200);
+						Text teamText;
+						if (player1.getTeam().contains((Champion)(board[a][b])))
+							teamText = new Text("Belonging to first team");
+						else 
+							teamText = new Text("Belonging to second team");
 						Text healthText =new Text("Champion's health: " + ((Champion)(board[a][b])).getCurrentHP()
 								+ "/" + ((Champion)(board[a][b])).getMaxHP());
 						Text conditionText =new Text("Champion's condition: " + ((Champion)(board[a][b])).getCondition());
@@ -938,7 +955,7 @@ public class Main extends Application {
 						if (effects.length() >= 2)
 							effects = effects.substring(0, effects.length()-2);
 						Text effectsText =new Text("Effects on Champion: " + effects);
-						window.getChildren().addAll(healthText, conditionText, effectsText, OK);
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, OK);
 						window.setPadding(new Insets(10,10,10,10));
 						cuurentHealth.show();
 					});
