@@ -813,6 +813,24 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					int a = i;
+					int b = j;
+					btn.setOnAction(e -> {
+						Stage cuurentHealth = new Stage();
+						cuurentHealth.setTitle("Cover");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> cuurentHealth.close());
+						cuurentHealth.setScene(scene);
+						cuurentHealth.setMinWidth(400);
+						cuurentHealth.setMinHeight(200);
+						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
+						window.getChildren().addAll(msgText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						cuurentHealth.show();
+					});
 				}
 				
 				else if(board[i][j] instanceof Champion){
@@ -821,6 +839,33 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					int a = i;
+					int b = j;
+					btn.setOnAction(e -> {
+						Stage cuurentHealth = new Stage();
+						cuurentHealth.setTitle(((Champion)board[a][b]).getName());
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> cuurentHealth.close());
+						cuurentHealth.setScene(scene);
+						cuurentHealth.setMinWidth(400);
+						cuurentHealth.setMinHeight(200);
+						Text healthText =new Text("Champion's health: " + ((Champion)(board[a][b])).getCurrentHP()
+								+ "/" + ((Champion)(board[a][b])).getMaxHP());
+						Text conditionText =new Text("Champion's condition: " + ((Champion)(board[a][b])).getCondition());
+						String effects = "";
+						for (Effect effect : ((Champion)board[a][b]).getAppliedEffects()) {
+							effects += effect.getName() + ", ";
+						}
+						if (effects.length() >= 2)
+							effects = effects.substring(0, effects.length()-2);
+						Text effectsText =new Text("Effects on Champion: " + effects);
+						window.getChildren().addAll(healthText, conditionText, effectsText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						cuurentHealth.show();
+					});
 				}
 				boardView.add(btn,j,4-i);
 			}
@@ -844,6 +889,24 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					int a = i;
+					int b = j;
+					btn.setOnAction(e -> {
+						Stage cuurentHealth = new Stage();
+						cuurentHealth.setTitle("Cover");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> cuurentHealth.close());
+						cuurentHealth.setScene(scene);
+						cuurentHealth.setMinWidth(400);
+						cuurentHealth.setMinHeight(200);
+						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
+						window.getChildren().addAll(msgText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						cuurentHealth.show();
+					});
 				}
 				
 				else if(board[i][j] instanceof Champion){
@@ -852,6 +915,33 @@ public class Main extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
+					int a = i;
+					int b = j;
+					btn.setOnAction(e -> {
+						Stage cuurentHealth = new Stage();
+						cuurentHealth.setTitle(((Champion)board[a][b]).getName());
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> cuurentHealth.close());
+						cuurentHealth.setScene(scene);
+						cuurentHealth.setMinWidth(400);
+						cuurentHealth.setMinHeight(200);
+						Text healthText =new Text("Champion's health: " + ((Champion)(board[a][b])).getCurrentHP()
+								+ "/" + ((Champion)(board[a][b])).getMaxHP());
+						Text conditionText =new Text("Champion's condition: " + ((Champion)(board[a][b])).getCondition());
+						String effects = "";
+						for (Effect effect : ((Champion)board[a][b]).getAppliedEffects()) {
+							effects += effect.getName() + ", ";
+						}
+						if (effects.length() >= 2)
+							effects = effects.substring(0, effects.length()-2);
+						Text effectsText =new Text("Effects on Champion: " + effects);
+						window.getChildren().addAll(healthText, conditionText, effectsText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						cuurentHealth.show();
+					});
 				}
 					
 				boardView.add(btn,j,4-i);
