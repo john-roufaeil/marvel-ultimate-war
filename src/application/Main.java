@@ -1,6 +1,7 @@
 package application;
 	
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.awt.Point;
 import java.io.FileInputStream;
@@ -22,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
@@ -45,6 +47,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 
@@ -587,8 +590,7 @@ public class Main extends Application {
 						game.attack(Direction.UP);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					
@@ -607,8 +609,8 @@ public class Main extends Application {
 						game.attack(Direction.DOWN);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
+
 					}
 					
 					
@@ -626,8 +628,8 @@ public class Main extends Application {
 						game.attack(Direction.LEFT);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
+
 					}
 					
 					
@@ -645,8 +647,7 @@ public class Main extends Application {
 						game.attack(Direction.RIGHT);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					
@@ -691,8 +692,7 @@ public class Main extends Application {
 						game.move(Direction.UP);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					
@@ -709,8 +709,7 @@ public class Main extends Application {
 						game.move(Direction.DOWN);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					if(f) {
@@ -726,8 +725,7 @@ public class Main extends Application {
 						game.move(Direction.LEFT);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					if(f) {
@@ -744,8 +742,7 @@ public class Main extends Application {
 						game.move(Direction.RIGHT);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 					
 					if(f) {
@@ -852,7 +849,6 @@ public class Main extends Application {
 	}
 	
 	public static void prepareTurns(HashMap<Champion,String> map,VBox turnOrderStatus, PriorityQueue q, PriorityQueue tmp) {
-		
 //		System.out.println(q.peekMin());
 		while(!q.isEmpty()){
 			Image img = new Image(map.get((Champion)q.peekMin()));
@@ -865,6 +861,23 @@ public class Main extends Application {
 			tmp.insert((Champion)q.remove());
 		}
 		
+	}
+	
+	public static void throwException(String msg) {
+		Stage exception = new Stage();
+		exception.setTitle("Error");
+		VBox window = new VBox(10);
+		window.setAlignment(Pos.CENTER);
+		Scene scene = new Scene(window);
+		Button OK = new Button("OK");
+		OK.setOnAction( e -> exception.close());
+		exception.setScene(scene);
+		exception.setMinWidth(400);
+		exception.setMinHeight(200);
+		Text msgText =new Text(msg);
+		window.getChildren().addAll(msgText, OK);
+		window.setPadding(new Insets(10,10,10,10));
+		exception.show();
 	}
 	
 	public static void main(String[] args) {
