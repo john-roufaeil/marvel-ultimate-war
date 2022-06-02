@@ -459,7 +459,6 @@ public class Main extends Application {
 		PriorityQueue q = game.getTurnOrder();
 		PriorityQueue tmp = new PriorityQueue(q.size());
 		
-		System.out.println(q.peekMin());
 		prepareTurns(map,turnOrderStatus,q,tmp);
 		q = tmp;
 		PriorityQueue turnOrder = game.getTurnOrder();
@@ -467,100 +466,7 @@ public class Main extends Application {
 			
 		
 		// Current Information
-			Champion champion = (Champion)q.peekMin();
-			String type="";
-			if (champion.getClass().toString().equals("class model.world.AntiHero"))
-	    		type = "AntiHero";
-	    	else if (champion.getClass().toString().equals("class model.world.Hero"))
-	    		type = "Hero";
-	    	else
-	    		type = "Villain";
-			
-			String championEffects = "";
-			for (Effect e : champion.getAppliedEffects()) {
-				championEffects += e.getName() + "(" + e.getDuration() + ")" + ", ";
-			}
-			if (championEffects.length() >= 2)
-				championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
-			Label championType = new Label("Type: " + type);
-			championType.setFont(new Font("Didot.",12));
-			Label championName = new Label("Name: " + champion.getName());
-			championName.setFont(new Font("Didot.",12));
-			Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
-			championMaxHP.setFont(new Font("Didot.",12));
-			Label championMana = new Label("Mana: " + champion.getMana() + "");
-			championMana.setFont(new Font("Didot.",12));
-			Label championActions = new Label("Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
-			championActions.setFont(new Font("Didot.",12));
-			Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
-			championSpeed.setFont(new Font("Didot.",12));
-			Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
-			championRange.setFont(new Font("Didot.",12));
-			Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
-			championDamage.setFont(new Font("Didot.",12));
-			Label championAppliedEffects = new Label ("Applied Effects: " + championEffects);
-			championAppliedEffects.setFont(new Font("Didot.",12));
-			Label championCondition = new Label ("Condition: " + champion.getCondition());
-			championCondition.setFont(new Font("Didot.",12));
-			Region region1 = new Region();
-			region1.setMinHeight(30);
-
-			Ability a1 = champion.getAbilities().get(0);
-			Ability a2 = champion.getAbilities().get(1);
-			Ability a3 = champion.getAbilities().get(2);
-			
-			Label a1Name = new Label (a1.getName());
-			a1Name.setFont(new Font("Didot.",12));
-			Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
-			a1Mana.setFont(new Font("Didot.",12));
-			Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
-			a1Cool.setFont(new Font("Didot.",12));
-			Label a1Range = new Label ("Range: " + a1.getCastRange());
-			a1Range.setFont(new Font("Didot.",12));
-			Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
-			a1Area.setFont(new Font("Didot.",12));
-			Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
-			a1Action.setFont(new Font("Didot.",12));
-			Region region2 = new Region();
-			region2.setMinHeight(30);
-			Label a2Name = new Label (a2.getName());
-			a2Name.setFont(new Font("Didot.",12));
-			Label a2Mana = new Label ("Mana Cost: " + a2.getManaCost());
-			a2Mana.setFont(new Font("Didot.",12));
-			Label a2Cool = new Label ("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
-			a2Cool.setFont(new Font("Didot.",12));
-			Label a2Range = new Label ("Range: " + a2.getCastRange());
-			a2Range.setFont(new Font("Didot.",12));
-			Label a2Area = new Label ("Cast Area: " + a2.getCastArea());
-			a2Area.setFont(new Font("Didot.",12));
-			Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
-			a2Action.setFont(new Font("Didot.",12));
-			Region region3 = new Region();
-			region3.setMinHeight(30);
-			Label a3Name = new Label (a3.getName());
-			a3Name.setFont(new Font("Didot.",12));
-			Label a3Mana = new Label ("Mana Cost: " + a3.getManaCost());
-			a3Mana.setFont(new Font("Didot.",12));
-			Label a3Cool = new Label ("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
-			a3Cool.setFont(new Font("Didot.",12));
-			Label a3Range = new Label ("Range: " + a3.getCastRange());
-			a3Range.setFont(new Font("Didot.",12));
-			Label a3Area = new Label ("Cast Area: " + a3.getCastArea());
-			a3Area.setFont(new Font("Didot.",12));
-			Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
-			a3Action.setFont(new Font("Didot.",12));
-			
-			currentInformation.setMaxWidth(250);
-			currentInformation.setMinWidth(250);
-			currentInformation.setAlignment(Pos.TOP_LEFT);
-			currentInformation.setPadding(new Insets(10,10,10,10));
-			currentInformation.getChildren().addAll(championType,championName,championMaxHP,championMana,championActions,
-					championSpeed, championRange, championDamage, championAppliedEffects, championCondition, region1, a1Name, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
-					region2, a2Name, a2Mana, a2Cool, a2Range, a2Area, a2Action,region3, a3Name, a3Mana, a3Cool, a3Range, a3Area, a3Action);		
-//			game.endTurn();
-//			prepareTurns(map,turnOrderStatus,q,tmp);
-			
-//		}
+			updateCurrentInformation(currentInformation, q);
 			game = new Game(player1,player2);
 			
 			// Board View
@@ -575,12 +481,8 @@ public class Main extends Application {
 			attack.setMinHeight(30);
 			attack.setMinWidth(30);
 			actions.add(attack);
-			
+			PriorityQueue Q = q;
 			attack.setOnAction(e->{
-//				for(Button b : actions) {
-//					b.setDisable(true);
-//				}
-				
 				Button up = new Button("Attack Up");
 				
 				up.setOnAction(ee ->{
@@ -588,6 +490,8 @@ public class Main extends Application {
 					
 					try {
 						game.attack(Direction.UP);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -607,6 +511,8 @@ public class Main extends Application {
 					
 					try {
 						game.attack(Direction.DOWN);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -626,6 +532,8 @@ public class Main extends Application {
 					
 					try {
 						game.attack(Direction.LEFT);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -645,6 +553,8 @@ public class Main extends Application {
 					
 					try {
 						game.attack(Direction.RIGHT);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -690,6 +600,8 @@ public class Main extends Application {
 					boolean f = true;
 					try {
 						game.move(Direction.UP);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -707,6 +619,8 @@ public class Main extends Application {
 					boolean f = true;
 					try {
 						game.move(Direction.DOWN);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -723,6 +637,8 @@ public class Main extends Application {
 					boolean f = true;
 					try {
 						game.move(Direction.LEFT);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -740,6 +656,8 @@ public class Main extends Application {
 					boolean f = true;
 					try {
 						game.move(Direction.RIGHT);
+						currentInformation.getChildren().clear();
+						updateCurrentInformation(currentInformation, Q);
 					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 						f = false;
 						throwException(e1.getMessage());
@@ -781,6 +699,100 @@ public class Main extends Application {
 			currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility);
 			currentControls.setAlignment(Pos.CENTER);
 			currentControls.setPadding(new Insets(10,10,30,10));
+	}
+	
+	public static void updateCurrentInformation(VBox currentInformation, PriorityQueue q) {
+		Champion champion = (Champion)q.peekMin();
+		String type="";
+		if (champion.getClass().toString().equals("class model.world.AntiHero"))
+    		type = "AntiHero";
+    	else if (champion.getClass().toString().equals("class model.world.Hero"))
+    		type = "Hero";
+    	else
+    		type = "Villain";
+		
+		String championEffects = "";
+		for (Effect e : champion.getAppliedEffects()) {
+			championEffects += e.getName() + "(" + e.getDuration() + ")" + ", ";
+		}
+		if (championEffects.length() >= 2)
+			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
+		Label championType = new Label("Type: " + type);
+		championType.setFont(new Font("Didot.",12));
+		Label championName = new Label("Name: " + champion.getName());
+		championName.setFont(new Font("Didot.",12));
+		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
+		championMaxHP.setFont(new Font("Didot.",12));
+		Label championMana = new Label("Mana: " + champion.getMana() + "");
+		championMana.setFont(new Font("Didot.",12));
+		Label championActions = new Label("Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
+		championActions.setFont(new Font("Didot.",12));
+		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
+		championSpeed.setFont(new Font("Didot.",12));
+		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
+		championRange.setFont(new Font("Didot.",12));
+		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
+		championDamage.setFont(new Font("Didot.",12));
+		Label championAppliedEffects = new Label ("Applied Effects: " + championEffects);
+		championAppliedEffects.setFont(new Font("Didot.",12));
+		Label championCondition = new Label ("Condition: " + champion.getCondition());
+		championCondition.setFont(new Font("Didot.",12));
+		Region region1 = new Region();
+		region1.setMinHeight(30);
+
+		Ability a1 = champion.getAbilities().get(0);
+		Ability a2 = champion.getAbilities().get(1);
+		Ability a3 = champion.getAbilities().get(2);
+		
+		Label a1Name = new Label (a1.getName());
+		a1Name.setFont(new Font("Didot.",12));
+		Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
+		a1Mana.setFont(new Font("Didot.",12));
+		Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
+		a1Cool.setFont(new Font("Didot.",12));
+		Label a1Range = new Label ("Range: " + a1.getCastRange());
+		a1Range.setFont(new Font("Didot.",12));
+		Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
+		a1Area.setFont(new Font("Didot.",12));
+		Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
+		a1Action.setFont(new Font("Didot.",12));
+		Region region2 = new Region();
+		region2.setMinHeight(30);
+		Label a2Name = new Label (a2.getName());
+		a2Name.setFont(new Font("Didot.",12));
+		Label a2Mana = new Label ("Mana Cost: " + a2.getManaCost());
+		a2Mana.setFont(new Font("Didot.",12));
+		Label a2Cool = new Label ("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
+		a2Cool.setFont(new Font("Didot.",12));
+		Label a2Range = new Label ("Range: " + a2.getCastRange());
+		a2Range.setFont(new Font("Didot.",12));
+		Label a2Area = new Label ("Cast Area: " + a2.getCastArea());
+		a2Area.setFont(new Font("Didot.",12));
+		Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
+		a2Action.setFont(new Font("Didot.",12));
+		Region region3 = new Region();
+		region3.setMinHeight(30);
+		Label a3Name = new Label (a3.getName());
+		a3Name.setFont(new Font("Didot.",12));
+		Label a3Mana = new Label ("Mana Cost: " + a3.getManaCost());
+		a3Mana.setFont(new Font("Didot.",12));
+		Label a3Cool = new Label ("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
+		a3Cool.setFont(new Font("Didot.",12));
+		Label a3Range = new Label ("Range: " + a3.getCastRange());
+		a3Range.setFont(new Font("Didot.",12));
+		Label a3Area = new Label ("Cast Area: " + a3.getCastArea());
+		a3Area.setFont(new Font("Didot.",12));
+		Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
+		a3Action.setFont(new Font("Didot.",12));
+		
+		currentInformation.setMaxWidth(250);
+		currentInformation.setMinWidth(250);
+		currentInformation.setAlignment(Pos.TOP_LEFT);
+		currentInformation.setPadding(new Insets(10,10,10,10));
+		currentInformation.getChildren().addAll(championType,championName,championMaxHP,championMana,championActions,
+				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, region1, a1Name, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
+				region2, a2Name, a2Mana, a2Cool, a2Range, a2Area, a2Action,region3, a3Name, a3Mana, a3Cool, a3Range, a3Area, a3Action);		
+		
 	}
 	
 	public static void prepareBoard(HashMap<Champion,String> map,Button[][] boardButtons) {
