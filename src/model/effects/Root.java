@@ -1,5 +1,7 @@
 package model.effects;
 
+import java.util.ArrayList;
+
 import model.world.Champion;
 import model.world.Condition;
 
@@ -9,26 +11,27 @@ public class Root extends Effect {
 		super("Root", duration, EffectType.DEBUFF);
 		
 	}
+	
+	/*
+	 * Target cannot move.
+	 */
 
-	@Override
 	public void apply(Champion c) {
 		if(c.getCondition() != Condition.INACTIVE)
 			c.setCondition(Condition.ROOTED);
-		
 	}
-
-	@Override
+	
 	public void remove(Champion c) {
-		boolean found= false;
-		for(Effect e:c.getAppliedEffects() )
-		{
-			if(e instanceof Root)
-				found=true;
+		if (c.getCondition() == Condition.INACTIVE)
+			return;
+		ArrayList<Effect> applied = c.getAppliedEffects();
+		boolean rooted = false;
+		for (Effect effect : applied) {
+			rooted = (effect instanceof Root);
+			if (rooted)
+				break;
 		}
-		
-		if(c.getCondition() != Condition.INACTIVE && !found)
+		if (!rooted)
 			c.setCondition(Condition.ACTIVE);
-		
 	}
-
 }

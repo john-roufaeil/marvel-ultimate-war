@@ -6,19 +6,17 @@ public class Dodge extends Effect {
 
 	public Dodge(int duration) {
 		super("Dodge", duration, EffectType.BUFF);
-
 	}
-
-	@Override
+	
+	/*
+	 * Target has a 50% chance of dodging normal attacks.
+	 * Increase speed by 5%.
+	 */
 	public void apply(Champion c) {
-		c.setSpeed((int) (c.getSpeed() * 1.05));
-
+		c.setSpeed((int)(c.getSpeed() * 1.05));
 	}
-
-	@Override
+	
 	public void remove(Champion c) {
-		c.setSpeed((int) (c.getSpeed() / 1.05));
-
+		c.setSpeed((int)(c.getSpeed() / 1.05));
 	}
-
 }

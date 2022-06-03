@@ -1,43 +1,44 @@
 package model.effects;
 
+import java.util.ArrayList;
+
 import model.world.Champion;
 import model.world.Condition;
 
 public class Stun extends Effect {
-
 	public Stun(int duration) {
 		super("Stun", duration, EffectType.DEBUFF);
 	}
 
-	@Override
+	/*
+	 * Set target to INACTIVE.
+	 * Target is not allowed to play their turn for the duration.
+	 */
+	
 	public void apply(Champion c) {
 		c.setCondition(Condition.INACTIVE);
-		
 	}
-
-	@Override
+	
 	public void remove(Champion c) {
-		boolean isStunned=false;
-		boolean isRooted=false;
-		for(Effect e: c.getAppliedEffects())
-		{
-			if(e instanceof Stun)
-			{
-				isStunned=true;
+		ArrayList<Effect> applied = c.getAppliedEffects();
+		boolean rooted = false;
+		boolean stunned = false;
+		for (Effect effect : applied) {
+			if (effect instanceof Stun) {
+				stunned = true;
 				break;
 			}
-		
-			else if(e instanceof Root)
-				isRooted=true;
+			if (effect instanceof Root) {
+				rooted = true;
+				break;
+			}
 		}
-		if(isStunned)
+		if (stunned)
 			c.setCondition(Condition.INACTIVE);
-		else if(isRooted)
+		else if (rooted) 
 			c.setCondition(Condition.ROOTED);
 		else
-		c.setCondition(Condition.ACTIVE);
-		
+			c.setCondition(Condition.ACTIVE);
 	}
-
 
 }

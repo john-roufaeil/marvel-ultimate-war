@@ -9,21 +9,18 @@ public class Silence extends Effect {
 		
 	}
 
-	@Override
+	/*
+	 * Target cannot use abilities.
+	 * Increase max action points per turn and current action points by 2
+	 */
+	
 	public void apply(Champion c) {
-		c.setCurrentActionPoints(c.getCurrentActionPoints()+2);
 		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn()+2);
-
-		
-		
+		c.setCurrentActionPoints(c.getCurrentActionPoints()+2);
 	}
-
-	@Override
+	
 	public void remove(Champion c) {
-		c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
 		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn()-2);
-		
-		
+		c.setCurrentActionPoints(c.getCurrentActionPoints()-2);
 	}
-
 }

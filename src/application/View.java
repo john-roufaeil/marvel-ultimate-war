@@ -597,8 +597,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -613,9 +612,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException |InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -630,9 +627,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -647,9 +642,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -666,8 +659,7 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+								|  InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -688,9 +680,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
-							| CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 					
@@ -712,8 +702,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -728,9 +717,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -745,9 +732,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -762,9 +747,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -780,9 +763,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -803,9 +784,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
-							| CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 					
@@ -828,8 +807,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -844,9 +822,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -861,9 +837,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -878,9 +852,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -896,9 +868,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								| CloneNotSupportedException e1) {
-							// TODO Auto-generated catch block
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 							e1.printStackTrace();
 						}
 						
@@ -918,9 +888,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
-							| CloneNotSupportedException e1) {
-						// TODO Auto-generated catch block
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
 						e1.printStackTrace();
 					}
 					

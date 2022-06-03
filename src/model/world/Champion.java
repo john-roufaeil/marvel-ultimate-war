@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 
-@SuppressWarnings("rawtypes")
-public abstract class Champion implements Damageable,Comparable {
+public abstract class Champion implements Comparable, Damageable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -18,12 +17,11 @@ public abstract class Champion implements Damageable,Comparable {
 	private int attackRange;
 	private int attackDamage;
 	private int speed;
-	private ArrayList<Ability> abilities = new ArrayList<Ability>();;
-	private ArrayList<Effect> appliedEffects = new ArrayList<Effect>();;
+	private ArrayList<Ability> abilities;
+	private ArrayList<Effect> appliedEffects;
 	private Condition condition;
 	private Point location;
 	
-
 	public Champion(String name, int maxHP, int mana, int actions, int speed, int attackRange, int attackDamage) {
 		this.name = name;
 		this.maxHP = maxHP;
@@ -34,8 +32,8 @@ public abstract class Champion implements Damageable,Comparable {
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
 		this.condition = Condition.ACTIVE;
-//		this.abilities = new ArrayList<Ability>();
-//		this.appliedEffects = new ArrayList<Effect>();
+		this.abilities = new ArrayList<Ability>();
+		this.appliedEffects = new ArrayList<Effect>();
 		this.currentActionPoints=maxActionPointsPerTurn;
 	}
 
@@ -49,9 +47,8 @@ public abstract class Champion implements Damageable,Comparable {
 
 	public void setCurrentHP(int hp) {
 
-		if (hp <= 0) {
+		if (hp < 0) {
 			currentHP = 0;
-			condition=Condition.KNOCKEDOUT;
 			
 		} 
 		else if (hp > maxHP)
@@ -60,7 +57,6 @@ public abstract class Champion implements Damageable,Comparable {
 			currentHP = hp;
 
 	}
-
 	
 	public int getCurrentHP() {
 
@@ -143,13 +139,11 @@ public abstract class Champion implements Damageable,Comparable {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
 
-	public int compareTo(Object o)
-	{
+	public int compareTo(Object o) {
 		Champion c = (Champion)o;
-		if(speed==c.speed)
-			return name.compareTo(c.name);
-		return -1 * (speed-c.speed);
+		return (this.speed < c.speed?1: this.speed > c.speed?-1:this.name.compareTo(c.name));
 	}
 	
-public abstract void useLeaderAbility(ArrayList<Champion> targets);
+	public abstract void useLeaderAbility(ArrayList<Champion> targets);
+	
 }

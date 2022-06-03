@@ -26,7 +26,6 @@ public abstract class Ability {
 	public int getCurrentCooldown() {
 		return currentCooldown;
 	}
-	public abstract void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
 
 	public void setCurrentCooldown(int currentCoolDown) {
 		if (currentCoolDown < 0)
@@ -59,5 +58,6 @@ public abstract class Ability {
 	public int getRequiredActionPoints() {
 		return requiredActionPoints;
 	}
-
+	
+	public abstract void execute(ArrayList<Damageable> targets) throws CloneNotSupportedException;
 }
