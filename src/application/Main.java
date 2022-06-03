@@ -466,214 +466,212 @@ public class Main extends Application {
 			
 		
 		// Current Information
-			updateCurrentInformation(currentInformation, q);
-			game = new Game(player1,player2);
+		updateCurrentInformation(currentInformation, q);
+		game = new Game(player1,player2);
 			
-			// Board View
-			Button[][] boardButtons = new Button[5][5];
-			prepareBoard(map,boardButtons, q);
+		// Board View
+		Button[][] boardButtons = new Button[5][5];
+		prepareBoard(map,boardButtons, q);
+	
+		boardView.setAlignment(Pos.CENTER);
+			
+		actions = new ArrayList<Button>();
+		Button attack = new Button("Attack");
+		attack.setMinHeight(30);
+		attack.setMinWidth(30);
+		actions.add(attack);
+		PriorityQueue Q1 = q;
+		attack.setOnAction(e->{
+			Button up = new Button("Attack Up");
+			
+			PriorityQueue Q = Q1;
+			up.setOnAction(ee ->{
+				boolean f = true;
+				
+				try {
+					game.attack(Direction.UP);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+				
+				
+			});
+			
+			Button down = new Button("Attack Down");
+			down.setOnAction(ee ->{
+				boolean f = true;
+				
+				try {
+					game.attack(Direction.DOWN);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
+					f = false;
+					throwException(e1.getMessage());
+
+				}
+				
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+								
+			});
+			
+			Button left = new Button("Attack Left");
+			left.setOnAction(ee ->{
+				boolean f = true;
+				
+				try {
+					game.attack(Direction.LEFT);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
+					f = false;
+					throwException(e1.getMessage());
+
+				}
+				
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+				
+				
+			});
+			Button right = new Button("Attack Right");
+			right.setOnAction(ee ->{
+				boolean f = true;
+				
+				try {
+					game.attack(Direction.RIGHT);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+				
+			});
+//				System.out.println(currentControls.getChildren().size());
+			while(currentControls.getChildren().size()>4) {
+				currentControls.getChildren().remove(currentControls.getChildren().size()-1);
+			}
+			
+			Region region = new Region();
+			region.setMinWidth(10);
+			
+			currentControls.getChildren().addAll(region,up,down,left,right);
+		});
 		
-			boardView.setAlignment(Pos.CENTER);
 			
 			
-			actions = new ArrayList<Button>();
-			Button attack = new Button("Attack");
-			attack.setMinHeight(30);
-			attack.setMinWidth(30);
-			actions.add(attack);
-			PriorityQueue Q1 = q;
-			attack.setOnAction(e->{
-				Button up = new Button("Attack Up");
-				
-				PriorityQueue Q = Q1;
-				up.setOnAction(ee ->{
-					boolean f = true;
-					
-					try {
-						game.attack(Direction.UP);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-					
-				});
-				
-				Button down = new Button("Attack Down");
-				down.setOnAction(ee ->{
-					boolean f = true;
-					
-					try {
-						game.attack(Direction.DOWN);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-						f = false;
-						throwException(e1.getMessage());
-
-					}
-					
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-									
-				});
-				
-				Button left = new Button("Attack Left");
-				left.setOnAction(ee ->{
-					boolean f = true;
-					
-					try {
-						game.attack(Direction.LEFT);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-						f = false;
-						throwException(e1.getMessage());
-
-					}
-					
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-					
-				});
-				Button right = new Button("Attack Right");
-				right.setOnAction(ee ->{
-					boolean f = true;
-					
-					try {
-						game.attack(Direction.RIGHT);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-				});
-//				System.out.println(currentControls.getChildren().size());
-				while(currentControls.getChildren().size()>4) {
-					currentControls.getChildren().remove(currentControls.getChildren().size()-1);
+			
+		Button move = new Button("Move");
+		move.setMinHeight(30);
+		move.setMinWidth(30);
+		actions.add(move);
+		
+		PriorityQueue Q = q;
+		move.setOnAction(e->{
+			
+			Button up = new Button("UP");
+			
+			up.setOnAction(ee ->{
+				boolean f = true;
+				try {
+					game.move(Direction.UP);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+					f = false;
+					throwException(e1.getMessage());
 				}
 				
-				Region region = new Region();
-				region.setMinWidth(10);
 				
-				currentControls.getChildren().addAll(region,up,down,left,right);
-			});
-			
-			
-			
-			
-			Button move = new Button("Move");
-			move.setMinHeight(30);
-			move.setMinWidth(30);
-			actions.add(move);
-			
-			PriorityQueue Q = q;
-			move.setOnAction(e->{
-				
-				Button up = new Button("UP");
-				
-				up.setOnAction(ee ->{
-					boolean f = true;
-					try {
-						game.move(Direction.UP);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-					
-				});
-				Button down = new Button("DOWN");
-				down.setOnAction(ee ->{
-					boolean f = true;
-					try {
-						game.move(Direction.DOWN);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-									
-				});
-				
-				Button left = new Button("LEFT");
-				left.setOnAction(ee ->{
-					boolean f = true;
-					try {
-						game.move(Direction.LEFT);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-					
-					
-				});
-				Button right = new Button("RIGHT");
-				right.setOnAction(ee ->{
-					boolean f = true;
-					try {
-						game.move(Direction.RIGHT);
-						currentInformation.getChildren().clear();
-						updateCurrentInformation(currentInformation, Q);
-					} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-						f = false;
-						throwException(e1.getMessage());
-					}
-					
-					if(f) {
-						prepareChampions(map,boardButtons, Q);
-					}
-					
-				});
-				
-//				System.out.println(currentControls.getChildren().size());
-				while(currentControls.getChildren().size()>4) {
-					currentControls.getChildren().remove(currentControls.getChildren().size()-1);
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
 				}
 				
-				Region region = new Region();
-				region.setMinWidth(10);
 				
-				currentControls.getChildren().addAll(region,up,down,left,right);
 			});
+			Button down = new Button("DOWN");
+			down.setOnAction(ee ->{
+				boolean f = true;
+				try {
+					game.move(Direction.DOWN);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+								
+			});
+			
+			Button left = new Button("LEFT");
+			left.setOnAction(ee ->{
+				boolean f = true;
+				try {
+					game.move(Direction.LEFT);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+				
+				
+				
+			});
+			Button right = new Button("RIGHT");
+			right.setOnAction(ee ->{
+				boolean f = true;
+				try {
+					game.move(Direction.RIGHT);
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				if(f) {
+					prepareChampions(map,boardButtons, Q);
+				}
+				
+			});
+			
+			while(currentControls.getChildren().size()>5) {
+				currentControls.getChildren().remove(currentControls.getChildren().size()-1);
+			}
+			
+			Region region = new Region();
+			region.setMinWidth(10);
+			
+			currentControls.getChildren().addAll(region,up,down,left,right);
+		});
 			
 			
 			Button castAbility = new Button("Cast Ability");
@@ -691,7 +689,14 @@ public class Main extends Application {
 			
 			
 			
-			currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility);
+			Button endCurrentTurn = new Button("End Turn");
+			endCurrentTurn.setMinHeight(30);
+			endCurrentTurn.setMinWidth(30);
+			actions.add(endCurrentTurn);
+			
+			
+			
+			currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility, endCurrentTurn);
 			currentControls.setAlignment(Pos.CENTER);
 			currentControls.setPadding(new Insets(10,10,30,10));
 	}
