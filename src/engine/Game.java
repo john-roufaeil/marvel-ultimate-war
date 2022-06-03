@@ -633,7 +633,7 @@ public class Game {
 		}
 	}
 
-	private void prepareChampionTurns() {
+	public void prepareChampionTurns() {
 		for (Champion c : firstPlayer.getTeam())
 			turnOrder.insert(c);
 		for (Champion c : secondPlayer.getTeam())
