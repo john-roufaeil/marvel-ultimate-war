@@ -944,11 +944,13 @@ public class View extends Application {
 			
 			try {
 				game.useLeaderAbility();
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
 			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
-				// TODO Auto-generated catch block
 				throwException(e1.getMessage());
 			}
-			
 		});
 		
 		
@@ -1178,7 +1180,7 @@ public class View extends Application {
 		if (!game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityNotUsed);
 		if (game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityUsed);
 		if (!game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
-		if (game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+		if (game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityUsed);
 
 		Region r = new Region();
 		r.setMinWidth(100);
