@@ -915,9 +915,9 @@ public class Game {
 			}
 			
 			turnOrder.remove();
-			/*if(turnOrder.isEmpty()) {
+			if(turnOrder.isEmpty()) {
 				prepareChampionTurns();
-			}*/
+			}
 		}
 		
 		// the new current champion that is Active
