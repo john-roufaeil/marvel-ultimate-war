@@ -49,6 +49,7 @@ import model.world.Condition;
 import model.world.Cover;
 import model.world.Direction;
 import model.world.Hero;
+import model.world.Villain;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -909,16 +910,45 @@ public class View extends Application {
 		
 			
 		useLeaderAbility.setOnAction(e -> {
-			
-			try {
-				game.useLeaderAbility();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
-				throwException(e1.getMessage());
+			String type = "";
+			String msg = "";
+			if (q.peekMin() instanceof Hero) {
+				type = "Hero";
+				msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
 			}
+			else if (q.peekMin() instanceof AntiHero) {
+				type = "AntiHero";
+				msg =  "All champions on the board except for the leaders of each team will be stunned for 2 turns.";
+			}
+			else if (q.peekMin() instanceof Villain) {
+				type = "Villain";
+				msg = "Immediately eliminates all enemy champions with less than 30% health points.";
+			}
+			Stage message = new Stage();
+			message.setTitle("Confirm to Use "  + type + " Leader Ability");
+			VBox window = new VBox(10);
+			window.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(window);
+			Button confirm = new Button("Confirm");
+			confirm.setOnAction(ee -> {
+				try {
+					game.useLeaderAbility();
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					message.close();
+				} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
+					throwException(e1.getMessage());
+				}
+			});
+			message.setScene(scene);
+			message.setMinWidth(400);
+			message.setMinHeight(200);
+			Text msgText =new Text(msg);
+			window.getChildren().addAll(msgText, confirm);
+			window.setPadding(new Insets(10,10,10,10));
+			message.show();
 		});
 		
 		
@@ -930,6 +960,7 @@ public class View extends Application {
 		endCurrentTurn.setMinWidth(30);
 		actions.add(endCurrentTurn);
 		endCurrentTurn.setOnAction(e -> {
+			
 			try {
 				game.endTurn();
 				updateCurrentInformation();
@@ -1288,9 +1319,13 @@ public class View extends Application {
 		window.setPadding(new Insets(10,10,10,10));
 		exception.show();
 	}
+
+	public static void viewLeaderAbility() {
+		
+	}
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 }
