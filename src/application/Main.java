@@ -27,11 +27,16 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import model.abilities.Ability;
 import model.abilities.AreaOfEffect;
+import model.abilities.CrowdControlAbility;
+import model.abilities.DamagingAbility;
+import model.abilities.HealingAbility;
 import model.effects.Effect;
+import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Condition;
 import model.world.Cover;
 import model.world.Direction;
+import model.world.Hero;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -718,80 +723,139 @@ public class Main extends Application {
 		if (championEffects.length() >= 2)
 			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
 		Label championType = new Label("Type: " + type);
-		championType.setFont(new Font("Didot.",12));
+		championType.setFont(new Font("Didot.",11));
 		Label championName = new Label("Name: " + champion.getName());
-		championName.setFont(new Font("Didot.",12));
+		championName.setFont(new Font("Didot.",11));
 		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
-		championMaxHP.setFont(new Font("Didot.",12));
+		championMaxHP.setFont(new Font("Didot.",11));
 		Label championMana = new Label("Mana: " + champion.getMana() + "");
-		championMana.setFont(new Font("Didot.",12));
+		championMana.setFont(new Font("Didot.",11));
 		Label championActions = new Label("Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
-		championActions.setFont(new Font("Didot.",12));
+		championActions.setFont(new Font("Didot.",11));
 		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
-		championSpeed.setFont(new Font("Didot.",12));
+		championSpeed.setFont(new Font("Didot.",11));
 		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
-		championRange.setFont(new Font("Didot.",12));
+		championRange.setFont(new Font("Didot.",11));
 		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
-		championDamage.setFont(new Font("Didot.",12));
+		championDamage.setFont(new Font("Didot.",11));
 		Label championAppliedEffects = new Label ("Applied Effects: " + championEffects);
-		championAppliedEffects.setFont(new Font("Didot.",12));
+		championAppliedEffects.setFont(new Font("Didot.",11));
 		Label championCondition = new Label ("Condition: " + champion.getCondition());
-		championCondition.setFont(new Font("Didot.",12));
+		championCondition.setFont(new Font("Didot.",11));
 		Region region1 = new Region();
-		region1.setMinHeight(30);
+		region1.setMinHeight(15);
 
 		Ability a1 = champion.getAbilities().get(0);
 		Ability a2 = champion.getAbilities().get(1);
 		Ability a3 = champion.getAbilities().get(2);
 		
 		Label a1Name = new Label (a1.getName());
-		a1Name.setFont(new Font("Didot.",12));
+		a1Name.setFont(new Font("Didot.",11));
+		String abilityType1 = "";
+		String abilityAmount1 = "";
+		if (a1 instanceof DamagingAbility) {
+			abilityType1 = "Damaging Ability";
+			abilityAmount1 = "Damaging amount: " + ((DamagingAbility)a1).getDamageAmount();
+		}
+		if (a1 instanceof HealingAbility) {
+			abilityType1 = "Healing Ability";
+			abilityAmount1 = "Healing amount: " + ((HealingAbility)a1).getHealAmount();
+		}
+		else if (a1 instanceof CrowdControlAbility) {
+			abilityType1 = "Crowd Control Ability";
+			abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
+					"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + ")";
+		}
+		Label a1Type = new Label ("Type: " + abilityType1);
+		a1Type.setFont(new Font("Didot.",11));
+		Label a1Amount = new Label (abilityAmount1);
+		a1Amount.setFont(new Font("Didot.",11));
 		Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
-		a1Mana.setFont(new Font("Didot.",12));
+		a1Mana.setFont(new Font("Didot.",11));
 		Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
-		a1Cool.setFont(new Font("Didot.",12));
+		a1Cool.setFont(new Font("Didot.",11));
 		Label a1Range = new Label ("Range: " + a1.getCastRange());
-		a1Range.setFont(new Font("Didot.",12));
+		a1Range.setFont(new Font("Didot.",11));
 		Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
-		a1Area.setFont(new Font("Didot.",12));
+		a1Area.setFont(new Font("Didot.",11));
 		Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
-		a1Action.setFont(new Font("Didot.",12));
+		a1Action.setFont(new Font("Didot.",11));
 		Region region2 = new Region();
-		region2.setMinHeight(30);
+		region2.setMinHeight(15);
 		Label a2Name = new Label (a2.getName());
-		a2Name.setFont(new Font("Didot.",12));
+		a2Name.setFont(new Font("Didot.",11));
+		String abilityType2 = "";
+		String abilityAmount2 = "";
+		if (a2 instanceof DamagingAbility) {
+			abilityType2 = "Damaging Ability";
+			abilityAmount2 = "Damaging amount: " + ((DamagingAbility)a2).getDamageAmount();
+		}
+		if (a2 instanceof HealingAbility) {
+			abilityType2 = "Healing Ability";
+			abilityAmount2 = "Healing amount: " + ((HealingAbility)a2).getHealAmount();
+		}
+		else if (a2 instanceof CrowdControlAbility) {
+			abilityType2 = "Crowd Control Ability";
+			abilityAmount2 = "Casted effect: " + ((CrowdControlAbility)a2).getEffect().getName() + 
+					"(" + ((CrowdControlAbility)a2).getEffect().getDuration() + ")";
+		}
+		Label a2Type = new Label ("Type: " + abilityType2);
+		a2Type.setFont(new Font("Didot.",11));
+		Label a2Amount = new Label (abilityAmount2);
+		a2Amount.setFont(new Font("Didot.",11));
 		Label a2Mana = new Label ("Mana Cost: " + a2.getManaCost());
-		a2Mana.setFont(new Font("Didot.",12));
+		a2Mana.setFont(new Font("Didot.",11));
 		Label a2Cool = new Label ("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
-		a2Cool.setFont(new Font("Didot.",12));
+		a2Cool.setFont(new Font("Didot.",11));
 		Label a2Range = new Label ("Range: " + a2.getCastRange());
-		a2Range.setFont(new Font("Didot.",12));
+		a2Range.setFont(new Font("Didot.",11));
 		Label a2Area = new Label ("Cast Area: " + a2.getCastArea());
-		a2Area.setFont(new Font("Didot.",12));
+		a2Area.setFont(new Font("Didot.",11));
 		Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
-		a2Action.setFont(new Font("Didot.",12));
+		a2Action.setFont(new Font("Didot.",11));
 		Region region3 = new Region();
-		region3.setMinHeight(30);
+		region3.setMinHeight(15);
 		Label a3Name = new Label (a3.getName());
-		a3Name.setFont(new Font("Didot.",12));
+		a3Name.setFont(new Font("Didot.",11));
+		String abilityType3 = "";
+		String abilityAmount3 = "";
+		if (a3 instanceof DamagingAbility) {
+			abilityType3 = "Damaging Ability";
+			abilityAmount3 = "Damaging amount: " + ((DamagingAbility)a3).getDamageAmount();
+		}
+		if (a3 instanceof HealingAbility) {
+			abilityType3 = "Healing Ability";
+			abilityAmount3 = "Healing amount: " + ((HealingAbility)a3).getHealAmount();
+		}
+		else if (a3 instanceof CrowdControlAbility) {
+			abilityType3 = "Crowd Control Ability";
+			abilityAmount3 = "Casted effect: " + ((CrowdControlAbility)a3).getEffect().getName() + 
+					"(" + ((CrowdControlAbility)a3).getEffect().getDuration() + ")";
+		}
+		Label a3Type = new Label ("Type: " + abilityType3);
+		a3Type.setFont(new Font("Didot.",11));
+		Label a3Amount = new Label (abilityAmount3);
+		a3Amount.setFont(new Font("Didot.",11));
 		Label a3Mana = new Label ("Mana Cost: " + a3.getManaCost());
-		a3Mana.setFont(new Font("Didot.",12));
+		a3Mana.setFont(new Font("Didot.",11));
 		Label a3Cool = new Label ("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
-		a3Cool.setFont(new Font("Didot.",12));
+		a3Cool.setFont(new Font("Didot.",11));
 		Label a3Range = new Label ("Range: " + a3.getCastRange());
-		a3Range.setFont(new Font("Didot.",12));
+		a3Range.setFont(new Font("Didot.",11));
 		Label a3Area = new Label ("Cast Area: " + a3.getCastArea());
-		a3Area.setFont(new Font("Didot.",12));
+		a3Area.setFont(new Font("Didot.",11));
 		Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
-		a3Action.setFont(new Font("Didot.",12));
+		a3Action.setFont(new Font("Didot.",11));
 		
 		currentInformation.setMaxWidth(250);
 		currentInformation.setMinWidth(250);
 		currentInformation.setAlignment(Pos.TOP_LEFT);
 		currentInformation.setPadding(new Insets(10,10,10,10));
 		currentInformation.getChildren().addAll(championType,championName,championMaxHP,championMana,championActions,
-				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, region1, a1Name, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
-				region2, a2Name, a2Mana, a2Cool, a2Range, a2Area, a2Action,region3, a3Name, a3Mana, a3Cool, a3Range, a3Area, a3Action);		
+				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, 
+				region1, a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
+				region2, a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action,
+				region3, a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);		
 		
 	}
 	
@@ -849,7 +913,11 @@ public class Main extends Application {
 					int b = j;
 					btn.setOnAction(e -> {
 						Stage cuurentHealth = new Stage();
-						cuurentHealth.setTitle(((Champion)board[a][b]).getName());
+						String type = "";
+						if (((Champion)board[a][b]) instanceof Hero) type = "Hero";
+						else if (((Champion)board[a][b]) instanceof AntiHero) type = "AntiHero";
+						else type = "Villain";
+						cuurentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
@@ -936,7 +1004,11 @@ public class Main extends Application {
 					int b = j;
 					btn.setOnAction(e -> {
 						Stage cuurentHealth = new Stage();
-						cuurentHealth.setTitle(((Champion)board[a][b]).getName());
+						String type = "";
+						if (((Champion)board[a][b]) instanceof Hero) type = "Hero";
+						else if (((Champion)board[a][b]) instanceof AntiHero) type = "AntiHero";
+						else type = "Villain";
+						cuurentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
