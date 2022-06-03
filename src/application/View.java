@@ -26,8 +26,11 @@ import java.util.Map;
 import engine.Game;
 import engine.Player;
 import engine.PriorityQueue;
+import exceptions.AbilityUseException;
 import exceptions.ChampionDisarmedException;
 import exceptions.InvalidTargetException;
+import exceptions.LeaderAbilityAlreadyUsedException;
+import exceptions.LeaderNotCurrentException;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.application.Application;
@@ -35,6 +38,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import model.abilities.Ability;
+import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
@@ -571,10 +575,361 @@ public class View extends Application {
 			
 		
 		// CAST ABILITY
+		
 		Button castAbility = new Button("Cast Ability");
 		castAbility.setMinHeight(30);
 		castAbility.setMinWidth(30);
 		actions.add(castAbility);
+		
+		
+		ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
+		
+		castAbility.setOnAction(e -> {
+			Button ability1 = new Button("First Ability");
+			
+			ability1.setOnAction(ee-> {
+				Ability a1 = abilities.get(0);
+				AreaOfEffect area = a1.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						game.castAbility(a1);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a1, Direction.UP);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button Down = new Button("DOWN");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a1, Direction.DOWN);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a1, Direction.LEFT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a1, Direction.RIGHT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+				}
+				
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					TextField x = new TextField();
+					TextField y = new TextField();
+					
+					int xPos = Integer.parseInt(x.getText());
+					int yPos = Integer.parseInt(y.getText());
+
+					try {
+						game.castAbility(a1, xPos, yPos);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
+							| CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				
+			});
+			
+			
+			
+			Button ability2 = new Button("Second Ability");
+			
+			ability2.setOnAction(ee-> {
+				Ability a2 = abilities.get(1);
+				AreaOfEffect area = a2.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						game.castAbility(a2);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a2, Direction.UP);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button Down = new Button("DOWN");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a2, Direction.DOWN);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a2, Direction.LEFT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a2, Direction.RIGHT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+				}
+				
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					TextField x = new TextField();
+					TextField y = new TextField();
+					
+					int xPos = Integer.parseInt(x.getText());
+					int yPos = Integer.parseInt(y.getText());
+
+					try {
+						game.castAbility(a2, xPos, yPos);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
+							| CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				
+			});
+			
+			
+			
+			
+			Button ability3 = new Button("Third Ability");
+			
+			ability3.setOnAction(ee-> {
+				Ability a3 = abilities.get(2);
+				AreaOfEffect area = a3.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						game.castAbility(a3);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a3, Direction.UP);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button Down = new Button("DOWN");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a3, Direction.DOWN);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a3, Direction.LEFT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					up.setOnAction(eee ->{
+						try {
+							game.castAbility(a3, Direction.RIGHT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException
+								| CloneNotSupportedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					});
+				}
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					TextField x = new TextField();
+					TextField y = new TextField();
+					
+					int xPos = Integer.parseInt(x.getText());
+					int yPos = Integer.parseInt(y.getText());
+
+					try {
+						game.castAbility(a3, xPos, yPos);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException
+							| CloneNotSupportedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				
+			});
+			
+			
+		});
 			
 			
 			
@@ -583,7 +938,21 @@ public class View extends Application {
 		useLeaderAbility.setMinHeight(30);
 		useLeaderAbility.setMinWidth(30);
 		actions.add(useLeaderAbility);
+		
 			
+		useLeaderAbility.setOnAction(e -> {
+			
+			try {
+				game.useLeaderAbility();
+			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
+				// TODO Auto-generated catch block
+				throwException(e1.getMessage());
+			}
+			
+		});
+		
+		
+	
 			
 		// END TURN
 		Button endCurrentTurn = new Button("End Turn");
