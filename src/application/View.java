@@ -130,7 +130,7 @@ public class View extends Application {
 				champions = Game.getAvailableChampions();
 				q = game.getTurnOrder();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				throwException(e1.getMessage());;
 			}
 			scene2(primaryStage);
 		});
@@ -584,7 +584,7 @@ public class View extends Application {
 		
 		
 		ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
-		
+		System.out.println(abilities.get(0) +" " + abilities.get(1) + " "+abilities.get(2));
 		castAbility.setOnAction(e -> {
 			Button ability1 = new Button("First Ability");
 			
@@ -599,7 +599,7 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
 				}
 				
@@ -614,14 +614,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException |InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());
 						}
 						
 					});
 					
-					Button Down = new Button("DOWN");
+					Button down = new Button("DOWN");
 					
-					up.setOnAction(eee ->{
+					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.DOWN);
 							updateCurrentInformation();
@@ -629,14 +629,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());
 						}
 						
 					});
 					
 					Button left = new Button("LEFT");
 					
-					up.setOnAction(eee ->{
+					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.LEFT);
 							updateCurrentInformation();
@@ -644,7 +644,7 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());
 						}
 						
 					});
@@ -652,7 +652,7 @@ public class View extends Application {
 					
 					Button right = new Button("RIGHT");
 					
-					up.setOnAction(eee ->{
+					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.RIGHT);
 							updateCurrentInformation();
@@ -661,10 +661,18 @@ public class View extends Application {
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException
 								|  InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());
 						}
 						
 					});
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
 				}
 				
 				
@@ -682,9 +690,16 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());
 					}
+				
 					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,x,y);
 				}
 				
 			});
@@ -704,7 +719,7 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());;
 					}
 				}
 				
@@ -719,14 +734,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
 					
-					Button Down = new Button("DOWN");
+					Button down = new Button("DOWN");
 					
-					up.setOnAction(eee ->{
+					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.DOWN);
 							updateCurrentInformation();
@@ -734,14 +749,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
 					
 					Button left = new Button("LEFT");
 					
-					up.setOnAction(eee ->{
+					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.LEFT);
 							updateCurrentInformation();
@@ -749,7 +764,7 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -757,7 +772,7 @@ public class View extends Application {
 					
 					Button right = new Button("RIGHT");
 					
-					up.setOnAction(eee ->{
+					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.RIGHT);
 							updateCurrentInformation();
@@ -765,10 +780,19 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
+					
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
 				}
 				
 				
@@ -786,9 +810,16 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());;
 					}
 					
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,x,y);
 				}
 				
 			});
@@ -809,7 +840,7 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());;
 					}
 				}
 				
@@ -824,14 +855,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
 					
-					Button Down = new Button("DOWN");
+					Button down = new Button("DOWN");
 					
-					up.setOnAction(eee ->{
+					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.DOWN);
 							updateCurrentInformation();
@@ -839,14 +870,14 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
 					
 					Button left = new Button("LEFT");
 					
-					up.setOnAction(eee ->{
+					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.LEFT);
 							updateCurrentInformation();
@@ -854,7 +885,7 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -862,7 +893,7 @@ public class View extends Application {
 					
 					Button right = new Button("RIGHT");
 					
-					up.setOnAction(eee ->{
+					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.RIGHT);
 							updateCurrentInformation();
@@ -870,18 +901,26 @@ public class View extends Application {
 							prepareTurns();
 							updateBoard();
 						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							e1.printStackTrace();
+							throwException(e1.getMessage());;
 						}
 						
 					});
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
 				}
 				
 				else if(area == AreaOfEffect.SINGLETARGET) {
 					TextField x = new TextField();
 					TextField y = new TextField();
 					
-					int xPos = Integer.parseInt(x.getText());
-					int yPos = Integer.parseInt(y.getText());
+					int xPos = Integer.parseInt("" + x.getText());
+					int yPos = Integer.parseInt("" +y.getText());
 
 					try {
 						game.castAbility(a3, xPos, yPos);
@@ -890,13 +929,26 @@ public class View extends Application {
 						prepareTurns();
 						updateBoard();
 					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						e1.printStackTrace();
+						throwException(e1.getMessage());;
 					}
 					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,x,y);
 				}
 				
 			});
 			
+			
+			while(currentControls.getChildren().size() > 5) {
+				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+			}
+			Region region = new Region();
+			region.setMinWidth(10);
+			currentControls.getChildren().addAll(region,ability1,ability2,ability3);
 			
 		});
 			
@@ -910,11 +962,25 @@ public class View extends Application {
 		
 			
 		useLeaderAbility.setOnAction(e -> {
+//<<<<<<< Updated upstream
 			String type = "";
 			String msg = "";
 			if (q.peekMin() instanceof Hero) {
 				type = "Hero";
 				msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
+//=======
+			
+			try {
+				game.useLeaderAbility();
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
+				// TODO Auto-generated catch block
+				throwException(e1.getMessage());
+//>>>>>>> Stashed changes
+			}
 			}
 			else if (q.peekMin() instanceof AntiHero) {
 				type = "AntiHero";
