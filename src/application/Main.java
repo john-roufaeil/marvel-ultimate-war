@@ -1,7 +1,25 @@
+/*
+ * TO DO
+ * 
+ * choose leader doesn't choose correctly (or when pressing on champion on board it doesn't know the leader correctly - always the last champion is the leader) 
+ * end turn: update current champion info, turn order
+ * cast ability
+ * use leader ability
+ * attack animation
+ * 
+ * Clean code
+ * 
+ * Fantastic GUI
+ * Network Mode
+ * Computer Player
+ */
+
+
 package application;
 	
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.awt.Point;
 import java.io.FileInputStream;
@@ -69,8 +87,14 @@ public class Main extends Application {
 	static int idx1 = 0;
 	static int idx2 = 0;
 	static GridPane boardView;
+	static HBox gameStatus;
+	static VBox turnOrderStatus;
+	static VBox currentInformation;
+	static HBox currentControls;
 	static Object[][] board ;
 	static ArrayList<Button> actions;
+	static HashMap<Champion, String> aliveMap;
+	static HashMap<Champion, String> deadMap;
 //	static Stage primaryStage;
 	
 	@Override
@@ -125,6 +149,15 @@ public class Main extends Application {
 	}
 	
 	public static void scene2(Stage primaryStage){
+		//MAP EACH CHAMPION WITH HIS/HER IMAGE
+		aliveMap = new HashMap<Champion,String>();
+		deadMap = new HashMap<Champion, String>();
+		for (int i = 1; i <= 15; i++) {
+			aliveMap.put(Game.getAvailableChampions().get(i-1), "./application/media/" + i + ".jpeg");
+			deadMap.put(Game.getAvailableChampions().get(i-1), "./application/media/" + i + "d.jpeg");
+		}
+		
+		
 		// Scene organisation
 		BorderPane root2 = new BorderPane();
 		begin = new Scene(root2);
@@ -375,11 +408,11 @@ public class Main extends Application {
 		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
 		
-		HBox gameStatus = new HBox();
-		VBox turnOrderStatus = new VBox();
-		HBox currentControls = new HBox();
+		gameStatus = new HBox();
+		turnOrderStatus = new VBox();
+		currentControls = new HBox();
 		boardView = new GridPane();
-		VBox currentInformation = new VBox(2);
+		currentInformation = new VBox(2);
 		
 		root3.setTop(gameStatus);
 		root3.setRight(turnOrderStatus);
@@ -388,65 +421,10 @@ public class Main extends Application {
 		root3.setCenter(boardView);
 		
 		// Game Status Bar
-		Label player1Name = new Label(player1.getName());
-		player1Name.setFont(new Font("Didot.",16));
-		gameStatus.getChildren().add(player1Name);
-//		ArrayList<ImageView> player1Images = new ArrayList<>();
-		
-		//MAP EACH CHAMPION WITH HIS/HER IMAGE
-		HashMap<Champion,String> map = new HashMap<Champion,String>();
-		
-		for (Champion c : player1.getTeam()) {
-			for (int i = 0; i < 15; i++) {
-				if (c == Game.getAvailableChampions().get(i)) {
-					int a = i+1;
-					Image image = new Image("./application/media/" + a + ".jpeg");
-					ImageView iv = new ImageView(image);
-					iv.setFitHeight(80);
-					iv.setFitWidth(80);
-					gameStatus.getChildren().add(iv);
-//					player1Images.add(iv);
-					
-					map.put(Game.getAvailableChampions().get(i),"./application/media/" + a + ".jpeg");
-					
-					break;
-				}
-			}
-		}
-		Image usedLeaderAbility = new Image("./application/media/pow.jpeg");
-		ImageView firstLeaderAbility = new ImageView(usedLeaderAbility);
-		Region r = new Region();
-		r.setMinWidth(100);
-		ImageView secondLeaderAbility = new ImageView(usedLeaderAbility);
-		firstLeaderAbility.setFitHeight(80);
-		firstLeaderAbility.setFitWidth(80);
-		secondLeaderAbility.setFitHeight(80);
-		secondLeaderAbility.setFitWidth(80);
-		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
-//		ArrayList<ImageView> player2Images = new ArrayList<>();
+		updateStatusBar();
 		
 		
-		for (Champion c : player2.getTeam()) {
-			for (int i = 0; i < 15; i++) {
-				if (c == Game.getAvailableChampions().get(i)) {
-					int a = i+1;
-					Image image = new Image("./application/media/" + a + ".jpeg");
-					ImageView iv = new ImageView(image);
-					iv.setFitHeight(80);
-					iv.setFitWidth(80);
-					gameStatus.getChildren().add(iv);
-//					player2Images.add(iv);
-					map.put(Game.getAvailableChampions().get(i),"./application/media/" + a + ".jpeg");
-					
-					break;
-				}
-			}
-		}
 		
-		
-		Label player2Name = new Label(player2.getName());
-		player1Name.setFont(new Font("Didot.",16));
-		gameStatus.getChildren().add(player2Name);
 		gameStatus.setPadding(new Insets(10,10,10,10));
 		gameStatus.setSpacing(10);
 		gameStatus.setAlignment(Pos.CENTER);
@@ -464,7 +442,7 @@ public class Main extends Application {
 		PriorityQueue q = game.getTurnOrder();
 		PriorityQueue tmp = new PriorityQueue(q.size());
 		
-		prepareTurns(map,turnOrderStatus,q,tmp);
+		prepareTurns(aliveMap,turnOrderStatus,q,tmp);
 		q = tmp;
 		PriorityQueue turnOrder = game.getTurnOrder();
 		turnOrder = q;
@@ -476,7 +454,7 @@ public class Main extends Application {
 			
 		// Board View
 		Button[][] boardButtons = new Button[5][5];
-		prepareBoard(map,boardButtons, q);
+		prepareBoard(aliveMap,boardButtons, q);
 	
 		boardView.setAlignment(Pos.CENTER);
 			
@@ -504,7 +482,7 @@ public class Main extends Application {
 				
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 				
@@ -526,7 +504,7 @@ public class Main extends Application {
 				
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 								
 			});
@@ -547,7 +525,7 @@ public class Main extends Application {
 				
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 				
@@ -567,12 +545,12 @@ public class Main extends Application {
 				
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 			});
 //				System.out.println(currentControls.getChildren().size());
-			while(currentControls.getChildren().size()>4) {
+			while(currentControls.getChildren().size()>5) {
 				currentControls.getChildren().remove(currentControls.getChildren().size()-1);
 			}
 			
@@ -608,7 +586,7 @@ public class Main extends Application {
 				
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 				
@@ -626,7 +604,7 @@ public class Main extends Application {
 				}
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 								
 			});
@@ -644,7 +622,7 @@ public class Main extends Application {
 				}
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 				
@@ -663,7 +641,7 @@ public class Main extends Application {
 				}
 				
 				if(f) {
-					prepareChampions(map,boardButtons, Q);
+					prepareChampions(aliveMap,boardButtons, Q);
 				}
 				
 			});
@@ -699,11 +677,82 @@ public class Main extends Application {
 			endCurrentTurn.setMinWidth(30);
 			actions.add(endCurrentTurn);
 			
+			endCurrentTurn.setOnAction(e -> {
+				boolean f = true;
+				try {
+					game.endTurn();
+					currentInformation.getChildren().clear();
+					updateCurrentInformation(currentInformation, Q);
+				} catch (Exception e1) {
+					f = false;
+					throwException(e1.getMessage());
+				}
+				
+				if(f) {
+					prepareChampions(aliveMap,boardButtons, Q);
+//					updateCurrentInformation(currentInformation, Q);
+//					prepareTurns(map,turnOrderStatus,Q ,tmp);
+					updateStatusBar();
+				}
+			});
+			
 			
 			
 			currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility, endCurrentTurn);
 			currentControls.setAlignment(Pos.CENTER);
 			currentControls.setPadding(new Insets(10,10,30,10));
+	}
+	
+	public static void updateStatusBar() {
+		gameStatus.getChildren().clear();
+		Label player1Name = new Label(player1.getName());
+		player1Name.setFont(new Font("Didot.",16));
+		gameStatus.getChildren().add(player1Name);
+		
+		for (Champion c : player1.getTeam()) {
+			Image image = new Image(aliveMap.get(c));
+			if (c.getCondition() == Condition.KNOCKEDOUT)
+				image = new Image(deadMap.get(c));
+			ImageView iv = new ImageView(image);
+			iv.setFitHeight(80);
+			iv.setFitWidth(80);
+			gameStatus.getChildren().add(iv);
+		}
+		
+		Image LeaderAbilityNotUsed = new Image("./application/media/pow.jpeg");
+		Image LeaderAbilityUsed = new Image ("./application/media/powd.jpeg");
+		ImageView firstLeaderAbility = new ImageView();
+		ImageView secondLeaderAbility = new ImageView();
+		if (!game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+		if (game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityUsed);
+		if (!game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+		if (game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+
+		Region r = new Region();
+		r.setMinWidth(100);
+		firstLeaderAbility.setFitHeight(80);
+		firstLeaderAbility.setFitWidth(80);
+		secondLeaderAbility.setFitHeight(80);
+		secondLeaderAbility.setFitWidth(80);
+		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
+		
+		for (Champion c : player2.getTeam()) {
+			Image image = new Image(aliveMap.get(c));
+			if (c.getCondition() == Condition.KNOCKEDOUT)
+				image = new Image(deadMap.get(c));
+			ImageView iv = new ImageView(image);
+			iv.setFitHeight(80);
+			iv.setFitWidth(80);
+			gameStatus.getChildren().add(iv);
+		}
+		
+		Label player2Name = new Label(player2.getName());
+		player1Name.setFont(new Font("Didot.",16));
+		gameStatus.getChildren().add(player2Name);
+	}
+	
+	public static void updateTurnBar() {
+		
 	}
 	
 	public static void updateCurrentInformation(VBox currentInformation, PriorityQueue q) {
@@ -718,7 +767,7 @@ public class Main extends Application {
 		
 		String championEffects = "";
 		for (Effect e : champion.getAppliedEffects()) {
-			championEffects += e.getName() + "(" + e.getDuration() + ")" + ", ";
+			championEffects += e.getName() + "(" + e.getDuration() + " turns)" + ", ";
 		}
 		if (championEffects.length() >= 2)
 			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
@@ -764,7 +813,7 @@ public class Main extends Application {
 		else if (a1 instanceof CrowdControlAbility) {
 			abilityType1 = "Crowd Control Ability";
 			abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + ")";
+					"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + " turns)";
 		}
 		Label a1Type = new Label ("Type: " + abilityType1);
 		a1Type.setFont(new Font("Didot.",11));
@@ -797,7 +846,7 @@ public class Main extends Application {
 		else if (a2 instanceof CrowdControlAbility) {
 			abilityType2 = "Crowd Control Ability";
 			abilityAmount2 = "Casted effect: " + ((CrowdControlAbility)a2).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a2).getEffect().getDuration() + ")";
+					"(" + ((CrowdControlAbility)a2).getEffect().getDuration() + " turns)";
 		}
 		Label a2Type = new Label ("Type: " + abilityType2);
 		a2Type.setFont(new Font("Didot.",11));
@@ -830,7 +879,7 @@ public class Main extends Application {
 		else if (a3 instanceof CrowdControlAbility) {
 			abilityType3 = "Crowd Control Ability";
 			abilityAmount3 = "Casted effect: " + ((CrowdControlAbility)a3).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a3).getEffect().getDuration() + ")";
+					"(" + ((CrowdControlAbility)a3).getEffect().getDuration() + " turns)";
 		}
 		Label a3Type = new Label ("Type: " + abilityType3);
 		a3Type.setFont(new Font("Didot.",11));
@@ -880,20 +929,20 @@ public class Main extends Application {
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
-						Stage cuurentHealth = new Stage();
-						cuurentHealth.setTitle("Cover");
+						Stage currentHealth = new Stage();
+						currentHealth.setTitle("Cover");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
 						Button OK = new Button("OK");
-						OK.setOnAction( ee -> cuurentHealth.close());
-						cuurentHealth.setScene(scene);
-						cuurentHealth.setMinWidth(400);
-						cuurentHealth.setMinHeight(200);
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
 						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
 						window.getChildren().addAll(msgText, OK);
 						window.setPadding(new Insets(10,10,10,10));
-						cuurentHealth.show();
+						currentHealth.show();
 					});
 				}
 				
@@ -912,20 +961,20 @@ public class Main extends Application {
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
-						Stage cuurentHealth = new Stage();
+						Stage currentHealth = new Stage();
 						String type = "";
 						if (((Champion)board[a][b]) instanceof Hero) type = "Hero";
 						else if (((Champion)board[a][b]) instanceof AntiHero) type = "AntiHero";
 						else type = "Villain";
-						cuurentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
+						currentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
 						Button OK = new Button("OK");
-						OK.setOnAction( ee -> cuurentHealth.close());
-						cuurentHealth.setScene(scene);
-						cuurentHealth.setMinWidth(400);
-						cuurentHealth.setMinHeight(200);
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
 						Text teamText;
 						if (player1.getTeam().contains((Champion)(board[a][b])))
 							teamText = new Text("Belonging to first team");
@@ -941,9 +990,18 @@ public class Main extends Application {
 						if (effects.length() >= 2)
 							effects = effects.substring(0, effects.length()-2);
 						Text effectsText =new Text("Effects on Champion: " + effects);
-						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, OK);
+						Text otherText = new Text("Mana: " + ((Champion)board[a][b]).getMana() + ", " +
+								"Speed: " + ((Champion)board[a][b]).getSpeed() + ", \n" +
+								"Max Actions per Turn: " + ((Champion)board[a][b]).getMaxActionPointsPerTurn() + ", \n" +
+								"Attack Range: " + ((Champion)board[a][b]).getAttackRange() + ", " +
+								"Attack Damage: " + ((Champion)board[a][b]).getAttackDamage() + ".");
+						otherText.setTextAlignment(TextAlignment.CENTER);
+						Text leaderText = new Text("Champion is not a leader.");
+						if (player1.getLeader() == ((Champion)board[a][b]) || player2.getLeader() == ((Champion)board[a][b]))
+							leaderText = new Text("Champion is a leader");
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText, leaderText, OK);
 						window.setPadding(new Insets(10,10,10,10));
-						cuurentHealth.show();
+						currentHealth.show();
 					});
 				}
 				boardView.add(btn,j,4-i);
@@ -971,20 +1029,20 @@ public class Main extends Application {
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
-						Stage cuurentHealth = new Stage();
-						cuurentHealth.setTitle("Cover");
+						Stage currentHealth = new Stage();
+						currentHealth.setTitle("Cover");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
 						Button OK = new Button("OK");
-						OK.setOnAction( ee -> cuurentHealth.close());
-						cuurentHealth.setScene(scene);
-						cuurentHealth.setMinWidth(400);
-						cuurentHealth.setMinHeight(200);
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
 						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
 						window.getChildren().addAll(msgText, OK);
 						window.setPadding(new Insets(10,10,10,10));
-						cuurentHealth.show();
+						currentHealth.show();
 					});
 				}
 				
@@ -1003,20 +1061,20 @@ public class Main extends Application {
 					int a = i;
 					int b = j;
 					btn.setOnAction(e -> {
-						Stage cuurentHealth = new Stage();
+						Stage currentHealth = new Stage();
 						String type = "";
 						if (((Champion)board[a][b]) instanceof Hero) type = "Hero";
 						else if (((Champion)board[a][b]) instanceof AntiHero) type = "AntiHero";
 						else type = "Villain";
-						cuurentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
+						currentHealth.setTitle(((Champion)board[a][b]).getName() + " (" + type + ")");
 						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
 						Scene scene = new Scene(window);
 						Button OK = new Button("OK");
-						OK.setOnAction( ee -> cuurentHealth.close());
-						cuurentHealth.setScene(scene);
-						cuurentHealth.setMinWidth(400);
-						cuurentHealth.setMinHeight(200);
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
 						Text teamText;
 						if (player1.getTeam().contains((Champion)(board[a][b])))
 							teamText = new Text("Belonging to first team");
@@ -1032,9 +1090,18 @@ public class Main extends Application {
 						if (effects.length() >= 2)
 							effects = effects.substring(0, effects.length()-2);
 						Text effectsText =new Text("Effects on Champion: " + effects);
-						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, OK);
+						Text otherText = new Text("Mana: " + ((Champion)board[a][b]).getMana() + ", " +
+								"Speed: " + ((Champion)board[a][b]).getSpeed() + ", \n" +
+								"Max Actions per Turn: " + ((Champion)board[a][b]).getMaxActionPointsPerTurn() + ", \n" +
+								"Attack Range: " + ((Champion)board[a][b]).getAttackRange() + ", " +
+								"Attack Damage: " + ((Champion)board[a][b]).getAttackDamage() + ".");
+						otherText.setTextAlignment(TextAlignment.CENTER);
+						Text leaderText = new Text("Champion is not a leader.");
+						if (player1.getLeader() == ((Champion)board[a][b]) || player2.getLeader() == ((Champion)board[a][b]))
+							leaderText = new Text("Champion is a leader");
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText, leaderText, OK);
 						window.setPadding(new Insets(10,10,10,10));
-						cuurentHealth.show();
+						currentHealth.show();
 					});
 				}
 					
