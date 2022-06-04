@@ -1,9 +1,8 @@
 /*
  * TODO
  * 
- * cast ability
- * use leader ability
- * attack animation
+ * marvel video intro
+ * attack & cast ability animation
  * 
  * Clean code
  * 
@@ -77,6 +76,8 @@ public class View extends Application {
 	static ArrayList<Button> championsButtons = new ArrayList<>();
 	static ArrayList<Button> actions = new ArrayList<Button>();
 	static ArrayList<Champion> champions;
+	static ArrayList<Champion> player1Champions = new ArrayList<>();
+	static ArrayList<Champion> player2Champions = new ArrayList<>();
 	static PriorityQueue q;
 	static PriorityQueue tmp;
 	static boolean full = false;
@@ -151,7 +152,6 @@ public class View extends Application {
 			aliveMap.put(Game.getAvailableChampions().get(i-1), "./application/media/" + i + ".jpeg");
 			deadMap.put(Game.getAvailableChampions().get(i-1), "./application/media/" + i + "d.jpeg");
 		}
-		
 		
 		// Scene Organisation
 		BorderPane root2 = new BorderPane();
@@ -232,6 +232,7 @@ public class View extends Application {
 		    }
 		    championsButtons.add(btn);
 		}
+		
 		// Configuring Nodes
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
 		champsgrid.setStyle("-fx-background-color: #222;");
@@ -397,6 +398,15 @@ public class View extends Application {
 
 	// Open Board Game View
 	public static void scene3(Stage primaryStage) throws IOException {
+		// Assign players' champions team
+		for (Champion c : player1.getTeam()) {
+			player1Champions.add(c);
+		}
+		for (Champion c : player2.getTeam()) {
+			player2Champions.add(c);
+		}
+		
+		
 		board = game.getBoard();
 		game.placeChampions();
 		game.prepareChampionTurns();
@@ -1723,10 +1733,10 @@ public class View extends Application {
 					gameOver.show();
 					
 				}
+				updateBoard();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
-				updateBoard();
 			} catch (Exception e1) {
 				throwException(e1.getMessage());
 			}
@@ -1738,7 +1748,6 @@ public class View extends Application {
 		currentControls.setPadding(new Insets(10,10,30,10));
 	}	
 	
-	// Update Turns
 	// Update the Turn Order Status
 	public static void prepareTurns() {
 		turnOrderStatus.getChildren().clear();
@@ -1922,13 +1931,14 @@ public class View extends Application {
 	// Show Status of Players' Team and Leader Ability
 
 	// Update the Status of Players' Champions and Leader Ability
+
 	public static void updateStatusBar() {
 		gameStatus.getChildren().clear();
 		Label player1Name = new Label(player1.getName());
 		player1Name.setFont(new Font("Didot.",16));
 		gameStatus.getChildren().add(player1Name);
 		
-		for (Champion c : player1.getTeam()) {
+		for (Champion c : player1Champions) {
 			Image image = new Image(aliveMap.get(c));
 			if (c.getCondition() == Condition.KNOCKEDOUT)
 				image = new Image(deadMap.get(c));
@@ -1955,7 +1965,7 @@ public class View extends Application {
 		secondLeaderAbility.setFitWidth(80);
 		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
 		
-		for (Champion c : player2.getTeam()) {
+		for (Champion c : player2Champions) {
 			Image image = new Image(aliveMap.get(c));
 			if (c.getCondition() == Condition.KNOCKEDOUT)
 				image = new Image(deadMap.get(c));
@@ -1975,6 +1985,7 @@ public class View extends Application {
 	// Update the Board View
 
 	// Update the Board
+
 	public static void updateBoard() {
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
@@ -2077,6 +2088,7 @@ public class View extends Application {
 	// Open a Pop-Up to Throw Exception
 
 	// Open a Pop-up to Throw Exception
+	
 	public static void throwException(String msg) {
 		Stage exception = new Stage();
 		exception.setTitle("Error");
@@ -2093,6 +2105,8 @@ public class View extends Application {
 		window.setPadding(new Insets(10,10,10,10));
 		exception.show();
 	}
+	
+
 	
 
 	public static void main(String[] args) {
