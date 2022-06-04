@@ -57,7 +57,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -438,6 +437,255 @@ public class View extends Application {
 		updateBoard();
 		boardView.setAlignment(Pos.CENTER);
 		
+		
+		
+		// Manual Button
+		Button manual = new Button("Open Game Manual");
+		manual.setMinHeight(30);
+		manual.setMinWidth(30);
+		manual.setOnAction(e -> {
+			Stage manualStage = new Stage();
+			manualStage.setTitle("Game Manual");
+			VBox mainBox = new VBox(10);
+			mainBox.setAlignment(Pos.CENTER);
+			VBox tmpBox = new VBox(10);
+			tmpBox.setAlignment(Pos.CENTER);
+			VBox effectBox = new VBox(10);
+			effectBox.setAlignment(Pos.CENTER);
+			Scene mainScene = new Scene(mainBox);
+			Scene tmpScene = new Scene(tmpBox);
+			Scene effectScene = new Scene(effectBox);
+			// Abilities Manual Button
+				Button abilities = new Button("Abilities");
+				abilities.setOnAction(ee -> {
+					tmpBox.getChildren().clear();
+					manualStage.setTitle("Abilities Manual");
+					Text info = new Text("There are 3 types of abilities:\n "
+							+ "Damaging Ability, Healing Ability, Crowd Control Ability.\n"
+							+ "Each Ability requires a ceratin amount of actions and mana to be casted.\n"
+							+ "Each Ability has a specific Casting Area.");
+					info.setTextAlignment(TextAlignment.CENTER);
+					Text DA = new Text("Damaging Abilities deal a certain amount\n"
+							+ "of damage to enemies within Casting Area.");
+					Text HA = new Text("Healing Abilities add a certain amount\n"
+							+ "of health to friends within Casting Area.");
+					Text CCA = new Text("Crowd Control Abilities activate a certain\n"
+							+ "effect on targets within Casting Area.");
+					Button back = new Button("Go Back");
+					back.setOnAction(eee -> {
+						manualStage.setTitle("Game Manual");
+						manualStage.setScene(mainScene);
+					});
+					tmpBox.getChildren().addAll(info, DA, HA, CCA, back);
+					manualStage.setScene(tmpScene);
+				});
+				
+				
+				// Effects Manual Button
+				Button effects = new Button("Effects");
+				effects.setOnAction(ee -> {
+					tmpBox.getChildren().clear();
+					manualStage.setTitle("Effects Manual");
+					
+					Label selectEffect = new Label("Select an Effect");
+					
+					Button disarm = new Button("Disarm");
+					disarm.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Disarm Effect");
+						Text disarmText = new Text("Target cannot use normal attacks.\n" + 
+								"Gain a SINGLETARGET damaging ability");
+						disarmText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(disarmText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button dodge = new Button("Dodge");
+					dodge.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Dodge Effect");
+						Text dodgeText = new Text("Target has a 50% chance of dodging normal attacks.\n" + 
+								"Increase speed by 5%");
+						dodgeText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(dodgeText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button embrace = new Button("Embrace");
+					embrace.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Embrace Effect");
+						Text embraceText = new Text("Permanently add 20% from maxHP to currentHP,\n" + 
+								"Permanently increase mana by 20%,\n" + 
+								"Increase speed and attackDamage by 20%.");
+						embraceText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(embraceText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button powerup = new Button("PowerUp");
+					powerup.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("PowerUp Effect");
+						Text powerupText = new Text("Increase damageAmount and healAmount of all damaging\n"
+								+ "and healing abilities of the target by 20%");
+						powerupText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(powerupText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button root	= new Button("Root");
+					root.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Root Effect");
+						Text rootText = new Text("Target cannot move.");
+						rootText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(rootText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button shield = new Button("Shield");
+					shield.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Shield Effect");
+						Text shieldText = new Text("Block the next attack or damaging ability cast on target.\n" + 
+								"Once an attack or ability is blocked, the effect will be removed.\n" + 
+								"Increase speed by 2%.");
+						shieldText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(shieldText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button shock = new Button("Shock");
+					shock.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Shock Effect");
+						Text shockText = new Text("Decrease target speed by 10%\n" + 
+								"Decrease the target’s normal attack damage by 10%\n" + 
+								"Decrease max action points per turn and current action points by 1.");
+						shockText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(shockText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button silence = new Button("Silence");
+					silence.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Silence Effect");
+						Text silenceText = new Text("Target cannot use abilities.\n" + 
+								"Increase max action points per turn and current action points by 2");
+						silenceText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(silenceText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button speedup = new Button("SpeedUp");
+					speedup.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("SpeedUp Effect");
+						Text speedupText = new Text("Increase speed by 15%.\n" + 
+								"Increase max action points per turn and current action points by 1.");
+						speedupText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(speedupText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button stun	= new Button("Stun");
+					stun.setOnAction(eee -> {
+						effectBox.getChildren().clear();
+						manualStage.setTitle("Stun Effect");
+						Text stunText = new Text("Set target to INACTIVE.\n" + 
+								"Target is not allowed to play their turn for the duration.");
+						stunText.setTextAlignment(TextAlignment.CENTER);
+						Button backToTmp = new Button("Back to Effects List");
+						backToTmp.setOnAction(eeee -> {
+							manualStage.setTitle("Effects Manual");
+							manualStage.setScene(tmpScene);
+						});
+						effectBox.getChildren().addAll(stunText, backToTmp);
+						manualStage.setScene(effectScene);
+					});
+					
+					Button back = new Button("Go Back");
+					back.setOnAction(eee -> {
+						manualStage.setScene(mainScene);
+					});
+					
+					disarm.setMinWidth(100);
+					dodge.setMinWidth(100);
+					embrace.setMinWidth(100);
+					powerup.setMinWidth(100);
+					root.setMinWidth(100);
+					shield.setMinWidth(100);
+					shock.setMinWidth(100);
+					silence.setMinWidth(100);
+					speedup.setMinWidth(100);
+					stun.setMinWidth(100);
+					tmpBox.getChildren().addAll(selectEffect, disarm, dodge, embrace, powerup, root, shield,
+							shock, silence, speedup, stun, back);
+					manualStage.setScene(tmpScene);
+				});
+							
+				Button close = new Button("Close");
+				close.setOnAction(ee -> manualStage.close());
+				
+				manualStage.setScene(mainScene);
+				manualStage.setMinWidth(400);
+				manualStage.setMinHeight(200);
+				mainBox.getChildren().addAll(abilities, effects, close);
+				mainBox.setPadding(new Insets(10,10,10,10));
+				tmpBox.setPadding(new Insets(10,10,10,10));
+				effectBox.setPadding(new Insets(10,10,10,10));
+				manualStage.centerOnScreen();
+				manualStage.show();
+		});
+		
+		
 		// Controls
 		// ATTACK
 		Button attack = new Button("Attack");
@@ -569,7 +817,7 @@ public class View extends Application {
 				}				
 			});
 
-			while(currentControls.getChildren().size() > 5) {
+			while(currentControls.getChildren().size() > 6) {
 				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 			}
 			
@@ -638,7 +886,7 @@ public class View extends Application {
 				}
 			});
 			
-			while(currentControls.getChildren().size() > 5) {
+			while(currentControls.getChildren().size() > 6) {
 				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 			}
 			Region region = new Region();
@@ -659,12 +907,10 @@ public class View extends Application {
 		
 //		System.out.println(abilities.get(0) +" " + abilities.get(1) + " "+abilities.get(2));
 		castAbility.setOnAction(e -> {
-			
-			System.out.println(game.getCurrentChampion().getLocation());
 			ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
-			Button ability1 = new Button("First Ability");
+			Button ability1 = new Button(abilities.get(0).getName());
 			
-			ability1.setOnAction(ee-> {
+			ability1.setOnAction(ee -> {
 				Ability a1 = abilities.get(0);
 				AreaOfEffect area = a1.getCastArea();
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
@@ -832,7 +1078,7 @@ public class View extends Application {
 						
 					});
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -848,7 +1094,7 @@ public class View extends Application {
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -898,7 +1144,7 @@ public class View extends Application {
 			
 			
 			
-			Button ability2 = new Button("Second Ability");
+			Button ability2 = new Button(abilities.get(1).getName());
 			
 			ability2.setOnAction(ee-> {
 				Ability a2 = abilities.get(1);
@@ -1068,7 +1314,7 @@ public class View extends Application {
 					});
 					
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -1084,7 +1330,7 @@ public class View extends Application {
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -1136,7 +1382,7 @@ public class View extends Application {
 			
 			
 			
-			Button ability3 = new Button("Third Ability");
+			Button ability3 = new Button(abilities.get(2).getName());
 			
 			ability3.setOnAction(ee-> {
 				Ability a3 = abilities.get(2);
@@ -1305,7 +1551,7 @@ public class View extends Application {
 						
 					});
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -1320,7 +1566,7 @@ public class View extends Application {
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 5) {
+					while(currentControls.getChildren().size() > 6) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -1371,7 +1617,7 @@ public class View extends Application {
 			});
 			
 			
-			while(currentControls.getChildren().size() > 5) {
+			while(currentControls.getChildren().size() > 6) {
 				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 			}
 			Region region = new Region();
@@ -1390,43 +1636,11 @@ public class View extends Application {
 		
 			
 		useLeaderAbility.setOnAction(e -> {
-//<<<<<<< Updated upstream
 			String type = "";
 			String msg = "";
 			if (q.peekMin() instanceof Hero) {
 				type = "Hero";
 				msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
-//=======
-			
-			try {
-				game.useLeaderAbility();
-				Player winner = game.checkGameOver();
-				if(winner != null) {
-					Stage gameOver = new Stage();
-					gameOver.setTitle("Game Over");
-					VBox window = new VBox(10);
-					window.setAlignment(Pos.CENTER);
-					Scene scene = new Scene(window);
-					Button exitGame = new Button("Exit Game");
-					exitGame.setOnAction( k -> primaryStage.close());
-					gameOver.setScene(scene);
-					gameOver.setMinWidth(400);
-					gameOver.setMinHeight(200);
-					Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-					window.getChildren().addAll(msgText, exitGame);
-					window.setPadding(new Insets(10,10,10,10));
-					gameOver.show();
-					
-				}
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
-				// TODO Auto-generated catch block
-				throwException(e1.getMessage());
-//>>>>>>> Stashed changes
-			}
 			}
 			else if (q.peekMin() instanceof AntiHero) {
 				type = "AntiHero";
@@ -1481,8 +1695,6 @@ public class View extends Application {
 			message.show();
 		});
 		
-		
-	
 			
 		// END TURN
 		Button endCurrentTurn = new Button("End Turn");
@@ -1521,11 +1733,12 @@ public class View extends Application {
 		});
 		
 		
-		currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility, endCurrentTurn);
+		currentControls.getChildren().addAll(manual, attack, move, castAbility, useLeaderAbility, endCurrentTurn);
 		currentControls.setAlignment(Pos.CENTER);
 		currentControls.setPadding(new Insets(10,10,30,10));
 	}	
 	
+	// Update Turns
 	// Update the Turn Order Status
 	public static void prepareTurns() {
 		turnOrderStatus.getChildren().clear();
@@ -1547,6 +1760,8 @@ public class View extends Application {
 	}
 	
 	// Show the Current Champion's Attributes
+
+	// Update Current Champion's Information
 	public static void updateCurrentInformation() {
 		currentInformation.getChildren().clear();
 		// Get Current Champion
@@ -1592,7 +1807,7 @@ public class View extends Application {
 		Ability a2 = champion.getAbilities().get(1);
 		Ability a3 = champion.getAbilities().get(2);
 		// First Ability's Attributes
-		Label a1Name = new Label (a1.getName());
+		Label a1Name = new Label ("First Ability: " + a1.getName());
 		a1Name.setFont(new Font("Didot.",11));
 		String abilityType1 = "";
 		String abilityAmount1 = "";
@@ -1626,7 +1841,7 @@ public class View extends Application {
 		Region region2 = new Region();
 		// Second Ability's Attributes
 		region2.setMinHeight(15);
-		Label a2Name = new Label (a2.getName());
+		Label a2Name = new Label ("Second Ability: " + a2.getName());
 		a2Name.setFont(new Font("Didot.",11));
 		String abilityType2 = "";
 		String abilityAmount2 = "";
@@ -1660,7 +1875,7 @@ public class View extends Application {
 		Region region3 = new Region();
 		region3.setMinHeight(15);
 		// Third Ability's Attributes
-		Label a3Name = new Label (a3.getName());
+		Label a3Name = new Label ("Third Ability: " + a3.getName());
 		a3Name.setFont(new Font("Didot.",11));
 		String abilityType3 = "";
 		String abilityAmount3 = "";
@@ -1691,6 +1906,7 @@ public class View extends Application {
 		a3Area.setFont(new Font("Didot.",11));
 		Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
 		a3Action.setFont(new Font("Didot.",11));
+		
 		// Configuring Node
 		currentInformation.setMaxWidth(250);
 		currentInformation.setMinWidth(250);
@@ -1700,10 +1916,12 @@ public class View extends Application {
 				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, 
 				region1, a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
 				region2, a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action,
-				region3, a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);	
+				region3, a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
 	}
 	
 	// Show Status of Players' Team and Leader Ability
+
+	// Update the Status of Players' Champions and Leader Ability
 	public static void updateStatusBar() {
 		gameStatus.getChildren().clear();
 		Label player1Name = new Label(player1.getName());
@@ -1753,6 +1971,10 @@ public class View extends Application {
 	}
 	
 	// Update Board Buttons
+
+	// Update the Board View
+
+	// Update the Board
 	public static void updateBoard() {
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
@@ -1851,6 +2073,10 @@ public class View extends Application {
 	}
 	
 	// Create Pop-up With Exception Message
+
+	// Open a Pop-Up to Throw Exception
+
+	// Open a Pop-up to Throw Exception
 	public static void throwException(String msg) {
 		Stage exception = new Stage();
 		exception.setTitle("Error");
@@ -1867,11 +2093,8 @@ public class View extends Application {
 		window.setPadding(new Insets(10,10,10,10));
 		exception.show();
 	}
-
-	public static void viewLeaderAbility() {
-		
-	}
 	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
