@@ -87,7 +87,7 @@ public class View extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
-		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+//		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("./application/media/icon.png");
 		primaryStage.getIcons().add(icon);
 		scene1(primaryStage);
@@ -448,6 +448,24 @@ public class View extends Application {
 			up.setOnAction(ee -> {
 				try {
 					game.attack(Direction.UP);
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> gameOver.close());
+						gameOver.setScene(scene);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -461,6 +479,24 @@ public class View extends Application {
 			down.setOnAction(ee -> {
 				try {
 					game.attack(Direction.DOWN);
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> gameOver.close());
+						gameOver.setScene(scene);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -474,6 +510,24 @@ public class View extends Application {
 			left.setOnAction(ee -> {
 				try {
 					game.attack(Direction.LEFT);
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> gameOver.close());
+						gameOver.setScene(scene);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -487,6 +541,24 @@ public class View extends Application {
 			right.setOnAction(ee -> {
 				try {
 					game.attack(Direction.RIGHT);
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> gameOver.close());
+						gameOver.setScene(scene);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -583,9 +655,12 @@ public class View extends Application {
 		actions.add(castAbility);
 		
 		
-		ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
-		System.out.println(abilities.get(0) +" " + abilities.get(1) + " "+abilities.get(2));
+		
+//		System.out.println(abilities.get(0) +" " + abilities.get(1) + " "+abilities.get(2));
 		castAbility.setOnAction(e -> {
+			
+			System.out.println(game.getCurrentChampion().getLocation());
+			ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
 			Button ability1 = new Button("First Ability");
 			
 			ability1.setOnAction(ee-> {
@@ -594,6 +669,24 @@ public class View extends Application {
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
 						game.castAbility(a1);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
 						updateCurrentInformation();
 						updateStatusBar();
 						prepareTurns();
@@ -609,6 +702,24 @@ public class View extends Application {
 					up.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -624,6 +735,24 @@ public class View extends Application {
 					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -639,6 +768,24 @@ public class View extends Application {
 					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -655,6 +802,24 @@ public class View extends Application {
 					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a1, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -677,29 +842,55 @@ public class View extends Application {
 				
 				
 				else if(area == AreaOfEffect.SINGLETARGET) {
-					TextField x = new TextField();
-					TextField y = new TextField();
-					
-					int xPos = Integer.parseInt(x.getText());
-					int yPos = Integer.parseInt(y.getText());
-
-					try {
-						game.castAbility(a1, xPos, yPos);
-						updateCurrentInformation();
-						updateStatusBar();
-						prepareTurns();
-						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());
-					}
-				
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
 					
 					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
-					Region region = new Region();
-					region.setMinWidth(10);
-					currentControls.getChildren().addAll(region,x,y);
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							game.castAbility(a1, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);
 				}
 				
 			});
@@ -714,6 +905,24 @@ public class View extends Application {
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
 						game.castAbility(a2);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
 						updateCurrentInformation();
 						updateStatusBar();
 						prepareTurns();
@@ -729,6 +938,24 @@ public class View extends Application {
 					up.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -744,6 +971,24 @@ public class View extends Application {
 					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -759,6 +1004,24 @@ public class View extends Application {
 					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -775,6 +1038,24 @@ public class View extends Application {
 					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a2, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -797,29 +1078,56 @@ public class View extends Application {
 				
 				
 				else if(area == AreaOfEffect.SINGLETARGET) {
-					TextField x = new TextField();
-					TextField y = new TextField();
-					
-					int xPos = Integer.parseInt(x.getText());
-					int yPos = Integer.parseInt(y.getText());
-
-					try {
-						game.castAbility(a2, xPos, yPos);
-						updateCurrentInformation();
-						updateStatusBar();
-						prepareTurns();
-						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());;
-					}
-					
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
 					
 					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
-					Region region = new Region();
-					region.setMinWidth(10);
-					currentControls.getChildren().addAll(region,x,y);
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+					
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							game.castAbility(a2, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);	
 				}
 				
 			});
@@ -835,6 +1143,24 @@ public class View extends Application {
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
 						game.castAbility(a3);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
 						updateCurrentInformation();
 						updateStatusBar();
 						prepareTurns();
@@ -850,6 +1176,24 @@ public class View extends Application {
 					up.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -865,6 +1209,24 @@ public class View extends Application {
 					down.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -880,6 +1242,24 @@ public class View extends Application {
 					left.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -896,6 +1276,24 @@ public class View extends Application {
 					right.setOnAction(eee ->{
 						try {
 							game.castAbility(a3, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -916,28 +1314,57 @@ public class View extends Application {
 				}
 				
 				else if(area == AreaOfEffect.SINGLETARGET) {
-					TextField x = new TextField();
-					TextField y = new TextField();
-					
-					int xPos = Integer.parseInt("" + x.getText());
-					int yPos = Integer.parseInt("" +y.getText());
-
-					try {
-						game.castAbility(a3, xPos, yPos);
-						updateCurrentInformation();
-						updateStatusBar();
-						prepareTurns();
-						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());;
-					}
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
 					
 					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
-					Region region = new Region();
-					region.setMinWidth(10);
-					currentControls.getChildren().addAll(region,x,y);
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+				
+					Button confirm = new Button("Confirm");	
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							game.castAbility(a3, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);
+					
 				}
 				
 			});
@@ -972,6 +1399,24 @@ public class View extends Application {
 			
 			try {
 				game.useLeaderAbility();
+				Player winner = game.checkGameOver();
+				if(winner != null) {
+					Stage gameOver = new Stage();
+					gameOver.setTitle("Game Over");
+					VBox window = new VBox(10);
+					window.setAlignment(Pos.CENTER);
+					Scene scene = new Scene(window);
+					Button exitGame = new Button("Exit Game");
+					exitGame.setOnAction( k -> primaryStage.close());
+					gameOver.setScene(scene);
+					gameOver.setMinWidth(400);
+					gameOver.setMinHeight(200);
+					Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+					window.getChildren().addAll(msgText, exitGame);
+					window.setPadding(new Insets(10,10,10,10));
+					gameOver.show();
+					
+				}
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
@@ -999,6 +1444,24 @@ public class View extends Application {
 			confirm.setOnAction(ee -> {
 				try {
 					game.useLeaderAbility();
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox windoww = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scenee = new Scene(windoww);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> primaryStage.close());
+						gameOver.setScene(scenee);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						windoww.getChildren().addAll(msgText, exitGame);
+						windoww.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1029,6 +1492,24 @@ public class View extends Application {
 			
 			try {
 				game.endTurn();
+				Player winner = game.checkGameOver();
+				if(winner != null) {
+					Stage gameOver = new Stage();
+					gameOver.setTitle("Game Over");
+					VBox window = new VBox(10);
+					window.setAlignment(Pos.CENTER);
+					Scene scene = new Scene(window);
+					Button exitGame = new Button("Exit Game");
+					exitGame.setOnAction( k -> primaryStage.close());
+					gameOver.setScene(scene);
+					gameOver.setMinWidth(400);
+					gameOver.setMinHeight(200);
+					Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+					window.getChildren().addAll(msgText, exitGame);
+					window.setPadding(new Insets(10,10,10,10));
+					gameOver.show();
+					
+				}
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
@@ -1042,8 +1523,8 @@ public class View extends Application {
 		currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility, endCurrentTurn);
 		currentControls.setAlignment(Pos.CENTER);
 		currentControls.setPadding(new Insets(10,10,30,10));
-	}
-
+	}	
+	
 	// Update the Turn Order Status
 	public static void prepareTurns() {
 		turnOrderStatus.getChildren().clear();
