@@ -1,8 +1,6 @@
 /*
  * TODO
  * 
- * cast ability
- * use leader ability
  * attack animation
  * 
  * Clean code
@@ -17,13 +15,10 @@ package application;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-
 import engine.Game;
 import engine.Player;
 import engine.PriorityQueue;
@@ -58,6 +53,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -67,7 +63,7 @@ import javafx.scene.layout.VBox;
 public class View extends Application {
 	static Game game;
 	static Player player1, player2;
-	static Scene homepage, begin, gameview;
+	static Scene modePage, homepage, begin, gameview;
 	static GridPane boardView;
 	static HBox gameStatus, currentControls;
 	static VBox turnOrderStatus, currentInformation;
@@ -83,30 +79,103 @@ public class View extends Application {
 	static boolean full = false;
 	static Object[][] board;
 	static Button[][] boardButtons = new Button[5][5];
+	static boolean twoPlayerMode;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
-//		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("./application/media/icon.png");
 		primaryStage.getIcons().add(icon);
-		scene1(primaryStage);
+
+		checkPlayingMode(primaryStage);
+//		scene(primaryStage);
 		primaryStage.show();
+	}
+	
+	
+	public static void checkPlayingMode(Stage primaryStage) {
+		// Scene Organisation
+		VBox root1 = new VBox(10);
+		root1.setAlignment(Pos.CENTER);
+		root1.setPadding(new Insets(10, 10, 10, 10));
+		modePage = new Scene(root1,400,400);
+		Button onePlayer = new Button("1 Player");
+		onePlayer.setMinHeight(150);
+		onePlayer.setMinWidth(150);
+		onePlayer.setOnAction(e -> {
+			scene(primaryStage);
+		});
+		Button twoPlayers = new Button("2 Players");
+		twoPlayers.setMinHeight(150);
+		twoPlayers.setMinWidth(150);
+		twoPlayers.setOnAction(e -> {
+			scene1(primaryStage);
+		});
+		
+		root1.getChildren().addAll(onePlayer,twoPlayers);
+		primaryStage.setScene(modePage);
+		
+	}
+	
+	// 1 player mode
+	public static void scene(Stage primaryStage) {
+		twoPlayerMode = false;
+		String computerName = "Computer";
+		player2 = new Player(computerName);
+		
+		// Scene Organisation
+		VBox root1 = new VBox(10);
+		root1.setAlignment(Pos.CENTER);
+		root1.setPadding(new Insets(10, 10, 10, 10));
+		homepage = new Scene(root1,400,400);
+	
+		
+		// TODO: add background
+		
+		// First Player Enter Name
+		Label enterFirstPlayerNameLabel = new Label("Enter Your Name: ");
+		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
+		TextField name1TextField = new TextField();
+		HBox firstPlayerHBox = new HBox();
+		firstPlayerHBox.setAlignment(Pos.CENTER);
+		firstPlayerHBox.getChildren().addAll(enterFirstPlayerNameLabel, name1TextField);
+		
+		// Begin Game Button
+		Button startBtn = new Button("Begin Game!");
+		startBtn.setOnAction(e -> {
+			player1 = new Player(name1TextField.getText());
+			try {
+				game = new Game(player1, player2);
+				champions = Game.getAvailableChampions();
+				q = game.getTurnOrder();
+			} catch (IOException e1) {
+				throwException(e1.getMessage());;
+			}
+			scene2(primaryStage);
+		});
+		
+		// Configuring Nodes
+		HBox buttonHBox = new HBox();
+		buttonHBox.setAlignment(Pos.CENTER);
+		buttonHBox.getChildren().add(startBtn);
+		root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
+		primaryStage.setScene(homepage);
+		
 	}
 	
 	// Enter Players' Names
 	public static void scene1(Stage primaryStage) {
+		twoPlayerMode = true;
 		// Scene Organisation
 		VBox root1 = new VBox(10);
 		root1.setAlignment(Pos.CENTER);
 		root1.setPadding(new Insets(10, 10, 10, 10));
 		homepage = new Scene(root1,400,400);
 		
-		
 		// TODO: add background
-		
-		
+	
 		// First Player Enter Name
 		Label enterFirstPlayerNameLabel = new Label("First Player Name: ");
 		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
@@ -223,8 +292,9 @@ public class View extends Application {
 			btn.setPrefSize(70, 70);
 		    btn.setGraphic(iv);
 		    btn.setOnAction((e) -> {
-		    	show(c, root2, chosenChampions,ch, btn, primaryStage);
+	    		show(c, root2, chosenChampions,ch, btn, primaryStage);
 		    });
+		    
 		    champsgrid.add(btn, a, b);
 		    a++;
 		    if (a == 5) {
@@ -233,6 +303,20 @@ public class View extends Application {
 		    }
 		    championsButtons.add(btn);
 		}
+		
+		if(player1.getTeam().size()==3) {
+			for(Button btn : championsButtons) {
+				if(player2.getTeam().size() == 3)
+					break;
+				btn.fire();
+			}
+		}
+//		
+		
+		
+//		System.out.println(player1.getTeam());
+//		System.out.println(player2.getTeam());
+		
 		// Configuring Nodes
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
 		champsgrid.setStyle("-fx-background-color: #222;");
@@ -287,27 +371,62 @@ public class View extends Application {
 				
 				else if(player1.getTeam().size() == 3) {
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(3));
-					img.setImage(ch);					
+					img.setImage(ch);
+					
+					if(!twoPlayerMode) {
+						
+						do {
+							int i = (int)(Math.random() * champions.size());
+							Champion cc = champions.get(i);
+							
+							Image cch = new Image(aliveMap.get(cc));
+							ImageView iv = new ImageView(cch);
+							iv.setFitHeight(80);
+							iv.setFitWidth(80);
+							if(!player1.getTeam().contains(cc)) {
+								player2.getTeam().add(cc);
+								if(player2.getTeam().size() == 1) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(5));
+									imgg.setImage(cch);
+								}
+								
+								else if(player2.getTeam().size() == 2) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(6));
+									imgg.setImage(cch);
+								}
+								
+								else if(player2.getTeam().size() == 3) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(7));
+									imgg.setImage(cch);					
+								}
+								
+							}
+						}while(player2.getTeam().size()<3);
+						
+					}
 				}
 			}
 			
 			else {
-				player2.getTeam().add(champion);
-				if(player2.getTeam().size() == 1) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(5));
-					img.setImage(ch);
+				if(twoPlayerMode) {
+					player2.getTeam().add(champion);
+					if(player2.getTeam().size() == 1) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(5));
+						img.setImage(ch);
+					}
+					
+					else if(player2.getTeam().size() == 2) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(6));
+						img.setImage(ch);
+					}
+					
+					else if(player2.getTeam().size() == 3) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(7));
+						img.setImage(ch);					
+					}
 				}
-				
-				else if(player2.getTeam().size() == 2) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(6));
-					img.setImage(ch);
-				}
-				
-				else if(player2.getTeam().size() == 3) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(7));
-					img.setImage(ch);					
-				}				
-			}
+			}			
+			
 			// Disabling Choose Button and Setting the Chosen Champion to true in chosenMap
 			choose.setDisable(true);
 			for(Map.Entry<Champion,Boolean> m : chosenMap.entrySet()) {
@@ -324,6 +443,8 @@ public class View extends Application {
 					
 				full = true;
 				details.getChildren().clear();
+				
+				
 				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
 				chooseLeaderLabel1.setFont(new Font("Didot.",14));
 				details.getChildren().add(chooseLeaderLabel1);
@@ -359,9 +480,17 @@ public class View extends Application {
 				    img.setFitWidth(60);
 					details.getChildren().add(button);
 				}
+				if(!twoPlayerMode) {
+					details.getChildren().get(5).setDisable(true);
+					details.getChildren().get(6).setDisable(true);
+					details.getChildren().get(7).setDisable(true);
+				}
+				
 			    chosenChampions.getChildren().clear();
 			}
 		});
+		
+		if(player1.getTeam().size()==3 && !twoPlayerMode) choose.fire();
 		
 		if (!full)
 				details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
@@ -371,11 +500,19 @@ public class View extends Application {
 	// Set Leader and Disable Choosing Another Leader
 	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
 		
-		if (player == player1) {
+		if (player == player1) {			
 			player1.setLeader(c);
 			details.getChildren().get(1).setDisable(true);
 			details.getChildren().get(2).setDisable(true);
 			details.getChildren().get(3).setDisable(true);
+			
+			if(!twoPlayerMode) {
+				int i = (int)(Math.random() * player2.getTeam().size());
+				player2.setLeader(player2.getTeam().get(i));
+				details.getChildren().get(5).setDisable(true);
+				details.getChildren().get(6).setDisable(true);
+				details.getChildren().get(7).setDisable(true);
+			}
 		}
 
 		else if (player == player2) {
