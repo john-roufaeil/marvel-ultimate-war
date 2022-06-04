@@ -1,3 +1,0 @@
-INDEX VERSION 1.131+/home/amir/Amir/marvel-game/.metadata/.plugins/org.eclipse.jdt.core
-2650401941.index
-646308851.index
