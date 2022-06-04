@@ -2,6 +2,13 @@
  * TODO
  * 
  * marvel video intro
+ * improve landing page and update scene1 background to be a random photo
+ * update scene2 original background
+ * update scene 3 background
+ * when selecting champion to view details, background changes to be a big photo of champion
+ * buttons should not translate when choosing leader
+ * be creative with pop-ups and make sure they pop in the center of screen
+ * 
  * attack & cast ability animation
  * 
  * Clean code
@@ -89,7 +96,7 @@ public class View extends Application {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
 //		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-		Image icon = new Image("./application/media/icon.png");
+		Image icon = new Image("./application/media/gameIcon.jpeg");
 		primaryStage.getIcons().add(icon);
 		scene1(primaryStage);
 		primaryStage.show();
@@ -170,7 +177,7 @@ public class View extends Application {
 		// Chosen Champions Bar
 		// First Player Label and Selected Champions ImageViews
 		Label player1LabelScene2 = new Label(player1.getName());
-		Image notYetSelected = new Image("./application/media/icon.png");
+		Image notYetSelected = new Image("application/media/gameIcon.jpeg");
 		ImageView chosen1_1 = new ImageView(notYetSelected);
 		chosen1_1.setFitWidth(50);
 		chosen1_1.setFitHeight(50);
