@@ -130,7 +130,7 @@ public class View extends Application {
 		root1.setAlignment(Pos.CENTER);
 		root1.setPadding(new Insets(10, 10, 10, 10));
 		homepage = new Scene(root1,400,400);
-	
+		
 		
 		// TODO: add background
 		
@@ -162,6 +162,7 @@ public class View extends Application {
 		buttonHBox.getChildren().add(startBtn);
 		root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
 		primaryStage.setScene(homepage);
+		primaryStage.setFullScreen(true);
 		
 	}
 	
@@ -210,6 +211,7 @@ public class View extends Application {
 		buttonHBox.getChildren().add(startBtn);
 		root1.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
 		primaryStage.setScene(homepage);
+		primaryStage.setFullScreen(true);
 	}
 	
 	// Choose Champions
@@ -312,8 +314,6 @@ public class View extends Application {
 			}
 		}
 //		
-		
-		
 //		System.out.println(player1.getTeam());
 //		System.out.println(player2.getTeam());
 		
@@ -383,7 +383,7 @@ public class View extends Application {
 							ImageView iv = new ImageView(cch);
 							iv.setFitHeight(80);
 							iv.setFitWidth(80);
-							if(!player1.getTeam().contains(cc)) {
+							if(!player1.getTeam().contains(cc) && !player2.getTeam().contains(cc)) {
 								player2.getTeam().add(cc);
 								if(player2.getTeam().size() == 1) {
 									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(5));
