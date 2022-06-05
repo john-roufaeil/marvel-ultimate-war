@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import engine.Game;
@@ -53,7 +54,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -80,6 +80,7 @@ public class View extends Application {
 	static Object[][] board;
 	static Button[][] boardButtons = new Button[5][5];
 	static boolean twoPlayerMode;
+	static Stage primaryStage;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -583,35 +584,37 @@ public class View extends Application {
 		actions.add(attack);
 		attack.setOnAction(e-> {
 			Button up = new Button("Attack Up");
-			up.setOnAction(ee -> {
-				try {
-					game.attack(Direction.UP);
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> gameOver.close());
-						gameOver.setScene(scene);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						window.getChildren().addAll(msgText, exitGame);
-						window.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-					throwException(e1.getMessage());
-				}				
-			});
+			
+			
+				up.setOnAction(ee -> {
+					try {
+						game.attack(Direction.UP);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> gameOver.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
+						throwException(e1.getMessage());
+					}				
+				});
 			
 			Button down = new Button("Attack Down");
 			down.setOnAction(ee -> {
@@ -731,7 +734,7 @@ public class View extends Application {
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+				} catch (Exception e1) {
 					throwException(e1.getMessage());
 				}				
 			});
@@ -744,7 +747,7 @@ public class View extends Application {
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+				} catch (Exception e1) {
 					throwException(e1.getMessage());
 				}
 			});
@@ -757,7 +760,7 @@ public class View extends Application {
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+				} catch (Exception e1) {
 					throwException(e1.getMessage());
 				}
 			});
@@ -770,7 +773,7 @@ public class View extends Application {
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+				} catch (Exception e1) {
 					throwException(e1.getMessage());
 				}
 			});
@@ -829,7 +832,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+					} catch (Exception e1) {
 						throwException(e1.getMessage());
 					}
 				}
@@ -895,7 +898,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());
 						}
 						
@@ -928,7 +931,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());
 						}
 						
@@ -1023,7 +1026,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 					});
@@ -1065,7 +1068,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+					} catch (Exception e1) {
 						throwException(e1.getMessage());;
 					}
 				}
@@ -1098,7 +1101,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1131,7 +1134,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1164,7 +1167,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1198,7 +1201,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1260,7 +1263,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 					});
@@ -1303,7 +1306,7 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+					} catch (Exception e1) {
 						throwException(e1.getMessage());;
 					}
 				}
@@ -1336,7 +1339,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1369,7 +1372,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1402,7 +1405,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1436,7 +1439,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 						
@@ -1496,7 +1499,7 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
+						} catch (Exception e1) {
 							throwException(e1.getMessage());;
 						}
 					});
@@ -1528,12 +1531,6 @@ public class View extends Application {
 			
 		useLeaderAbility.setOnAction(e -> {
 //<<<<<<< Updated upstream
-			String type = "";
-			String msg = "";
-			if (q.peekMin() instanceof Hero) {
-				type = "Hero";
-				msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
-//=======
 			
 			try {
 				game.useLeaderAbility();
@@ -1562,60 +1559,8 @@ public class View extends Application {
 			} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
 				// TODO Auto-generated catch block
 				throwException(e1.getMessage());
-//>>>>>>> Stashed changes
-			}
-			}
-			else if (q.peekMin() instanceof AntiHero) {
-				type = "AntiHero";
-				msg =  "All champions on the board except for the leaders of each team will be stunned for 2 turns.";
-			}
-			else if (q.peekMin() instanceof Villain) {
-				type = "Villain";
-				msg = "Immediately eliminates all enemy champions with less than 30% health points.";
-			}
-			Stage message = new Stage();
-			message.setTitle("Confirm to Use "  + type + " Leader Ability");
-			VBox window = new VBox(10);
-			window.setAlignment(Pos.CENTER);
-			Scene scene = new Scene(window);
-			Button confirm = new Button("Confirm");
-			confirm.setOnAction(ee -> {
-				try {
-					game.useLeaderAbility();
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox windoww = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scenee = new Scene(windoww);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> primaryStage.close());
-						gameOver.setScene(scenee);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						windoww.getChildren().addAll(msgText, exitGame);
-						windoww.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-					message.close();
-				} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
-					throwException(e1.getMessage());
-				}
-			});
-			message.setScene(scene);
-			message.setMinWidth(400);
-			message.setMinHeight(200);
-			Text msgText =new Text(msg);
-			window.getChildren().addAll(msgText, confirm);
-			window.setPadding(new Insets(10,10,10,10));
-			message.show();
+
+		}
 		});
 		
 		
@@ -1648,6 +1593,10 @@ public class View extends Application {
 					gameOver.show();
 					
 				}
+				
+				while(currentControls.getChildren().size() > 5) {
+					currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+				}
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
@@ -1657,6 +1606,14 @@ public class View extends Application {
 			}
 		});
 		
+		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+			for(Button b : actions) {
+				b.setDisable(true);
+			}
+			
+			computerAction(primaryStage);
+			
+		}
 		
 		currentControls.getChildren().addAll(attack,move,castAbility,useLeaderAbility, endCurrentTurn);
 		currentControls.setAlignment(Pos.CENTER);
@@ -1687,7 +1644,15 @@ public class View extends Application {
 	public static void updateCurrentInformation() {
 		currentInformation.getChildren().clear();
 		// Get Current Champion
-		Champion champion = (Champion)q.peekMin();
+		Champion champion = game.getCurrentChampion();
+		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+			for(Button b : actions) {
+				b.setDisable(true);
+			}
+			computerAction(primaryStage);
+			champion = game.getCurrentChampion();
+			currentInformation.getChildren().clear();
+		}
 		// Get Attributes of Current Champion
 		String type="";
 		if (champion instanceof AntiHero)
@@ -1839,6 +1804,7 @@ public class View extends Application {
 				region2, a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action,
 				region3, a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);	
 	}
+		
 	
 	// Show Status of Players' Team and Leader Ability
 	public static void updateStatusBar() {
@@ -1933,10 +1899,11 @@ public class View extends Application {
 					iv.setFitHeight(110);
 					iv.setFitWidth(110);
 					btn.setGraphic(iv);
-					if (c == q.peekMin() && player1.getTeam().contains(q.peekMin())) {
+					Champion current = game.getCurrentChampion();
+					if (c == current && player1.getTeam().contains(current)) {
 						btn.setStyle("-fx-background-color: #010098;");
 					}
-					else if (c == q.peekMin() && player2.getTeam().contains(q.peekMin())) {
+					else if (c == current && player2.getTeam().contains(current)) {
 						btn.setStyle("-fx-background-color: #9a0000; ");
 					}
 					btn.setOnAction(e -> {
@@ -2005,8 +1972,946 @@ public class View extends Application {
 		exception.show();
 	}
 
-	public static void viewLeaderAbility() {
+
+	public static void computerAction(Stage primaryStage) {
+		System.out.println(game.getCurrentChampion().getName());
+		String[] computerActions = {"moveUp", "moveDown", "moveRight", "moveLeft", "attackUp", "attackDown", "attackRight", "attackLeft", "firstAbility", "secondAbility", "thirdAbility", "leaderAbility","endTurn"};
+		boolean[] memo = new boolean[13];
+		Arrays.fill(memo, true);
+		ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
+
 		
+		int i = 0;
+//		do {
+			i = 1;
+			if (i == 0) {
+				try {
+//					if(memo[i]) {
+						Thread.sleep(5000);
+//						break;
+//					}
+				} catch (Exception e1) {
+					return;
+//					e1.printStackTrace();
+				}
+			}
+			
+			else if (i == 1) {
+				try {
+//					if(memo[i]) {
+						Thread.sleep(2000);
+						game.move(Direction.UP);
+//						currentInformation.getChildren().clear();
+//						currentInformation.getChildren().clear();
+						game.endTurn();
+						
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+						updateCurrentInformation();
+						if(player1.getTeam().contains(game.getCurrentChampion())) {
+							for(Button b : actions) {
+								b.setDisable(false);
+							}
+						}
+						return;
+//					}
+				} catch (Exception e1) {
+//					e1.printStackTrace();
+//					memo[i] = false;
+					System.out.println("before " + game.getCurrentChampion().getName());
+					game.endTurn();
+					System.out.println("After " + game.getCurrentChampion().getName());
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					updateCurrentInformation();
+					if(player1.getTeam().contains(game.getCurrentChampion())) {
+						for(Button b : actions) {
+							b.setDisable(false);
+						}
+					}
+					return;
+				}
+			}
+
+			else if (i == 2) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.DOWN);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 3) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.RIGHT);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 3) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.LEFT);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+//					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 4) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.UP);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 5) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.DOWN);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 6) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.RIGHT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 7) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.LEFT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			
+			else if (i == 8) {
+				Ability a1 = abilities.get(0);
+				AreaOfEffect area = a1.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						Thread.sleep(5000);
+						game.castAbility(a1);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a1, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button down = new Button("DOWN");
+					
+					down.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a1, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					left.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a1, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					right.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a1, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
+				}
+				
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+					
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a1, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);	
+				}
+				
+			
+			}
+			
+			
+			else if (i == 9) {
+				Ability a2 = abilities.get(2);
+				AreaOfEffect area = a2.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						Thread.sleep(5000);
+						game.castAbility(a2);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button down = new Button("DOWN");
+					
+					down.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					left.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					right.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
+				}
+				
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+					
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);	
+				}
+			
+			}	
+			
+			else if (i == 10) {
+				Ability a2 = abilities.get(1);
+				AreaOfEffect area = a2.getCastArea();
+				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+					try {
+						Thread.sleep(5000);
+						game.castAbility(a2);
+						Player winner = game.checkGameOver();
+						if(winner != null) {
+							Stage gameOver = new Stage();
+							gameOver.setTitle("Game Over");
+							VBox window = new VBox(10);
+							window.setAlignment(Pos.CENTER);
+							Scene scene = new Scene(window);
+							Button exitGame = new Button("Exit Game");
+							exitGame.setOnAction( k -> primaryStage.close());
+							gameOver.setScene(scene);
+							gameOver.setMinWidth(400);
+							gameOver.setMinHeight(200);
+							Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+							window.getChildren().addAll(msgText, exitGame);
+							window.setPadding(new Insets(10,10,10,10));
+							gameOver.show();
+							
+						}
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
+					}
+				}
+				
+				else if(area == AreaOfEffect.DIRECTIONAL) {
+					Button up = new Button("UP");
+					
+					up.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.UP);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button down = new Button("DOWN");
+					
+					down.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.DOWN);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					Button left = new Button("LEFT");
+					
+					left.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.LEFT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					Button right = new Button("RIGHT");
+					
+					right.setOnAction(eee ->{
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.RIGHT);
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+						
+					});
+					
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region = new Region();
+					region.setMinWidth(10);
+					currentControls.getChildren().addAll(region,up,down,left,right);
+					
+				}
+				
+				
+				else if(area == AreaOfEffect.SINGLETARGET) {
+					Label x = new Label("X");
+					TextField getX = new TextField();
+					Label y = new Label("Y");
+					TextField getY = new TextField();
+					
+					while(currentControls.getChildren().size() > 5) {
+						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+					}
+					Region region1 = new Region();
+					region1.setMinWidth(10);
+					Region region2 = new Region();
+					region2.setMinWidth(10);
+					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
+					
+					
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(l -> {
+						String xPos = getX.getText();
+						String yPos = getY.getText();
+						System.out.println(xPos + " " + yPos);
+						try {
+							Thread.sleep(5000);
+							game.castAbility(a2, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Player winner = game.checkGameOver();
+							if(winner != null) {
+								Stage gameOver = new Stage();
+								gameOver.setTitle("Game Over");
+								VBox window = new VBox(10);
+								window.setAlignment(Pos.CENTER);
+								Scene scene = new Scene(window);
+								Button exitGame = new Button("Exit Game");
+								exitGame.setOnAction( k -> primaryStage.close());
+								gameOver.setScene(scene);
+								gameOver.setMinWidth(400);
+								gameOver.setMinHeight(200);
+								Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+								window.getChildren().addAll(msgText, exitGame);
+								window.setPadding(new Insets(10,10,10,10));
+								gameOver.show();
+								
+							}
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
+						}
+					});
+				
+					currentControls.getChildren().add(confirm);	
+				}
+				
+			
+			}
+			
+			
+			else if(i == 11) {
+				String type = "";
+				String msg = "";
+				if (q.peekMin() instanceof Hero) {
+					type = "Hero";
+					msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
+				
+				try {
+					Thread.sleep(5000);
+					game.useLeaderAbility();
+					Player winner = game.checkGameOver();
+					if(winner != null) {
+						Stage gameOver = new Stage();
+						gameOver.setTitle("Game Over");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button exitGame = new Button("Exit Game");
+						exitGame.setOnAction( k -> primaryStage.close());
+						gameOver.setScene(scene);
+						gameOver.setMinWidth(400);
+						gameOver.setMinHeight(200);
+						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
+						gameOver.show();
+						
+					}
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException | InterruptedException e1) {
+//					throwException(e1.getMessage());
+				}
+				
+			}
+		}			
+	}
+	
+	
+	public static void computerAction2(Stage primaryStage) {
+		Champion current = game.getCurrentChampion();
+		int i = 0;
+		i =(int) (Math.random() * 12);
+		if (i == 0) {
+			try {
+				game.endTurn();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -2014,3 +2919,5 @@ public class View extends Application {
 	}
 
 }
+
+
