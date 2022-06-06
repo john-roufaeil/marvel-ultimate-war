@@ -90,11 +90,12 @@ public class View extends Application {
 	static boolean memo[] = new boolean[14];
 	static PriorityQueue q;
 	static PriorityQueue tmp;
-	static boolean full = false;
 	static Object[][] board;
 	static Button[][] boardButtons = new Button[5][5];
-	static boolean twoPlayerMode;
 	static Stage primaryStage;
+	static boolean full = false;
+	static boolean punch = false;
+	static boolean twoPlayerMode;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -313,14 +314,6 @@ public class View extends Application {
 		    }
 		    championsButtons.add(btn);
 		}
-		
-//		if(player1.getTeam().size()==3) {
-//			for(Button btn : championsButtons) {
-//				if(player2.getTeam().size() == 3)
-//					break;
-//				btn.fire();
-//			}
-//		}
 		
 		// Configuring Nodes
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
@@ -678,57 +671,14 @@ public class View extends Application {
 		Ability a1 = champion.getAbilities().get(0);
 		Ability a2 = champion.getAbilities().get(1);
 		Ability a3 = champion.getAbilities().get(2);
+
 //		showControls();
 		VBox temp = new VBox(5);
 		Button a1Button = actions.get(8);
 		Button a2Button = actions.get(9);
 		Button a3Button = actions.get(10);
-		Button a4Button = null;
-//		 Ability a4 = null;
-		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
-			if (effect instanceof Disarm) {
-				a4Button = actions.get(13);
-				 Ability a4 = champion.getAbilities().get(3);
-				a4Button.setOnMouseEntered(e -> {
-					Label a4Name = new Label ("First Ability: " + a4.getName());
-					a4Name.setFont(new Font("Didot.",15));
-					String abilityType4 = "";
-					String abilityAmount4 = "";
-					if (a4 instanceof DamagingAbility) {
-						abilityType4 = "Damaging Ability";
-						abilityAmount4 = "Damaging amount: " + ((DamagingAbility)a4).getDamageAmount();
-					}
-					if (a4 instanceof HealingAbility) {
-						abilityType4 = "Healing Ability";
-						abilityAmount4 = "Healing amount: " + ((HealingAbility)a4).getHealAmount();
-					}
-					else if (a4 instanceof CrowdControlAbility) {
-						abilityType4 = "Crowd Control Ability";
-						abilityAmount4 = "Casted effect: " + ((CrowdControlAbility)a4).getEffect().getName() + 
-								"(" + ((CrowdControlAbility)a4).getEffect().getDuration() + " turns)";
-					}
-					Label a4Type = new Label ("Type: " + abilityType4);
-					a4Type.setFont(new Font("Didot.",15));
-					Label a4Amount = new Label (abilityAmount4);
-					a4Amount.setFont(new Font("Didot.",15));
-					Label a4Mana = new Label ("Mana Cost: " + a4.getManaCost());
-					a4Mana.setFont(new Font("Didot.",15));
-					Label a4Cool = new Label ("Cooldown: " + a4.getCurrentCooldown() + "/" + a4.getBaseCooldown());
-					a4Cool.setFont(new Font("Didot.",15));
-					Label a4Range = new Label ("Range: " + a4.getCastRange());
-					a4Range.setFont(new Font("Didot.",15));
-					Label a4Area = new Label ("Cast Area: " + a4.getCastArea());
-					a4Area.setFont(new Font("Didot.",15));
-					Label a4Action = new Label ("Required Action Points: " + a4.getRequiredActionPoints());
-					a4Action.setFont(new Font("Didot.",15));
-					temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
-				});
 				
-				a4Button.setOnMouseExited(e -> {
-					temp.getChildren().clear();
-				});
-			}
-		}
+		
 		// First Ability's Attributes
 		
 		a1Button.setOnMouseEntered(e -> {
@@ -849,6 +799,50 @@ public class View extends Application {
 		a3Button.setOnMouseExited(e -> {
 			temp.getChildren().clear();
 		});
+		
+		if (punch && game.getCurrentChampion().getAbilities().size() > 3) {
+			Button a4Button = actions.get(11);
+			Ability a4 = game.getCurrentChampion().getAbilities().get(3);
+			a4Button.setOnMouseEntered(e -> {
+				System.out.println("mouse here!");
+				Label a4Name = new Label ("Fourth Ability: " + a4.getName());
+				a4Name.setFont(new Font("Didot.",15));
+				String abilityType4 = "";
+				String abilityAmount4 = "";
+				if (a4 instanceof DamagingAbility) {
+					abilityType4 = "Damaging Ability";
+					abilityAmount4 = "Damaging amount: " + ((DamagingAbility)a4).getDamageAmount();
+				}
+				if (a4 instanceof HealingAbility) {
+					abilityType4 = "Healing Ability";
+					abilityAmount4 = "Healing amount: " + ((HealingAbility)a4).getHealAmount();
+				}
+				else if (a4 instanceof CrowdControlAbility) {
+					abilityType4 = "Crowd Control Ability";
+					abilityAmount4 = "Casted effect: " + ((CrowdControlAbility)a4).getEffect().getName() + 
+							"(" + ((CrowdControlAbility)a4).getEffect().getDuration() + " turns)";
+				}
+				Label a4Type = new Label ("Type: " + abilityType4);
+				a4Type.setFont(new Font("Didot.",15));
+				Label a4Amount = new Label (abilityAmount4);
+				a4Amount.setFont(new Font("Didot.",15));
+				Label a4Mana = new Label ("Mana Cost: " + a4.getManaCost());
+				a4Mana.setFont(new Font("Didot.",15));
+				Label a4Cool = new Label ("Cooldown: " + a4.getCurrentCooldown() + "/" + a4.getBaseCooldown());
+				a4Cool.setFont(new Font("Didot.",15));
+				Label a4Range = new Label ("Range: " + a4.getCastRange());
+				a4Range.setFont(new Font("Didot.",15));
+				Label a4Area = new Label ("Cast Area: " + a4.getCastArea());
+				a4Area.setFont(new Font("Didot.",15));
+				Label a4Action = new Label ("Required Action Points: " + a4.getRequiredActionPoints());
+				a4Action.setFont(new Font("Didot.",15));
+				temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
+			});
+			
+			a4Button.setOnMouseExited(e -> {
+				temp.getChildren().clear();
+			});
+		}
 		
 		// Configuring Nodec
 		currentInformation.getChildren().addAll(championName,championType,championMaxHP,championMana,championActions,
@@ -1034,11 +1028,15 @@ public class View extends Application {
 		Region region2 = new Region();
 		region2.setMinWidth(5);
 		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
+		// if 4rth ability
 		for (Effect e : game.getCurrentChampion().getAppliedEffects()) {
 			if (e instanceof Disarm) {
-				abilities.getChildren().add(castAbility(3, 13));
+				punch = true;
+				abilities.getChildren().add(castAbility(3, 11));
+				break;
 			}
 		}
+		// if leader
 		if (game.getCurrentChampion() == player1.getLeader() || game.getCurrentChampion() == player2.getLeader()) {
 			abilities.getChildren().add(useLeaderAbility());
 		}
