@@ -597,12 +597,7 @@ public class View extends Application {
 			prepareTurns();
 			updateBoard();
 			checkWinner();
-			try {
-				computerAction(primaryStage);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			computerAction(primaryStage);
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
@@ -1779,7 +1774,7 @@ public class View extends Application {
 		return endCurrentTurnButton;
 	}
 	
-	public static void computerAction(Stage PrimaryStage) throws InterruptedException {
+	public static void computerAction(Stage PrimaryStage) {
 		System.out.println(game.getCurrentChampion().getName());
 		showControls();
 		updateCurrentInformation();
@@ -1801,25 +1796,12 @@ public class View extends Application {
 			System.out.println("Random: " + random);
 			tries++;
 			showControls();
-			Thread.sleep(2000);
 			updateCurrentInformation();
-			Thread.sleep(2000);
-
 			updateStatusBar();
-			Thread.sleep(2000);
-
 			prepareTurns();
-			Thread.sleep(2000);
-
 			updateBoard();
-			Thread.sleep(2000);
-
 			checkWinner();
-			Thread.sleep(2000);
-
 			updateCurrentInformation();
-			Thread.sleep(2000);
-
 			if (memo.get(random) == true) {
 				memo.set(random, false);
 				actions.get(random).fire();
