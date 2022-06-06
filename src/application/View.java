@@ -49,6 +49,7 @@ import model.abilities.AreaOfEffect;
 import model.abilities.CrowdControlAbility;
 import model.abilities.DamagingAbility;
 import model.abilities.HealingAbility;
+import model.effects.Disarm;
 import model.effects.Effect;
 import model.world.AntiHero;
 import model.world.Champion;
@@ -86,7 +87,7 @@ public class View extends Application {
 	static ArrayList<Champion> champions;
 	static ArrayList<Champion> player1Champions = new ArrayList<>();
 	static ArrayList<Champion> player2Champions = new ArrayList<>();
-	static boolean memo[] = new boolean[13];
+	static boolean memo[] = new boolean[14];
 	static PriorityQueue q;
 	static PriorityQueue tmp;
 	static boolean full = false;
@@ -677,13 +678,57 @@ public class View extends Application {
 		Ability a1 = champion.getAbilities().get(0);
 		Ability a2 = champion.getAbilities().get(1);
 		Ability a3 = champion.getAbilities().get(2);
-		showControls();
+//		showControls();
+		VBox temp = new VBox(5);
 		Button a1Button = actions.get(8);
-		System.out.println(a1Button);
 		Button a2Button = actions.get(9);
 		Button a3Button = actions.get(10);
+		Button a4Button = null;
+		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
+			if (effect instanceof Disarm) {
+				a4Button = actions.get(13);
+				
+				a4Button.setOnMouseEntered(e -> {
+					Label a1Name = new Label ("First Ability: " + a1.getName());
+					a1Name.setFont(new Font("Didot.",15));
+					String abilityType1 = "";
+					String abilityAmount1 = "";
+					if (a1 instanceof DamagingAbility) {
+						abilityType1 = "Damaging Ability";
+						abilityAmount1 = "Damaging amount: " + ((DamagingAbility)a1).getDamageAmount();
+					}
+					if (a1 instanceof HealingAbility) {
+						abilityType1 = "Healing Ability";
+						abilityAmount1 = "Healing amount: " + ((HealingAbility)a1).getHealAmount();
+					}
+					else if (a1 instanceof CrowdControlAbility) {
+						abilityType1 = "Crowd Control Ability";
+						abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
+								"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + " turns)";
+					}
+					Label a1Type = new Label ("Type: " + abilityType1);
+					a1Type.setFont(new Font("Didot.",15));
+					Label a1Amount = new Label (abilityAmount1);
+					a1Amount.setFont(new Font("Didot.",15));
+					Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
+					a1Mana.setFont(new Font("Didot.",15));
+					Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
+					a1Cool.setFont(new Font("Didot.",15));
+					Label a1Range = new Label ("Range: " + a1.getCastRange());
+					a1Range.setFont(new Font("Didot.",15));
+					Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
+					a1Area.setFont(new Font("Didot.",15));
+					Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
+					a1Action.setFont(new Font("Didot.",15));
+					temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
+				});
+				
+				a4Button.setOnMouseExited(e -> {
+					temp.getChildren().clear();
+				});
+			}
+		}
 		// First Ability's Attributes
-		VBox temp = new VBox(5);
 		
 		a1Button.setOnMouseEntered(e -> {
 			Label a1Name = new Label ("First Ability: " + a1.getName());
@@ -988,6 +1033,11 @@ public class View extends Application {
 		Region region2 = new Region();
 		region2.setMinWidth(5);
 		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
+		for (Effect e : game.getCurrentChampion().getAppliedEffects()) {
+			if (e instanceof Disarm) {
+				abilities.getChildren().add(castAbility(3, 13));
+			}
+		}
 		if (game.getCurrentChampion() == player1.getLeader() || game.getCurrentChampion() == player2.getLeader()) {
 			abilities.getChildren().add(useLeaderAbility());
 		}
