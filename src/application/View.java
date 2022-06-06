@@ -23,13 +23,11 @@ package application;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-
 import engine.Game;
 import engine.Player;
 import engine.PriorityQueue;
@@ -63,6 +61,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -72,10 +71,10 @@ import javafx.scene.layout.VBox;
 public class View extends Application {
 	static Game game;
 	static Player player1, player2;
-	static Scene homepage, begin, gameview;
+	static Scene modePage, homepage, begin, gameview;
 	static GridPane boardView;
-	static HBox gameStatus, currentControls;
-	static VBox turnOrderStatus, currentInformation;
+	static HBox gameStatus;
+	static VBox turnOrderStatus, currentInformation, currentControls;
 	static HashMap<Champion,Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
@@ -85,34 +84,104 @@ public class View extends Application {
 	static ArrayList<Champion> champions;
 	static ArrayList<Champion> player1Champions = new ArrayList<>();
 	static ArrayList<Champion> player2Champions = new ArrayList<>();
+	static boolean memo[] = new boolean[13];
 	static PriorityQueue q;
 	static PriorityQueue tmp;
 	static boolean full = false;
 	static Object[][] board;
 	static Button[][] boardButtons = new Button[5][5];
+	static boolean twoPlayerMode;
+	static Stage primaryStage;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
-//		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("./application/media/gameIcon.jpeg");
 		primaryStage.getIcons().add(icon);
-		scene1(primaryStage);
+
+		checkPlayingMode(primaryStage);
+//		scene(primaryStage);
 		primaryStage.show();
 	}
 	
-	// Enter Players' Names
-	public static void scene1(Stage primaryStage) {
+	public static void checkPlayingMode(Stage primaryStage) {
+		// Scene Organisation
+		VBox root1 = new VBox(10);
+		root1.setAlignment(Pos.CENTER);
+		root1.setPadding(new Insets(10, 10, 10, 10));
+		modePage = new Scene(root1,400,400);
+		Button onePlayer = new Button("1 Player");
+		onePlayer.setMinHeight(150);
+		onePlayer.setMinWidth(150);
+		onePlayer.setOnAction(e -> {
+			scene(primaryStage);
+		});
+		Button twoPlayers = new Button("2 Players");
+		twoPlayers.setMinHeight(150);
+		twoPlayers.setMinWidth(150);
+		twoPlayers.setOnAction(e -> {
+			scene1(primaryStage);
+		});
+		
+		root1.getChildren().addAll(onePlayer,twoPlayers);
+		primaryStage.setScene(modePage);
+		
+	}
+	
+	// 1 player mode
+	public static void scene(Stage primaryStage) {
+		twoPlayerMode = false;
+		String computerName = "Computer";
+		player2 = new Player(computerName);
+		
 		// Scene Organisation
 		VBox root1 = new VBox(10);
 		root1.setAlignment(Pos.CENTER);
 		root1.setPadding(new Insets(10, 10, 10, 10));
 		homepage = new Scene(root1,400,400);
+				
+		// First Player Enter Name
+		Label enterFirstPlayerNameLabel = new Label("Enter Your Name: ");
+		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
+		TextField name1TextField = new TextField();
+		HBox firstPlayerHBox = new HBox();
+		firstPlayerHBox.setAlignment(Pos.CENTER);
+		firstPlayerHBox.getChildren().addAll(enterFirstPlayerNameLabel, name1TextField);
 		
+		// Begin Game Button
+		Button startBtn = new Button("Begin Game!");
+		startBtn.setOnAction(e -> {
+			player1 = new Player(name1TextField.getText());
+			try {
+				game = new Game(player1, player2);
+				champions = Game.getAvailableChampions();
+				q = game.getTurnOrder();
+			} catch (IOException e1) {
+				throwException(e1.getMessage());;
+			}
+			scene2(primaryStage);
+		});
 		
-		// TODO: add background
+		// Configuring Nodes
+		HBox buttonHBox = new HBox();
+		buttonHBox.setAlignment(Pos.CENTER);
+		buttonHBox.getChildren().add(startBtn);
+		root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
+		primaryStage.setScene(homepage);
+		primaryStage.setFullScreen(true);
 		
+	}
+	
+	// Enter Players' Names
+	public static void scene1(Stage primaryStage) {
+		twoPlayerMode = true;
+		// Scene Organisation
+		VBox root1 = new VBox(10);
+		root1.setAlignment(Pos.CENTER);
+		root1.setPadding(new Insets(10, 10, 10, 10));
+		homepage = new Scene(root1,400,400);
 		
 		// First Player Enter Name
 		Label enterFirstPlayerNameLabel = new Label("First Player Name: ");
@@ -148,6 +217,7 @@ public class View extends Application {
 		buttonHBox.getChildren().add(startBtn);
 		root1.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
 		primaryStage.setScene(homepage);
+		primaryStage.setFullScreen(true);
 	}
 	
 	// Choose Champions
@@ -229,8 +299,9 @@ public class View extends Application {
 			btn.setPrefSize(70, 70);
 		    btn.setGraphic(iv);
 		    btn.setOnAction((e) -> {
-		    	show(c, root2, chosenChampions,ch, btn, primaryStage);
+	    		show(c, root2, chosenChampions,ch, btn, primaryStage);
 		    });
+		    
 		    champsgrid.add(btn, a, b);
 		    a++;
 		    if (a == 5) {
@@ -239,6 +310,14 @@ public class View extends Application {
 		    }
 		    championsButtons.add(btn);
 		}
+		
+//		if(player1.getTeam().size()==3) {
+//			for(Button btn : championsButtons) {
+//				if(player2.getTeam().size() == 3)
+//					break;
+//				btn.fire();
+//			}
+//		}
 		
 		// Configuring Nodes
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
@@ -294,27 +373,62 @@ public class View extends Application {
 				
 				else if(player1.getTeam().size() == 3) {
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(3));
-					img.setImage(ch);					
+					img.setImage(ch);
+					
+					if(!twoPlayerMode) {
+						
+						do {
+							int i = (int)(Math.random() * champions.size());
+							Champion cc = champions.get(i);
+							
+							Image cch = new Image(aliveMap.get(cc));
+							ImageView iv = new ImageView(cch);
+							iv.setFitHeight(80);
+							iv.setFitWidth(80);
+							if(!player1.getTeam().contains(cc) && !player2.getTeam().contains(cc)) {
+								player2.getTeam().add(cc);
+								if(player2.getTeam().size() == 1) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(5));
+									imgg.setImage(cch);
+								}
+								
+								else if(player2.getTeam().size() == 2) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(6));
+									imgg.setImage(cch);
+								}
+								
+								else if(player2.getTeam().size() == 3) {
+									ImageView imgg = (ImageView)(chosenChampions.getChildren().get(7));
+									imgg.setImage(cch);					
+								}
+								
+							}
+						}while(player2.getTeam().size()<3);
+						
+					}
 				}
 			}
 			
 			else {
-				player2.getTeam().add(champion);
-				if(player2.getTeam().size() == 1) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(5));
-					img.setImage(ch);
+				if(twoPlayerMode) {
+					player2.getTeam().add(champion);
+					if(player2.getTeam().size() == 1) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(5));
+						img.setImage(ch);
+					}
+					
+					else if(player2.getTeam().size() == 2) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(6));
+						img.setImage(ch);
+					}
+					
+					else if(player2.getTeam().size() == 3) {
+						ImageView img = (ImageView)(chosenChampions.getChildren().get(7));
+						img.setImage(ch);					
+					}
 				}
-				
-				else if(player2.getTeam().size() == 2) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(6));
-					img.setImage(ch);
-				}
-				
-				else if(player2.getTeam().size() == 3) {
-					ImageView img = (ImageView)(chosenChampions.getChildren().get(7));
-					img.setImage(ch);					
-				}				
-			}
+			}			
+			
 			// Disabling Choose Button and Setting the Chosen Champion to true in chosenMap
 			choose.setDisable(true);
 			for(Map.Entry<Champion,Boolean> m : chosenMap.entrySet()) {
@@ -331,6 +445,8 @@ public class View extends Application {
 					
 				full = true;
 				details.getChildren().clear();
+				
+				
 				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
 				chooseLeaderLabel1.setFont(new Font("Didot.",14));
 				details.getChildren().add(chooseLeaderLabel1);
@@ -366,9 +482,17 @@ public class View extends Application {
 				    img.setFitWidth(60);
 					details.getChildren().add(button);
 				}
+				if(!twoPlayerMode) {
+					details.getChildren().get(5).setDisable(true);
+					details.getChildren().get(6).setDisable(true);
+					details.getChildren().get(7).setDisable(true);
+				}
+				
 			    chosenChampions.getChildren().clear();
 			}
 		});
+		
+		if(player1.getTeam().size()==3 && !twoPlayerMode) choose.fire();
 		
 		if (!full)
 				details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
@@ -378,11 +502,19 @@ public class View extends Application {
 	// Set Leader and Disable Choosing Another Leader
 	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
 		
-		if (player == player1) {
+		if (player == player1) {			
 			player1.setLeader(c);
 			details.getChildren().get(1).setDisable(true);
 			details.getChildren().get(2).setDisable(true);
 			details.getChildren().get(3).setDisable(true);
+			
+			if(!twoPlayerMode) {
+				int i = (int)(Math.random() * player2.getTeam().size());
+				player2.setLeader(player2.getTeam().get(i));
+				details.getChildren().get(5).setDisable(true);
+				details.getChildren().get(6).setDisable(true);
+				details.getChildren().get(7).setDisable(true);
+			}
 		}
 
 		else if (player == player2) {
@@ -412,51 +544,455 @@ public class View extends Application {
 		for (Champion c : player2.getTeam()) {
 			player2Champions.add(c);
 		}
-		
-		
 		board = game.getBoard();
 		game.placeChampions();
 		game.prepareChampionTurns();
+		
 		// Scene organisation     
 		BorderPane root3 = new BorderPane();
 		gameview = new Scene(root3);
 		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
+		
 		gameStatus = new HBox(10);
 		turnOrderStatus = new VBox(15);
-		currentControls = new HBox();
+		currentControls = new VBox(5);
 		boardView = new GridPane();
-		currentInformation = new VBox(2);
+		currentInformation = new VBox(5);
 		root3.setTop(gameStatus);
 		root3.setRight(turnOrderStatus);
 		root3.setBottom(currentControls);
 		root3.setLeft(currentInformation);
 		root3.setCenter(boardView);
 		
-		// Game Status Bar
-		updateStatusBar();
 		gameStatus.setPadding(new Insets(10,10,10,10));
 		gameStatus.setAlignment(Pos.CENTER);
+		turnOrderStatus.setPadding(new Insets(15,15,15,15));
+		turnOrderStatus.setAlignment(Pos.TOP_RIGHT);
+		turnOrderStatus.setMaxWidth(400);
+		turnOrderStatus.setMinWidth(400);
+		currentControls.setAlignment(Pos.CENTER);
+		currentControls.setPadding(new Insets(10,10,30,10));
+		boardView.setAlignment(Pos.CENTER);	
+		currentInformation.setMaxWidth(400);
+		currentInformation.setMinWidth(400);
+		currentInformation.setAlignment(Pos.TOP_LEFT);
+		currentInformation.setPadding(new Insets(10,10,10,10));
 		
+		// Put control buttons
+		showControls();
+		
+		// Game Status Bar
+		updateStatusBar();
 		
 		// Turn Order Status Bar
 		prepareTurns();
-		turnOrderStatus.setPadding(new Insets(15,15,15,15));
-		turnOrderStatus.setAlignment(Pos.TOP_RIGHT);
-		turnOrderStatus.setMaxWidth(250);
-		turnOrderStatus.setMinWidth(250);
-		
 			
 		// Current Information
 		updateCurrentInformation();
 			
 		// Board View
 		updateBoard();
-		boardView.setAlignment(Pos.CENTER);
+			
+		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+			for(Button b : actions) {
+				b.setDisable(true);
+			}
+			computerAction(primaryStage);
+		}
+	}	
+	
+	// Update the Turn Order Status
+	public static void prepareTurns() {
+		turnOrderStatus.getChildren().clear();
+		tmp = new PriorityQueue(q.size());
+		Label turnLabel = new Label("Next in Turn: ");
+		turnOrderStatus.getChildren().add(turnLabel);
+		while(!q.isEmpty()){
+			Image img = new Image(aliveMap.get((Champion)q.peekMin()));
+			ImageView iv = new ImageView(img);
+			iv.setFitHeight(75);
+			iv.setFitWidth(75);
+			
+			turnOrderStatus.getChildren().add(iv);
+			tmp.insert((Champion)q.remove());
+		}
+		while (!tmp.isEmpty()) {
+			q.insert((Champion)tmp.remove());
+		}
+	}
+	
+	// Update Current Champion's Information
+	public static void updateCurrentInformation() {
+		currentInformation.getChildren().clear();
+		// Get Current Champion
+		Champion champion = game.getCurrentChampion();
+		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+			for(Button b : actions) {
+				b.setDisable(true);
+			}
+			computerAction(primaryStage);
+			champion = game.getCurrentChampion();
+			currentInformation.getChildren().clear();
+		}
+		// Get Attributes of Current Champion
+		String type="";
+		if (champion instanceof AntiHero)
+    		type = "AntiHero";
+    	else if (champion instanceof Hero)
+    		type = "Hero";
+    	else
+    		type = "Villain";
+		String championEffects = "";
+		for (Effect e : champion.getAppliedEffects()) {
+			championEffects += e.getName() + "(" + e.getDuration() + " turns)" + ", ";
+		}
+		if (championEffects.length() >= 2)
+			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
+		Label championName = new Label("Name: " + champion.getName());
+		championName.setFont(new Font("Didot.",15));
+		Label championType = new Label("Type: " + type);
+		championType.setFont(new Font("Didot.",15));
+		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
+		championMaxHP.setFont(new Font("Didot.",15));
+		Label championMana = new Label("Mana: " + champion.getMana() + "");
+		championMana.setFont(new Font("Didot.",15));
+		Label championActions = new Label("Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
+		championActions.setFont(new Font("Didot.",15));
+		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
+		championSpeed.setFont(new Font("Didot.",15));
+		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
+		championRange.setFont(new Font("Didot.",15));
+		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
+		championDamage.setFont(new Font("Didot.",15));
+		Label championAppliedEffects = new Label ("Applied Effects: " + championEffects);
+		championAppliedEffects.setFont(new Font("Didot.",15));
+		Label championCondition = new Label ("Condition: " + champion.getCondition());
+		championCondition.setFont(new Font("Didot.",15));
+		Region region1 = new Region();
+		region1.setMinHeight(15);
+		// Get Current Champion's Abilities
+		Ability a1 = champion.getAbilities().get(0);
+		Ability a2 = champion.getAbilities().get(1);
+		Ability a3 = champion.getAbilities().get(2);
+		showControls();
+		Button a1Button = actions.get(8);
+		Button a2Button = actions.get(9);
+		Button a3Button = actions.get(10);
+		// First Ability's Attributes
+		VBox temp = new VBox(5);
+		a1Button.setOnMouseEntered(e -> {
+			Label a1Name = new Label ("First Ability: " + a1.getName());
+			a1Name.setFont(new Font("Didot.",15));
+			String abilityType1 = "";
+			String abilityAmount1 = "";
+			if (a1 instanceof DamagingAbility) {
+				abilityType1 = "Damaging Ability";
+				abilityAmount1 = "Damaging amount: " + ((DamagingAbility)a1).getDamageAmount();
+			}
+			if (a1 instanceof HealingAbility) {
+				abilityType1 = "Healing Ability";
+				abilityAmount1 = "Healing amount: " + ((HealingAbility)a1).getHealAmount();
+			}
+			else if (a1 instanceof CrowdControlAbility) {
+				abilityType1 = "Crowd Control Ability";
+				abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
+						"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + " turns)";
+			}
+			Label a1Type = new Label ("Type: " + abilityType1);
+			a1Type.setFont(new Font("Didot.",15));
+			Label a1Amount = new Label (abilityAmount1);
+			a1Amount.setFont(new Font("Didot.",15));
+			Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
+			a1Mana.setFont(new Font("Didot.",15));
+			Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
+			a1Cool.setFont(new Font("Didot.",15));
+			Label a1Range = new Label ("Range: " + a1.getCastRange());
+			a1Range.setFont(new Font("Didot.",15));
+			Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
+			a1Area.setFont(new Font("Didot.",15));
+			Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
+			a1Action.setFont(new Font("Didot.",15));
+			temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
+		});
 		
+		// Second Ability's Attributes
+		a2Button.setOnMouseEntered(e -> {
+			System.out.println("HERE");
+			Label a2Name = new Label ("Second Ability: " + a2.getName());
+			a2Name.setFont(new Font("Didot.",15));
+			String abilityType2 = "";
+			String abilityAmount2 = "";
+			if (a2 instanceof DamagingAbility) {
+				abilityType2 = "Damaging Ability";
+				abilityAmount2 = "Damaging amount: " + ((DamagingAbility)a2).getDamageAmount();
+			}
+			if (a2 instanceof HealingAbility) {
+				abilityType2 = "Healing Ability";
+				abilityAmount2 = "Healing amount: " + ((HealingAbility)a2).getHealAmount();
+			}
+			else if (a2 instanceof CrowdControlAbility) {
+				abilityType2 = "Crowd Control Ability";
+				abilityAmount2 = "Casted effect: " + ((CrowdControlAbility)a2).getEffect().getName() + 
+						"(" + ((CrowdControlAbility)a2).getEffect().getDuration() + " turns)";
+			}
+			Label a2Type = new Label ("Type: " + abilityType2);
+			a2Type.setFont(new Font("Didot.",15));
+			Label a2Amount = new Label (abilityAmount2);
+			a2Amount.setFont(new Font("Didot.",15));
+			Label a2Mana = new Label ("Mana Cost: " + a2.getManaCost());
+			a2Mana.setFont(new Font("Didot.",15));
+			Label a2Cool = new Label ("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
+			a2Cool.setFont(new Font("Didot.",15));
+			Label a2Range = new Label ("Range: " + a2.getCastRange());
+			a2Range.setFont(new Font("Didot.",15));
+			Label a2Area = new Label ("Cast Area: " + a2.getCastArea());
+			a2Area.setFont(new Font("Didot.",15));
+			Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
+			a2Action.setFont(new Font("Didot.",15));
+			temp.getChildren().addAll(a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action);
+		});
 		
+		// Third Ability's Attributes
+		a3Button.setOnMouseEntered(e -> {
+			Label a3Name = new Label ("Third Ability: " + a3.getName());
+			a3Name.setFont(new Font("Didot.",15));
+			String abilityType3 = "";
+			String abilityAmount3 = "";
+			if (a3 instanceof DamagingAbility) {
+				abilityType3 = "Damaging Ability";
+				abilityAmount3 = "Damaging amount: " + ((DamagingAbility)a3).getDamageAmount();
+			}
+			if (a3 instanceof HealingAbility) {
+				abilityType3 = "Healing Ability";
+				abilityAmount3 = "Healing amount: " + ((HealingAbility)a3).getHealAmount();
+			}
+			else if (a3 instanceof CrowdControlAbility) {
+				abilityType3 = "Crowd Control Ability";
+				abilityAmount3 = "Casted effect: " + ((CrowdControlAbility)a3).getEffect().getName() + 
+						"(" + ((CrowdControlAbility)a3).getEffect().getDuration() + " turns)";
+			}
+			Label a3Type = new Label ("Type: " + abilityType3);
+			a3Type.setFont(new Font("Didot.",15));
+			Label a3Amount = new Label (abilityAmount3);
+			a3Amount.setFont(new Font("Didot.",15));
+			Label a3Mana = new Label ("Mana Cost: " + a3.getManaCost());
+			a3Mana.setFont(new Font("Didot.",15));
+			Label a3Cool = new Label ("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
+			a3Cool.setFont(new Font("Didot.",15));
+			Label a3Range = new Label ("Range: " + a3.getCastRange());
+			a3Range.setFont(new Font("Didot.",15));
+			Label a3Area = new Label ("Cast Area: " + a3.getCastArea());
+			a3Area.setFont(new Font("Didot.",15));
+			Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
+			a3Action.setFont(new Font("Didot.",15));
+			temp.getChildren().addAll(a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
+		});
 		
-		// Manual Button
+		a1Button.setOnMouseExited(e -> {
+			temp.getChildren().clear();
+		});
+
+		a2Button.setOnMouseExited(e -> {
+			temp.getChildren().clear();
+		});
+		
+		a3Button.setOnMouseExited(e -> {
+			temp.getChildren().clear();
+		});
+		
+		// Configuring Nodec
+		currentInformation.getChildren().addAll(championName,championType,championMaxHP,championMana,championActions,
+				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, 
+				region1, temp);
+	}
+		
+	// Update the Status of Players' Champions and Leader Ability
+	public static void updateStatusBar() {
+		gameStatus.getChildren().clear();
+		Label player1Name = new Label(player1.getName());
+		player1Name.setFont(new Font("Didot.",16));
+		gameStatus.getChildren().add(player1Name);
+		
+		for (Champion c : player1Champions) {
+			Image image = new Image(aliveMap.get(c));
+			if (c.getCondition() == Condition.KNOCKEDOUT)
+				image = new Image(deadMap.get(c));
+			ImageView iv = new ImageView(image);
+			iv.setFitHeight(80);
+			iv.setFitWidth(80);
+			gameStatus.getChildren().add(iv);
+		}
+		
+		Image LeaderAbilityNotUsed = new Image("./application/media/pow.jpeg");
+		Image LeaderAbilityUsed = new Image ("./application/media/powd.jpeg");
+		ImageView firstLeaderAbility = new ImageView();
+		ImageView secondLeaderAbility = new ImageView();
+		if (!game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+		if (game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityUsed);
+		if (!game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
+		if (game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityUsed);
+
+		Region r = new Region();
+		r.setMinWidth(100);
+		firstLeaderAbility.setFitHeight(80);
+		firstLeaderAbility.setFitWidth(80);
+		secondLeaderAbility.setFitHeight(80);
+		secondLeaderAbility.setFitWidth(80);
+		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
+		
+		for (Champion c : player2Champions) {
+			Image image = new Image(aliveMap.get(c));
+			if (c.getCondition() == Condition.KNOCKEDOUT)
+				image = new Image(deadMap.get(c));
+			ImageView iv = new ImageView(image);
+			iv.setFitHeight(80);
+			iv.setFitWidth(80);
+			gameStatus.getChildren().add(iv);
+		}
+		
+		Label player2Name = new Label(player2.getName());
+		player1Name.setFont(new Font("Didot.",16));
+		gameStatus.getChildren().add(player2Name);
+	}
+	
+	public static void updateBoard() {
+		for(int i=0;i<5;i++) {
+			for(int j=0;j<5;j++) {
+				Button btn = new Button();
+				btn.setMinHeight(100);
+				btn.setMinWidth(100);
+				btn.setMaxHeight(100);
+				btn.setMaxWidth(100);
+				boardButtons[j][4-i] = btn;
+				
+				if(board[i][j] instanceof Cover) {
+					Image img = new Image("./application/media/cover.jpeg");
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					int a = i;
+					int b = j;
+					btn.setOnAction(e -> {
+						Stage currentHealth = new Stage();
+						currentHealth.setTitle("Cover");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
+						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
+						window.getChildren().addAll(msgText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						currentHealth.show();
+					});
+				}
+				
+				else if(board[i][j] instanceof Champion){
+					Champion c = (Champion)board[i][j];
+					Image img = new Image(aliveMap.get(c));
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					Champion current = game.getCurrentChampion();
+					if (c == current && player1.getTeam().contains(current)) {
+						btn.setStyle("-fx-background-color: #010098;");
+					}
+					else if (c == current && player2.getTeam().contains(current)) {
+						btn.setStyle("-fx-background-color: #9a0000; ");
+					}
+					btn.setOnAction(e -> {
+						Stage currentHealth = new Stage();
+						String type = "";
+						if (c instanceof Hero) type = "Hero";
+						else if (c instanceof AntiHero) type = "AntiHero";
+						else type = "Villain";
+						currentHealth.setTitle(c.getName() + " (" + type + ")");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction( ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
+						Text teamText;
+						if (player1.getTeam().contains(c))
+							teamText = new Text("Belonging to first team");
+						else 
+							teamText = new Text("Belonging to second team");
+						Text healthText =new Text("Champion's health: " + c.getCurrentHP() + "/" + c.getMaxHP());
+						Text conditionText =new Text("Champion's condition: " + c.getCondition());
+						String effects = "";
+						for (Effect effect : c.getAppliedEffects()) {
+							effects += effect.getName() + ", ";
+						}
+						if (effects.length() >= 2)
+							effects = effects.substring(0, effects.length()-2);
+						Text effectsText =new Text("Effects on Champion: " + effects);
+						Text otherText = new Text("Mana: " + c.getMana() + ", " +
+								"Speed: " + c.getSpeed() + ", \n" +
+								"Max Actions per Turn: " + c.getMaxActionPointsPerTurn() + ", \n" +
+								"Attack Range: " + c.getAttackRange() + ", " +
+								"Attack Damage: " + c.getAttackDamage() + ".");
+						otherText.setTextAlignment(TextAlignment.CENTER);
+						Text leaderText = new Text("Champion is NOT a leader.");
+						if (player1.getLeader() == c || player2.getLeader() == c)
+							leaderText = new Text("Champion is a leader");
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText, leaderText, OK);
+						window.setPadding(new Insets(10,10,10,10));
+						currentHealth.show();
+					});
+				}
+				boardView.add(btn,j,4-i);
+			}
+		}
+	}
+	
+	public static void throwException(String msg) {
+		Stage exception = new Stage();
+		exception.setTitle("Error");
+		VBox window = new VBox(10);
+		window.setAlignment(Pos.CENTER);
+		Scene scene = new Scene(window);
+		Button OK = new Button("OK");
+		OK.setOnAction( e -> exception.close());
+		exception.setScene(scene);
+		exception.setMinWidth(400);
+		exception.setMinHeight(200);
+		Text msgText =new Text(msg);
+		window.getChildren().addAll(msgText, OK);
+		window.setPadding(new Insets(10,10,10,10));
+		exception.show();
+	}
+	
+	public static void showControls()  {
+		System.out.println(actions.size());
+		actions.clear();
+		currentControls.getChildren().clear();
+		HBox move = new HBox(10);
+		move.setAlignment(Pos.CENTER);
+		Region region1 = new Region();
+		region1.setMinWidth(5);
+		move.getChildren().addAll(moveUp(), moveDown(), moveRight(), moveLeft(), region1, attackUp(), attackDown(), attackRight(), attackLeft());
+		HBox abilities = new HBox(10);
+		abilities.setAlignment(Pos.CENTER);
+		Region region2 = new Region();
+		region2.setMinWidth(5);
+		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
+		if (game.getCurrentChampion() == player1.getLeader() || game.getCurrentChampion() == player2.getLeader()) {
+			abilities.getChildren().add(useLeaderAbility());
+		}
+		abilities.getChildren().addAll(region2, manualButton(), endTurn());
+		currentControls.getChildren().addAll(move, abilities);
+}
+	
+	public static Button manualButton() {
 		Button manual = new Button("Open Game Manual");
 		manual.setMinHeight(30);
 		manual.setMinWidth(30);
@@ -701,237 +1237,622 @@ public class View extends Application {
 				manualStage.centerOnScreen();
 				manualStage.show();
 		});
-		
-		
-		// Controls
-		// ATTACK
-		Button attack = new Button("Attack");
-		attack.setMinHeight(30);
-		attack.setMinWidth(30);
-		actions.add(attack);
-		attack.setOnAction(e-> {
-			Button up = new Button("Attack Up");
-			up.setOnAction(ee -> {
-				try {
-					game.attack(Direction.UP);
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> gameOver.close());
-						gameOver.setScene(scene);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						window.getChildren().addAll(msgText, exitGame);
-						window.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-					throwException(e1.getMessage());
-				}				
-			});
-			
-			Button down = new Button("Attack Down");
-			down.setOnAction(ee -> {
-				try {
-					game.attack(Direction.DOWN);
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> gameOver.close());
-						gameOver.setScene(scene);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						window.getChildren().addAll(msgText, exitGame);
-						window.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-					throwException(e1.getMessage());
-				}								
-			});
-			
-			Button left = new Button("Attack Left");
-			left.setOnAction(ee -> {
-				try {
-					game.attack(Direction.LEFT);
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> gameOver.close());
-						gameOver.setScene(scene);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						window.getChildren().addAll(msgText, exitGame);
-						window.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-					throwException(e1.getMessage());
-				}
-			});
-			
-			Button right = new Button("Attack Right");
-			right.setOnAction(ee -> {
-				try {
-					game.attack(Direction.RIGHT);
-					Player winner = game.checkGameOver();
-					if(winner != null) {
-						Stage gameOver = new Stage();
-						gameOver.setTitle("Game Over");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button exitGame = new Button("Exit Game");
-						exitGame.setOnAction( k -> gameOver.close());
-						gameOver.setScene(scene);
-						gameOver.setMinWidth(400);
-						gameOver.setMinHeight(200);
-						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						window.getChildren().addAll(msgText, exitGame);
-						window.setPadding(new Insets(10,10,10,10));
-						gameOver.show();
-						
-					}
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | ChampionDisarmedException | InvalidTargetException e1) {
-					throwException(e1.getMessage());
-				}				
-			});
+		return manual;
+	}
+	
 
-			while(currentControls.getChildren().size() > 6) {
-				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
+	public static Button moveUp() {
+		Champion current = game.getCurrentChampion();
+		Button moveUpButton = new Button("Move Up");
+		actions.add(moveUpButton);
+		moveUpButton.setOnAction(e -> {
+			try {
+				game.move(Direction.UP);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[0] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return moveUpButton;
+	}
+	
+	public static Button moveDown() {
+		Champion current = game.getCurrentChampion();
+		Button moveDownButton = new Button("Move Down");
+		actions.add(moveDownButton);
+		moveDownButton.setOnAction(e -> {
+			try {
+				game.move(Direction.DOWN);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[1] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return moveDownButton;
+	}
+	
+	public static Button moveRight() {
+		Champion current = game.getCurrentChampion();
+		Button moveRightButton = new Button("Move Right");
+		actions.add(moveRightButton);
+		moveRightButton.setOnAction(e -> {
+			try {
+				game.move(Direction.RIGHT);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[2] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return moveRightButton;
+	}
+	
+	
+
+	public static Button moveLeft() {
+		Champion current = game.getCurrentChampion();
+		Button moveLeftButton = new Button("Move Left");
+		actions.add(moveLeftButton);
+		moveLeftButton.setOnAction(e -> {
+			try {
+				game.move(Direction.LEFT);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[3] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return moveLeftButton;
+	}
+	
+	public static Button attackUp() {
+		Champion current = game.getCurrentChampion();
+		Button attackUpButton = new Button("Attack Up");
+		actions.add(attackUpButton);
+		attackUpButton.setOnAction(e -> {
+			try {
+				game.attack(Direction.UP);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[4] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return attackUpButton;
+	}
+	
+	public static Button attackDown() {
+		Champion current = game.getCurrentChampion();
+		Button attackDownButton = new Button("Attack Down");
+		actions.add(attackDownButton);
+		attackDownButton.setOnAction(e -> {
+			try {
+				game.attack(Direction.DOWN);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[5] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return attackDownButton;
+	}
+	
+	public static Button attackRight() {
+		Champion current = game.getCurrentChampion();
+		Button attackRightButton = new Button("Attack Right");
+		actions.add(attackRightButton);
+		attackRightButton.setOnAction(e -> {
+			try {
+				game.attack(Direction.DOWN);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[6] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return attackRightButton;
+	}
+	
+	public static Button attackLeft() {
+		Champion current = game.getCurrentChampion();
+		Button attackLeftButton = new Button("Attack Left");
+		actions.add(attackLeftButton);
+		attackLeftButton.setOnAction(e -> {
+			try {
+				game.attack(Direction.DOWN);
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			} catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[7] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return attackLeftButton;
+	}
+	
+	public static Button castAbility(int abilityIndex, int buttonIndex) {
+		Champion current = game.getCurrentChampion();
+		Ability ability = game.getCurrentChampion().getAbilities().get(abilityIndex);
+		AreaOfEffect area = ability.getCastArea();
+		Button castAbilityButton = new Button("Cast " + ability.getName());
+		actions.add(castAbilityButton);
+		castAbilityButton.setOnAction(e -> {
+			if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+				try {
+					game.castAbility(ability);
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						Thread.sleep(2000);
+					}
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					showControls();
+					checkWinner();
+				}
+				catch (Exception e1) {
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						memo[buttonIndex] = false;
+						e1.printStackTrace();
+					}
+					else {
+						throwException(e1.getMessage());
+					}
+				}
 			}
 			
-			Region region = new Region();
-			region.setMinWidth(10);
-			
-			currentControls.getChildren().addAll(region,up,down,left,right);
-		});
-		
-		
-		// MOVE	
-		Button move = new Button("Move");
-		move.setMinHeight(30);
-		move.setMinWidth(30);
-		actions.add(move);
-		move.setOnAction(e -> {
-			Button up = new Button("UP");
-			up.setOnAction(ee -> {
-				try {
-					game.move(Direction.UP);
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-					throwException(e1.getMessage());
-				}				
-			});
-			
-			Button down = new Button("DOWN");
-			down.setOnAction(ee -> {
-				try {
-					game.move(Direction.DOWN);
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-					throwException(e1.getMessage());
+			else if (area == AreaOfEffect.DIRECTIONAL) {
+				if (twoPlayerMode) {
+					Stage chooseDirection = new Stage();
+					chooseDirection.setTitle("Choose a Direction to Cast Ability");
+					VBox window = new VBox(10);
+					window.setAlignment(Pos.CENTER);
+					Scene scene = new Scene(window);
+					Button up = new Button("UP");
+					up.setOnAction(ee-> {
+						chooseDirection.close();
+						try {
+							game.castAbility(ability, Direction.UP);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+							checkWinner();
+						}
+						catch (Exception e1) {
+							throwException(e1.getMessage());	
+						}
+					});
+					Button down = new Button("DOWN");
+					down.setOnAction(ee-> {
+						chooseDirection.close();
+						try {
+							game.castAbility(ability, Direction.DOWN);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+							checkWinner();
+						}
+						catch (Exception e1) {
+							throwException(e1.getMessage());
+						}
+					});
+					Button right = new Button("RIGHT");
+					right.setOnAction(ee-> {
+						chooseDirection.close();
+						try {
+							game.castAbility(ability, Direction.RIGHT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+							checkWinner();
+						}
+						catch (Exception e1) {
+							throwException(e1.getMessage());
+						}
+					});
+					Button left = new Button("LEFT");
+					left.setOnAction(ee-> {
+						chooseDirection.close();
+						try {
+							game.castAbility(ability, Direction.LEFT);
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+							checkWinner();
+						}
+						catch (Exception e1) {
+							throwException(e1.getMessage());
+						}
+					});
+					chooseDirection.setScene(scene);
+					chooseDirection.setMinWidth(400);
+					chooseDirection.setMinHeight(200);
+					window.getChildren().addAll(up, down, right, left);
+					window.setPadding(new Insets(10,10,10,10));
+					chooseDirection.show();
 				}
-			});
-			
-			Button left = new Button("LEFT");
-			left.setOnAction(ee -> {
-				try {
-					game.move(Direction.LEFT);
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-					throwException(e1.getMessage());
+				
+				else if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[buttonIndex] = false;
 				}
-			});
-			
-			Button right = new Button("RIGHT");
-			right.setOnAction(ee -> {
-				try {
-					game.move(Direction.RIGHT);
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-				} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-					throwException(e1.getMessage());
-				}
-			});
-			
-			while(currentControls.getChildren().size() > 6) {
-				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 			}
-			Region region = new Region();
-			region.setMinWidth(10);
-			currentControls.getChildren().addAll(region,up,down,left,right);
+			
+			else if (area == AreaOfEffect.SINGLETARGET) {
+				if (twoPlayerMode) {
+					Stage chooseCell = new Stage();
+					chooseCell.setTitle("Choose a Cell to Cast Ability On");
+					VBox window = new VBox(10);
+					window.setAlignment(Pos.CENTER);
+					Scene scene = new Scene(window);
+					TextField xField = new TextField("X co-ordinate (0 is bottom)");
+					TextField yField = new TextField("Y co-ordinate (0 is left)");
+					Button confirm = new Button("Confirm");
+					confirm.setOnAction(ee-> {
+						chooseCell.close();
+						try {
+							game.castAbility(ability, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+							updateCurrentInformation();
+							updateStatusBar();
+							prepareTurns();
+							updateBoard();
+							checkWinner();
+						}
+						catch (Exception e1) {
+							throwException(e1.getMessage());	
+						}
+					});
+					chooseCell.setScene(scene);
+					chooseCell.setMinWidth(400);
+					chooseCell.setMinHeight(200);
+					window.getChildren().addAll(xField, yField, confirm);
+					window.setPadding(new Insets(10,10,10,10));
+					chooseCell.show();
+				}
+				
+				else if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[buttonIndex] = false;
+				}
+			}
 		});
+		return castAbilityButton;
+	}
+	
+	public static Button useLeaderAbility() {
+		Champion current = game.getCurrentChampion();
+		Button useLeaderAbility = new Button("Use Leader Ability");
+		actions.add(useLeaderAbility);
+		useLeaderAbility.setOnAction(e -> {
+			try {
+				game.useLeaderAbility();
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					Thread.sleep(2000);
+				}
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			}
+			catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					memo[11] = false;
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return useLeaderAbility;
+	}
+	
+	public static Button endTurn() {
+		Champion current = game.getCurrentChampion();
+		Button endCurrentTurnButton = new Button("End Turn");
+		actions.add(endCurrentTurnButton);
+		endCurrentTurnButton.setOnAction(e -> {
+			try {
+				game.endTurn();
+				updateCurrentInformation();
+				updateStatusBar();
+				prepareTurns();
+				updateBoard();
+				showControls();
+				checkWinner();
+			}
+			catch (Exception e1) {
+				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					e1.printStackTrace();
+				}
+				else {
+					throwException(e1.getMessage());
+				}
+			}
+		});
+		return endCurrentTurnButton;
+	}
+	
+	public static void computerAction(Stage primaryStage) {
+		System.out.println(game.getCurrentChampion().getName());
+		String[] computerActions = {"moveUp", "moveDown", "moveRight", "moveLeft", "attackUp", "attackDown", "attackRight", "attackLeft", "firstAbility", "secondAbility", "thirdAbility", "leaderAbility","endTurn"};
+		boolean[] memo = new boolean[13];
+		Arrays.fill(memo, true);
+		ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
+
+		
+		int i = 0;
+//		do {
+			i = 1;
+			if (i == 0) {
+				try {
+//					if(memo[i]) {
+						Thread.sleep(5000);
+//						break;
+//					}
+				} catch (Exception e1) {
+					return;
+//					e1.printStackTrace();
+				}
+			}
+			
+			else if (i == 1) {
+				try {
+//					if(memo[i]) {
+						Thread.sleep(2000);
+						game.move(Direction.UP);
+//						currentInformation.getChildren().clear();
+//						currentInformation.getChildren().clear();
+						game.endTurn();
+						
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+						updateCurrentInformation();
+						if(player1.getTeam().contains(game.getCurrentChampion())) {
+							for(Button b : actions) {
+								b.setDisable(false);
+							}
+						}
+						return;
+//					}
+				} catch (Exception e1) {
+//					e1.printStackTrace();
+//					memo[i] = false;
+					System.out.println("before " + game.getCurrentChampion().getName());
+					game.endTurn();
+					System.out.println("After " + game.getCurrentChampion().getName());
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					updateCurrentInformation();
+					if(player1.getTeam().contains(game.getCurrentChampion())) {
+						for(Button b : actions) {
+							b.setDisable(false);
+						}
+					}
+					return;
+				}
+			}
+
+			else if (i == 2) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.DOWN);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 3) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.RIGHT);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 3) {
+				try {
+					if(memo[i]) {
+						Thread.sleep(5000);
+						game.move(Direction.LEFT);
+						updateCurrentInformation();
+						updateStatusBar();
+						prepareTurns();
+						updateBoard();
+					}
+				} catch (Exception e1) {
+//					e1.printStackTrace();
+					memo[i] = false;
+				}
+			}
+			
+			else if (i == 4) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.UP);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 5) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.DOWN);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 6) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.RIGHT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
+			
+			else if (i == 7) {
+				try {
+					Thread.sleep(5000);
+					game.attack(Direction.LEFT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+				} catch (Exception  e) {
+//					e.printStackTrace();
+				}
+			}
 			
 			
-		
-		// CAST ABILITY
-		
-		Button castAbility = new Button("Cast Ability");
-		castAbility.setMinHeight(30);
-		castAbility.setMinWidth(30);
-		actions.add(castAbility);
-		
-		
-		
-//		System.out.println(abilities.get(0) +" " + abilities.get(1) + " "+abilities.get(2));
-		castAbility.setOnAction(e -> {
-			ArrayList<Ability> abilities = game.getCurrentChampion().getAbilities();
-			Button ability1 = new Button(abilities.get(0).getName());
-			
-			ability1.setOnAction(ee -> {
+			else if (i == 8) {
 				Ability a1 = abilities.get(0);
 				AreaOfEffect area = a1.getCastArea();
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
+						Thread.sleep(5000);
 						game.castAbility(a1);
 						Player winner = game.checkGameOver();
 						if(winner != null) {
@@ -955,8 +1876,8 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
 					}
 				}
 				
@@ -965,6 +1886,7 @@ public class View extends Application {
 					
 					up.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a1, Direction.UP);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -988,8 +1910,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException |InvalidTargetException e1) {
-							throwException(e1.getMessage());
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -998,6 +1920,7 @@ public class View extends Application {
 					
 					down.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a1, Direction.DOWN);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1021,8 +1944,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1031,6 +1954,7 @@ public class View extends Application {
 					
 					left.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a1, Direction.LEFT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1054,8 +1978,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1065,6 +1989,7 @@ public class View extends Application {
 					
 					right.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a1, Direction.RIGHT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1088,14 +2013,14 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException
-								|  InvalidTargetException e1) {
-							throwException(e1.getMessage());
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
 					
-					while(currentControls.getChildren().size() > 6) {
+					
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -1111,7 +2036,7 @@ public class View extends Application {
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 6) {
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -1120,12 +2045,14 @@ public class View extends Application {
 					region2.setMinWidth(10);
 					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
 					
+					
 					Button confirm = new Button("Confirm");
 					confirm.setOnAction(l -> {
 						String xPos = getX.getText();
 						String yPos = getY.getText();
 						System.out.println(xPos + " " + yPos);
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a1, Integer.parseInt(xPos), Integer.parseInt(yPos));
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1149,25 +2076,24 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 					});
 				
-					currentControls.getChildren().add(confirm);
+					currentControls.getChildren().add(confirm);	
 				}
 				
-			});
+			
+			}
 			
 			
-			
-			Button ability2 = new Button(abilities.get(1).getName());
-			
-			ability2.setOnAction(ee-> {
-				Ability a2 = abilities.get(1);
+			else if (i == 9) {
+				Ability a2 = abilities.get(2);
 				AreaOfEffect area = a2.getCastArea();
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
+						Thread.sleep(5000);
 						game.castAbility(a2);
 						Player winner = game.checkGameOver();
 						if(winner != null) {
@@ -1191,8 +2117,8 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());;
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
 					}
 				}
 				
@@ -1201,6 +2127,7 @@ public class View extends Application {
 					
 					up.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a2, Direction.UP);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1224,8 +2151,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1234,6 +2161,7 @@ public class View extends Application {
 					
 					down.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a2, Direction.DOWN);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1257,8 +2185,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1267,6 +2195,7 @@ public class View extends Application {
 					
 					left.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a2, Direction.LEFT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1290,8 +2219,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1301,6 +2230,7 @@ public class View extends Application {
 					
 					right.setOnAction(eee ->{
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a2, Direction.RIGHT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1324,14 +2254,14 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
 					
 					
-					while(currentControls.getChildren().size() > 6) {
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -1347,7 +2277,7 @@ public class View extends Application {
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 6) {
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -1363,6 +2293,7 @@ public class View extends Application {
 						String yPos = getY.getText();
 						System.out.println(xPos + " " + yPos);
 						try {
+							Thread.sleep(5000);
 							game.castAbility(a2, Integer.parseInt(xPos), Integer.parseInt(yPos));
 							Player winner = game.checkGameOver();
 							if(winner != null) {
@@ -1386,27 +2317,23 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 					});
 				
 					currentControls.getChildren().add(confirm);	
 				}
-				
-			});
 			
+			}	
 			
-			
-			
-			Button ability3 = new Button(abilities.get(2).getName());
-			
-			ability3.setOnAction(ee-> {
-				Ability a3 = abilities.get(2);
-				AreaOfEffect area = a3.getCastArea();
+			else if (i == 10) {
+				Ability a2 = abilities.get(1);
+				AreaOfEffect area = a2.getCastArea();
 				if(area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 					try {
-						game.castAbility(a3);
+						Thread.sleep(5000);
+						game.castAbility(a2);
 						Player winner = game.checkGameOver();
 						if(winner != null) {
 							Stage gameOver = new Stage();
@@ -1429,8 +2356,8 @@ public class View extends Application {
 						updateStatusBar();
 						prepareTurns();
 						updateBoard();
-					} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-						throwException(e1.getMessage());;
+					} catch (Exception e1) {
+//						throwException(e1.getMessage());;
 					}
 				}
 				
@@ -1439,7 +2366,8 @@ public class View extends Application {
 					
 					up.setOnAction(eee ->{
 						try {
-							game.castAbility(a3, Direction.UP);
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.UP);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
 								Stage gameOver = new Stage();
@@ -1462,8 +2390,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1472,7 +2400,8 @@ public class View extends Application {
 					
 					down.setOnAction(eee ->{
 						try {
-							game.castAbility(a3, Direction.DOWN);
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.DOWN);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
 								Stage gameOver = new Stage();
@@ -1495,8 +2424,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1505,7 +2434,8 @@ public class View extends Application {
 					
 					left.setOnAction(eee ->{
 						try {
-							game.castAbility(a3, Direction.LEFT);
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.LEFT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
 								Stage gameOver = new Stage();
@@ -1528,8 +2458,8 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
@@ -1539,7 +2469,8 @@ public class View extends Application {
 					
 					right.setOnAction(eee ->{
 						try {
-							game.castAbility(a3, Direction.RIGHT);
+							Thread.sleep(5000);
+							game.castAbility(a2, Direction.RIGHT);
 							Player winner = game.checkGameOver();
 							if(winner != null) {
 								Stage gameOver = new Stage();
@@ -1562,13 +2493,14 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 						
 					});
 					
-					while(currentControls.getChildren().size() > 6) {
+					
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region = new Region();
@@ -1577,13 +2509,14 @@ public class View extends Application {
 					
 				}
 				
+				
 				else if(area == AreaOfEffect.SINGLETARGET) {
 					Label x = new Label("X");
 					TextField getX = new TextField();
 					Label y = new Label("Y");
 					TextField getY = new TextField();
 					
-					while(currentControls.getChildren().size() > 6) {
+					while(currentControls.getChildren().size() > 5) {
 						currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 					}
 					Region region1 = new Region();
@@ -1592,14 +2525,15 @@ public class View extends Application {
 					region2.setMinWidth(10);
 					currentControls.getChildren().addAll(region1,x,getX,region2,y,getY);
 					
-				
-					Button confirm = new Button("Confirm");	
+					
+					Button confirm = new Button("Confirm");
 					confirm.setOnAction(l -> {
 						String xPos = getX.getText();
 						String yPos = getY.getText();
 						System.out.println(xPos + " " + yPos);
 						try {
-							game.castAbility(a3, Integer.parseInt(xPos), Integer.parseInt(yPos));
+							Thread.sleep(5000);
+							game.castAbility(a2, Integer.parseInt(xPos), Integer.parseInt(yPos));
 							Player winner = game.checkGameOver();
 							if(winner != null) {
 								Stage gameOver = new Stage();
@@ -1622,75 +2556,43 @@ public class View extends Application {
 							updateStatusBar();
 							prepareTurns();
 							updateBoard();
-						} catch (NotEnoughResourcesException | AbilityUseException | InvalidTargetException e1) {
-							throwException(e1.getMessage());;
+						} catch (Exception e1) {
+//							throwException(e1.getMessage());;
 						}
 					});
 				
-					currentControls.getChildren().add(confirm);
-					
+					currentControls.getChildren().add(confirm);	
 				}
 				
-			});
 			
-			
-			while(currentControls.getChildren().size() > 6) {
-				currentControls.getChildren().remove(currentControls.getChildren().size() - 1);
 			}
-			Region region = new Region();
-			region.setMinWidth(10);
-			currentControls.getChildren().addAll(region,ability1,ability2,ability3);
-			
-		});
 			
 			
-			
-		// LEADER ABILITY
-		Button useLeaderAbility = new Button("Use Leader Ability");
-		useLeaderAbility.setMinHeight(30);
-		useLeaderAbility.setMinWidth(30);
-		actions.add(useLeaderAbility);
-		
-			
-		useLeaderAbility.setOnAction(e -> {
-			String type = "";
-			String msg = "";
-			if (q.peekMin() instanceof Hero) {
-				type = "Hero";
-				msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
-			}
-			else if (q.peekMin() instanceof AntiHero) {
-				type = "AntiHero";
-				msg =  "All champions on the board except for the leaders of each team will be stunned for 2 turns.";
-			}
-			else if (q.peekMin() instanceof Villain) {
-				type = "Villain";
-				msg = "Immediately eliminates all enemy champions with less than 30% health points.";
-			}
-			Stage message = new Stage();
-			message.setTitle("Confirm to Use "  + type + " Leader Ability");
-			VBox window = new VBox(10);
-			window.setAlignment(Pos.CENTER);
-			Scene scene = new Scene(window);
-			Button confirm = new Button("Confirm");
-			confirm.setOnAction(ee -> {
+			else if(i == 11) {
+				String type = "";
+				String msg = "";
+				if (q.peekMin() instanceof Hero) {
+					type = "Hero";
+					msg = "Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns.";
+				
 				try {
+					Thread.sleep(5000);
 					game.useLeaderAbility();
 					Player winner = game.checkGameOver();
 					if(winner != null) {
 						Stage gameOver = new Stage();
 						gameOver.setTitle("Game Over");
-						VBox windoww = new VBox(10);
+						VBox window = new VBox(10);
 						window.setAlignment(Pos.CENTER);
-						Scene scenee = new Scene(windoww);
+						Scene scene = new Scene(window);
 						Button exitGame = new Button("Exit Game");
 						exitGame.setOnAction( k -> primaryStage.close());
-						gameOver.setScene(scenee);
+						gameOver.setScene(scene);
 						gameOver.setMinWidth(400);
 						gameOver.setMinHeight(200);
 						Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-						windoww.getChildren().addAll(msgText, exitGame);
-						windoww.setPadding(new Insets(10,10,10,10));
+						window.getChildren().addAll(msgText, exitGame);
+						window.setPadding(new Insets(10,10,10,10));
 						gameOver.show();
 						
 					}
@@ -1698,424 +2600,52 @@ public class View extends Application {
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-					message.close();
-				} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException e1) {
-					throwException(e1.getMessage());
+				} catch (LeaderNotCurrentException | LeaderAbilityAlreadyUsedException | InterruptedException e1) {
+//					throwException(e1.getMessage());
 				}
-			});
-			message.setScene(scene);
-			message.setMinWidth(400);
-			message.setMinHeight(200);
-			Text msgText =new Text(msg);
-			window.getChildren().addAll(msgText, confirm);
-			window.setPadding(new Insets(10,10,10,10));
-			message.show();
-		});
-		
-			
-		// END TURN
-		Button endCurrentTurn = new Button("End Turn");
-		endCurrentTurn.setMinHeight(30);
-		endCurrentTurn.setMinWidth(30);
-		actions.add(endCurrentTurn);
-		endCurrentTurn.setOnAction(e -> {
-			
+				
+			}
+		}			
+	}
+	
+	public static void computerAction2(Stage primaryStage) {
+		Champion current = game.getCurrentChampion();
+		int i = 0;
+		i =(int) (Math.random() * 12);
+		if (i == 0) {
 			try {
 				game.endTurn();
-				Player winner = game.checkGameOver();
-				if(winner != null) {
-					Stage gameOver = new Stage();
-					gameOver.setTitle("Game Over");
-					VBox window = new VBox(10);
-					window.setAlignment(Pos.CENTER);
-					Scene scene = new Scene(window);
-					Button exitGame = new Button("Exit Game");
-					exitGame.setOnAction( k -> primaryStage.close());
-					gameOver.setScene(scene);
-					gameOver.setMinWidth(400);
-					gameOver.setMinHeight(200);
-					Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
-					window.getChildren().addAll(msgText, exitGame);
-					window.setPadding(new Insets(10,10,10,10));
-					gameOver.show();
-					
-				}
-				updateBoard();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-			} catch (Exception e1) {
-				throwException(e1.getMessage());
 			}
-		});
-		
-		
-		currentControls.getChildren().addAll(manual, attack, move, castAbility, useLeaderAbility, endCurrentTurn);
-		currentControls.setAlignment(Pos.CENTER);
-		currentControls.setPadding(new Insets(10,10,30,10));
-	}	
-	
-	// Update the Turn Order Status
-	public static void prepareTurns() {
-		turnOrderStatus.getChildren().clear();
-		tmp = new PriorityQueue(q.size());
-		Label turnLabel = new Label("Next in Turn: ");
-		turnOrderStatus.getChildren().add(turnLabel);
-		while(!q.isEmpty()){
-			Image img = new Image(aliveMap.get((Champion)q.peekMin()));
-			ImageView iv = new ImageView(img);
-			iv.setFitHeight(80);
-			iv.setFitWidth(80);
-			
-			turnOrderStatus.getChildren().add(iv);
-			tmp.insert((Champion)q.remove());
-		}
-		while (!tmp.isEmpty()) {
-			q.insert((Champion)tmp.remove());
-		}
-	}
-	
-	// Show the Current Champion's Attributes
-
-	// Update Current Champion's Information
-	public static void updateCurrentInformation() {
-		currentInformation.getChildren().clear();
-		// Get Current Champion
-		Champion champion = (Champion)q.peekMin();
-		// Get Attributes of Current Champion
-		String type="";
-		if (champion instanceof AntiHero)
-    		type = "AntiHero";
-    	else if (champion instanceof Hero)
-    		type = "Hero";
-    	else
-    		type = "Villain";
-		String championEffects = "";
-		for (Effect e : champion.getAppliedEffects()) {
-			championEffects += e.getName() + "(" + e.getDuration() + " turns)" + ", ";
-		}
-		if (championEffects.length() >= 2)
-			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
-		Label championType = new Label("Type: " + type);
-		championType.setFont(new Font("Didot.",11));
-		Label championName = new Label("Name: " + champion.getName());
-		championName.setFont(new Font("Didot.",11));
-		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
-		championMaxHP.setFont(new Font("Didot.",11));
-		Label championMana = new Label("Mana: " + champion.getMana() + "");
-		championMana.setFont(new Font("Didot.",11));
-		Label championActions = new Label("Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
-		championActions.setFont(new Font("Didot.",11));
-		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
-		championSpeed.setFont(new Font("Didot.",11));
-		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
-		championRange.setFont(new Font("Didot.",11));
-		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
-		championDamage.setFont(new Font("Didot.",11));
-		Label championAppliedEffects = new Label ("Applied Effects: " + championEffects);
-		championAppliedEffects.setFont(new Font("Didot.",11));
-		Label championCondition = new Label ("Condition: " + champion.getCondition());
-		championCondition.setFont(new Font("Didot.",11));
-		Region region1 = new Region();
-		region1.setMinHeight(15);
-		// Get Current Champion's Abilities
-		Ability a1 = champion.getAbilities().get(0);
-		Ability a2 = champion.getAbilities().get(1);
-		Ability a3 = champion.getAbilities().get(2);
-		// First Ability's Attributes
-		Label a1Name = new Label ("First Ability: " + a1.getName());
-		a1Name.setFont(new Font("Didot.",11));
-		String abilityType1 = "";
-		String abilityAmount1 = "";
-		if (a1 instanceof DamagingAbility) {
-			abilityType1 = "Damaging Ability";
-			abilityAmount1 = "Damaging amount: " + ((DamagingAbility)a1).getDamageAmount();
-		}
-		if (a1 instanceof HealingAbility) {
-			abilityType1 = "Healing Ability";
-			abilityAmount1 = "Healing amount: " + ((HealingAbility)a1).getHealAmount();
-		}
-		else if (a1 instanceof CrowdControlAbility) {
-			abilityType1 = "Crowd Control Ability";
-			abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + " turns)";
-		}
-		Label a1Type = new Label ("Type: " + abilityType1);
-		a1Type.setFont(new Font("Didot.",11));
-		Label a1Amount = new Label (abilityAmount1);
-		a1Amount.setFont(new Font("Didot.",11));
-		Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
-		a1Mana.setFont(new Font("Didot.",11));
-		Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
-		a1Cool.setFont(new Font("Didot.",11));
-		Label a1Range = new Label ("Range: " + a1.getCastRange());
-		a1Range.setFont(new Font("Didot.",11));
-		Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
-		a1Area.setFont(new Font("Didot.",11));
-		Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
-		a1Action.setFont(new Font("Didot.",11));
-		Region region2 = new Region();
-		// Second Ability's Attributes
-		region2.setMinHeight(15);
-		Label a2Name = new Label ("Second Ability: " + a2.getName());
-		a2Name.setFont(new Font("Didot.",11));
-		String abilityType2 = "";
-		String abilityAmount2 = "";
-		if (a2 instanceof DamagingAbility) {
-			abilityType2 = "Damaging Ability";
-			abilityAmount2 = "Damaging amount: " + ((DamagingAbility)a2).getDamageAmount();
-		}
-		if (a2 instanceof HealingAbility) {
-			abilityType2 = "Healing Ability";
-			abilityAmount2 = "Healing amount: " + ((HealingAbility)a2).getHealAmount();
-		}
-		else if (a2 instanceof CrowdControlAbility) {
-			abilityType2 = "Crowd Control Ability";
-			abilityAmount2 = "Casted effect: " + ((CrowdControlAbility)a2).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a2).getEffect().getDuration() + " turns)";
-		}
-		Label a2Type = new Label ("Type: " + abilityType2);
-		a2Type.setFont(new Font("Didot.",11));
-		Label a2Amount = new Label (abilityAmount2);
-		a2Amount.setFont(new Font("Didot.",11));
-		Label a2Mana = new Label ("Mana Cost: " + a2.getManaCost());
-		a2Mana.setFont(new Font("Didot.",11));
-		Label a2Cool = new Label ("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
-		a2Cool.setFont(new Font("Didot.",11));
-		Label a2Range = new Label ("Range: " + a2.getCastRange());
-		a2Range.setFont(new Font("Didot.",11));
-		Label a2Area = new Label ("Cast Area: " + a2.getCastArea());
-		a2Area.setFont(new Font("Didot.",11));
-		Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
-		a2Action.setFont(new Font("Didot.",11));
-		Region region3 = new Region();
-		region3.setMinHeight(15);
-		// Third Ability's Attributes
-		Label a3Name = new Label ("Third Ability: " + a3.getName());
-		a3Name.setFont(new Font("Didot.",11));
-		String abilityType3 = "";
-		String abilityAmount3 = "";
-		if (a3 instanceof DamagingAbility) {
-			abilityType3 = "Damaging Ability";
-			abilityAmount3 = "Damaging amount: " + ((DamagingAbility)a3).getDamageAmount();
-		}
-		if (a3 instanceof HealingAbility) {
-			abilityType3 = "Healing Ability";
-			abilityAmount3 = "Healing amount: " + ((HealingAbility)a3).getHealAmount();
-		}
-		else if (a3 instanceof CrowdControlAbility) {
-			abilityType3 = "Crowd Control Ability";
-			abilityAmount3 = "Casted effect: " + ((CrowdControlAbility)a3).getEffect().getName() + 
-					"(" + ((CrowdControlAbility)a3).getEffect().getDuration() + " turns)";
-		}
-		Label a3Type = new Label ("Type: " + abilityType3);
-		a3Type.setFont(new Font("Didot.",11));
-		Label a3Amount = new Label (abilityAmount3);
-		a3Amount.setFont(new Font("Didot.",11));
-		Label a3Mana = new Label ("Mana Cost: " + a3.getManaCost());
-		a3Mana.setFont(new Font("Didot.",11));
-		Label a3Cool = new Label ("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
-		a3Cool.setFont(new Font("Didot.",11));
-		Label a3Range = new Label ("Range: " + a3.getCastRange());
-		a3Range.setFont(new Font("Didot.",11));
-		Label a3Area = new Label ("Cast Area: " + a3.getCastArea());
-		a3Area.setFont(new Font("Didot.",11));
-		Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
-		a3Action.setFont(new Font("Didot.",11));
-		
-		// Configuring Node
-		currentInformation.setMaxWidth(250);
-		currentInformation.setMinWidth(250);
-		currentInformation.setAlignment(Pos.TOP_LEFT);
-		currentInformation.setPadding(new Insets(10,10,10,10));
-		currentInformation.getChildren().addAll(championType,championName,championMaxHP,championMana,championActions,
-				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, 
-				region1, a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action, 
-				region2, a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action,
-				region3, a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
-	}
-	
-	// Show Status of Players' Team and Leader Ability
-
-	// Update the Status of Players' Champions and Leader Ability
-
-	public static void updateStatusBar() {
-		gameStatus.getChildren().clear();
-		Label player1Name = new Label(player1.getName());
-		player1Name.setFont(new Font("Didot.",16));
-		gameStatus.getChildren().add(player1Name);
-		
-		for (Champion c : player1Champions) {
-			Image image = new Image(aliveMap.get(c));
-			if (c.getCondition() == Condition.KNOCKEDOUT)
-				image = new Image(deadMap.get(c));
-			ImageView iv = new ImageView(image);
-			iv.setFitHeight(80);
-			iv.setFitWidth(80);
-			gameStatus.getChildren().add(iv);
-		}
-		
-		Image LeaderAbilityNotUsed = new Image("./application/media/pow.jpeg");
-		Image LeaderAbilityUsed = new Image ("./application/media/powd.jpeg");
-		ImageView firstLeaderAbility = new ImageView();
-		ImageView secondLeaderAbility = new ImageView();
-		if (!game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityNotUsed);
-		if (game.isFirstLeaderAbilityUsed()) firstLeaderAbility = new ImageView(LeaderAbilityUsed);
-		if (!game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityNotUsed);
-		if (game.isSecondLeaderAbilityUsed()) secondLeaderAbility = new ImageView(LeaderAbilityUsed);
-
-		Region r = new Region();
-		r.setMinWidth(100);
-		firstLeaderAbility.setFitHeight(80);
-		firstLeaderAbility.setFitWidth(80);
-		secondLeaderAbility.setFitHeight(80);
-		secondLeaderAbility.setFitWidth(80);
-		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
-		
-		for (Champion c : player2Champions) {
-			Image image = new Image(aliveMap.get(c));
-			if (c.getCondition() == Condition.KNOCKEDOUT)
-				image = new Image(deadMap.get(c));
-			ImageView iv = new ImageView(image);
-			iv.setFitHeight(80);
-			iv.setFitWidth(80);
-			gameStatus.getChildren().add(iv);
-		}
-		
-		Label player2Name = new Label(player2.getName());
-		player1Name.setFont(new Font("Didot.",16));
-		gameStatus.getChildren().add(player2Name);
-	}
-	
-	// Update Board Buttons
-
-	// Update the Board View
-
-	// Update the Board
-
-	public static void updateBoard() {
-		for(int i=0;i<5;i++) {
-			for(int j=0;j<5;j++) {
-				Button btn = new Button();
-				btn.setMinHeight(120);
-				btn.setMinWidth(120);
-				btn.setMaxHeight(120);
-				btn.setMaxWidth(120);
-				boardButtons[j][4-i] = btn;
-				
-				if(board[i][j] instanceof Cover) {
-					Image img = new Image("./application/media/cover.jpeg");
-					ImageView iv = new ImageView(img);
-					iv.setFitHeight(110);
-					iv.setFitWidth(110);
-					btn.setGraphic(iv);
-					int a = i;
-					int b = j;
-					btn.setOnAction(e -> {
-						Stage currentHealth = new Stage();
-						currentHealth.setTitle("Cover");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button OK = new Button("OK");
-						OK.setOnAction( ee -> currentHealth.close());
-						currentHealth.setScene(scene);
-						currentHealth.setMinWidth(400);
-						currentHealth.setMinHeight(200);
-						Text msgText =new Text("Cover's health: " + ((Cover)(board[a][b])).getCurrentHP());
-						window.getChildren().addAll(msgText, OK);
-						window.setPadding(new Insets(10,10,10,10));
-						currentHealth.show();
-					});
-				}
-				
-				else if(board[i][j] instanceof Champion){
-					Champion c = (Champion)board[i][j];
-					Image img = new Image(aliveMap.get(c));
-					ImageView iv = new ImageView(img);
-					iv.setFitHeight(110);
-					iv.setFitWidth(110);
-					btn.setGraphic(iv);
-					if (c == q.peekMin() && player1.getTeam().contains(q.peekMin())) {
-						btn.setStyle("-fx-background-color: #010098;");
-					}
-					else if (c == q.peekMin() && player2.getTeam().contains(q.peekMin())) {
-						btn.setStyle("-fx-background-color: #9a0000; ");
-					}
-					btn.setOnAction(e -> {
-						Stage currentHealth = new Stage();
-						String type = "";
-						if (c instanceof Hero) type = "Hero";
-						else if (c instanceof AntiHero) type = "AntiHero";
-						else type = "Villain";
-						currentHealth.setTitle(c.getName() + " (" + type + ")");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button OK = new Button("OK");
-						OK.setOnAction( ee -> currentHealth.close());
-						currentHealth.setScene(scene);
-						currentHealth.setMinWidth(400);
-						currentHealth.setMinHeight(200);
-						Text teamText;
-						if (player1.getTeam().contains(c))
-							teamText = new Text("Belonging to first team");
-						else 
-							teamText = new Text("Belonging to second team");
-						Text healthText =new Text("Champion's health: " + c.getCurrentHP() + "/" + c.getMaxHP());
-						Text conditionText =new Text("Champion's condition: " + c.getCondition());
-						String effects = "";
-						for (Effect effect : c.getAppliedEffects()) {
-							effects += effect.getName() + ", ";
-						}
-						if (effects.length() >= 2)
-							effects = effects.substring(0, effects.length()-2);
-						Text effectsText =new Text("Effects on Champion: " + effects);
-						Text otherText = new Text("Mana: " + c.getMana() + ", " +
-								"Speed: " + c.getSpeed() + ", \n" +
-								"Max Actions per Turn: " + c.getMaxActionPointsPerTurn() + ", \n" +
-								"Attack Range: " + c.getAttackRange() + ", " +
-								"Attack Damage: " + c.getAttackDamage() + ".");
-						otherText.setTextAlignment(TextAlignment.CENTER);
-						Text leaderText = new Text("Champion is NOT a leader.");
-						if (player1.getLeader() == c || player2.getLeader() == c)
-							leaderText = new Text("Champion is a leader");
-						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText, leaderText, OK);
-						window.setPadding(new Insets(10,10,10,10));
-						currentHealth.show();
-					});
-				}
-				boardView.add(btn,j,4-i);
+			catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 	
-	// Create Pop-up With Exception Message
 
-	// Open a Pop-Up to Throw Exception
-
-	// Open a Pop-up to Throw Exception
-	
-	public static void throwException(String msg) {
-		Stage exception = new Stage();
-		exception.setTitle("Error");
-		VBox window = new VBox(10);
-		window.setAlignment(Pos.CENTER);
-		Scene scene = new Scene(window);
-		Button OK = new Button("OK");
-		OK.setOnAction( e -> exception.close());
-		exception.setScene(scene);
-		exception.setMinWidth(400);
-		exception.setMinHeight(200);
-		Text msgText =new Text(msg);
-		window.getChildren().addAll(msgText, OK);
-		window.setPadding(new Insets(10,10,10,10));
-		exception.show();
+	public static void checkWinner() {
+		Player winner = game.checkGameOver();
+		if(winner != null) {
+			for (Button b : actions) {
+				b.setDisable(true);
+			}
+			Stage gameOver = new Stage();
+			gameOver.setTitle("Game Over");
+			VBox window = new VBox(10);
+			window.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(window);
+			Button exitGame = new Button("Exit Game");
+			exitGame.setOnAction( k -> gameOver.close());
+			gameOver.setScene(scene);
+			gameOver.setMinWidth(400);
+			gameOver.setMinHeight(200);
+			Text msgText =new Text("Congratulations! " + winner.getName() + " is the WINNER");
+			window.getChildren().addAll(msgText, exitGame);
+			window.setPadding(new Insets(10,10,10,10));
+			gameOver.show();
+		}
 	}
-	
-
-	
-
+		
 	public static void main(String[] args) {
 		launch(args);
 	}
