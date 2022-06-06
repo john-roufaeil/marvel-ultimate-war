@@ -684,43 +684,44 @@ public class View extends Application {
 		Button a2Button = actions.get(9);
 		Button a3Button = actions.get(10);
 		Button a4Button = null;
+//		 Ability a4 = null;
 		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
 			if (effect instanceof Disarm) {
 				a4Button = actions.get(13);
-				
+				 Ability a4 = champion.getAbilities().get(3);
 				a4Button.setOnMouseEntered(e -> {
-					Label a1Name = new Label ("First Ability: " + a1.getName());
-					a1Name.setFont(new Font("Didot.",15));
-					String abilityType1 = "";
-					String abilityAmount1 = "";
-					if (a1 instanceof DamagingAbility) {
-						abilityType1 = "Damaging Ability";
-						abilityAmount1 = "Damaging amount: " + ((DamagingAbility)a1).getDamageAmount();
+					Label a4Name = new Label ("First Ability: " + a4.getName());
+					a4Name.setFont(new Font("Didot.",15));
+					String abilityType4 = "";
+					String abilityAmount4 = "";
+					if (a4 instanceof DamagingAbility) {
+						abilityType4 = "Damaging Ability";
+						abilityAmount4 = "Damaging amount: " + ((DamagingAbility)a4).getDamageAmount();
 					}
-					if (a1 instanceof HealingAbility) {
-						abilityType1 = "Healing Ability";
-						abilityAmount1 = "Healing amount: " + ((HealingAbility)a1).getHealAmount();
+					if (a4 instanceof HealingAbility) {
+						abilityType4 = "Healing Ability";
+						abilityAmount4 = "Healing amount: " + ((HealingAbility)a4).getHealAmount();
 					}
-					else if (a1 instanceof CrowdControlAbility) {
-						abilityType1 = "Crowd Control Ability";
-						abilityAmount1 = "Casted effect: " + ((CrowdControlAbility)a1).getEffect().getName() + 
-								"(" + ((CrowdControlAbility)a1).getEffect().getDuration() + " turns)";
+					else if (a4 instanceof CrowdControlAbility) {
+						abilityType4 = "Crowd Control Ability";
+						abilityAmount4 = "Casted effect: " + ((CrowdControlAbility)a4).getEffect().getName() + 
+								"(" + ((CrowdControlAbility)a4).getEffect().getDuration() + " turns)";
 					}
-					Label a1Type = new Label ("Type: " + abilityType1);
-					a1Type.setFont(new Font("Didot.",15));
-					Label a1Amount = new Label (abilityAmount1);
-					a1Amount.setFont(new Font("Didot.",15));
-					Label a1Mana = new Label ("Mana Cost: " + a1.getManaCost());
-					a1Mana.setFont(new Font("Didot.",15));
-					Label a1Cool = new Label ("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
-					a1Cool.setFont(new Font("Didot.",15));
-					Label a1Range = new Label ("Range: " + a1.getCastRange());
-					a1Range.setFont(new Font("Didot.",15));
-					Label a1Area = new Label ("Cast Area: " + a1.getCastArea());
-					a1Area.setFont(new Font("Didot.",15));
-					Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
-					a1Action.setFont(new Font("Didot.",15));
-					temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
+					Label a4Type = new Label ("Type: " + abilityType4);
+					a4Type.setFont(new Font("Didot.",15));
+					Label a4Amount = new Label (abilityAmount4);
+					a4Amount.setFont(new Font("Didot.",15));
+					Label a4Mana = new Label ("Mana Cost: " + a4.getManaCost());
+					a4Mana.setFont(new Font("Didot.",15));
+					Label a4Cool = new Label ("Cooldown: " + a4.getCurrentCooldown() + "/" + a4.getBaseCooldown());
+					a4Cool.setFont(new Font("Didot.",15));
+					Label a4Range = new Label ("Range: " + a4.getCastRange());
+					a4Range.setFont(new Font("Didot.",15));
+					Label a4Area = new Label ("Cast Area: " + a4.getCastArea());
+					a4Area.setFont(new Font("Didot.",15));
+					Label a4Action = new Label ("Required Action Points: " + a4.getRequiredActionPoints());
+					a4Action.setFont(new Font("Didot.",15));
+					temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
 				});
 				
 				a4Button.setOnMouseExited(e -> {
