@@ -1,6 +1,8 @@
 /*
  * TODO
  * 
+ * ADD BUTTON FOR 4RTH ABILIITY (DISARM)
+ *  
  * marvel video intro
  * improve landing page and update scene1 background to be a random photo
  * update scene2 original background
@@ -677,10 +679,12 @@ public class View extends Application {
 		Ability a3 = champion.getAbilities().get(2);
 		showControls();
 		Button a1Button = actions.get(8);
+		System.out.println(a1Button);
 		Button a2Button = actions.get(9);
 		Button a3Button = actions.get(10);
 		// First Ability's Attributes
 		VBox temp = new VBox(5);
+		
 		a1Button.setOnMouseEntered(e -> {
 			Label a1Name = new Label ("First Ability: " + a1.getName());
 			a1Name.setFont(new Font("Didot.",15));
@@ -718,7 +722,6 @@ public class View extends Application {
 		
 		// Second Ability's Attributes
 		a2Button.setOnMouseEntered(e -> {
-			System.out.println("HERE");
 			Label a2Name = new Label ("Second Ability: " + a2.getName());
 			a2Name.setFont(new Font("Didot.",15));
 			String abilityType2 = "";
@@ -972,7 +975,7 @@ public class View extends Application {
 	}
 	
 	public static void showControls()  {
-		System.out.println(actions.size());
+//		System.out.println(actions.size());
 		actions.clear();
 		currentControls.getChildren().clear();
 		HBox move = new HBox(10);
@@ -1240,7 +1243,6 @@ public class View extends Application {
 		return manual;
 	}
 	
-
 	public static Button moveUp() {
 		Champion current = game.getCurrentChampion();
 		Button moveUpButton = new Button("Move Up");
@@ -1251,11 +1253,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1280,11 +1282,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1309,11 +1311,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1328,8 +1330,6 @@ public class View extends Application {
 		return moveRightButton;
 	}
 	
-	
-
 	public static Button moveLeft() {
 		Champion current = game.getCurrentChampion();
 		Button moveLeftButton = new Button("Move Left");
@@ -1340,11 +1340,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1369,11 +1369,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1398,11 +1398,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1427,11 +1427,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1456,11 +1456,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1488,11 +1488,11 @@ public class View extends Application {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
 						Thread.sleep(2000);
 					}
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
 					updateBoard();
-					showControls();
 					checkWinner();
 				}
 				catch (Exception e1) {
@@ -1518,6 +1518,7 @@ public class View extends Application {
 						chooseDirection.close();
 						try {
 							game.castAbility(ability, Direction.UP);
+							showControls();
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -1533,6 +1534,7 @@ public class View extends Application {
 						chooseDirection.close();
 						try {
 							game.castAbility(ability, Direction.DOWN);
+							showControls();
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -1548,6 +1550,7 @@ public class View extends Application {
 						chooseDirection.close();
 						try {
 							game.castAbility(ability, Direction.RIGHT);
+							showControls();
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -1563,6 +1566,7 @@ public class View extends Application {
 						chooseDirection.close();
 						try {
 							game.castAbility(ability, Direction.LEFT);
+							showControls();
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -1600,6 +1604,7 @@ public class View extends Application {
 						chooseCell.close();
 						try {
 							game.castAbility(ability, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+							showControls();
 							updateCurrentInformation();
 							updateStatusBar();
 							prepareTurns();
@@ -1636,11 +1641,11 @@ public class View extends Application {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					Thread.sleep(2000);
 				}
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			}
 			catch (Exception e1) {
@@ -1663,11 +1668,11 @@ public class View extends Application {
 		endCurrentTurnButton.setOnAction(e -> {
 			try {
 				game.endTurn();
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
-				showControls();
 				checkWinner();
 			}
 			catch (Exception e1) {
@@ -1683,7 +1688,6 @@ public class View extends Application {
 	}
 	
 	public static void computerAction(Stage primaryStage) {
-		System.out.println(game.getCurrentChampion().getName());
 		String[] computerActions = {"moveUp", "moveDown", "moveRight", "moveLeft", "attackUp", "attackDown", "attackRight", "attackLeft", "firstAbility", "secondAbility", "thirdAbility", "leaderAbility","endTurn"};
 		boolean[] memo = new boolean[13];
 		Arrays.fill(memo, true);
@@ -2622,7 +2626,6 @@ public class View extends Application {
 		}
 	}
 	
-
 	public static void checkWinner() {
 		Player winner = game.checkGameOver();
 		if(winner != null) {
