@@ -1,6 +1,10 @@
 /*
  * TODO
  *  
+ *  add ImageView attributes to champions and covers 
+ *  make a few cover images depending on cover's health points
+ *  make champions and cover images fade a little when they become hit
+ *  
  * marvel video intro
  * improve landing page and update scene1 background to be a random photo
  * update scene2 original background
@@ -18,6 +22,15 @@
  * Computer Player
  */
 
+
+// 0 move up, 1 move down, 2 move right, 3 move left, 4   atk up,5   atk down, 6   atk right, 7   atk left
+//8   a1
+//9   a2
+//10  a3
+//11  a4
+//12  leader
+//13  manual  
+//14  end turn 
 package application;
 	
 import javafx.scene.text.Font;
@@ -238,6 +251,23 @@ public class View extends Application {
 		HBox chosenChampions = new HBox();
 		VBox detailsVBox = new VBox();
 		GridPane champsgrid = new GridPane();
+		
+		actions.add(new Button("Move Up"));
+		actions.add(new Button("Move Down"));
+		actions.add(new Button("Move Right"));
+		actions.add(new Button("Move Left"));
+		actions.add(new Button("Attack Up"));
+		actions.add(new Button("Attack Down"));
+		actions.add(new Button("Attack Right"));
+		actions.add(new Button("Attack Left"));
+		actions.add(new Button("First Ability"));
+		actions.add(new Button("Second Ability"));
+		actions.add(new Button("Third Ability"));
+		actions.add(new Button("Fourth Ability"));
+		actions.add(new Button("Leader Ability"));
+		actions.add(new Button("Game Manual"));
+		actions.add(new Button("End Turn"));
+
 
 		root2.setTop(chosenChampions);
 		root2.setCenter(detailsVBox);
@@ -529,7 +559,7 @@ public class View extends Application {
 
 	// Open Board Game View
 	public static void scene3(Stage primaryStage) throws IOException {
-		// Assign players' champions team
+		// Assign players' champions team arrays for image views
 		for (Champion c : player1.getTeam()) {
 			player1Champions.add(c);
 		}
@@ -571,29 +601,14 @@ public class View extends Application {
 		currentInformation.setAlignment(Pos.TOP_LEFT);
 		currentInformation.setPadding(new Insets(10,10,10,10));
 		
-		// Put control buttons
 		showControls();
-		
-		// Game Status Bar
 		updateStatusBar();
-		
-		// Turn Order Status Bar
 		prepareTurns();
-			
-		// Current Information
 		updateCurrentInformation();
-			
-		// Board View
 		updateBoard();
 			
 		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
 			computerAction(primaryStage);
-			showControls();
-			updateCurrentInformation();
-			updateStatusBar();
-			prepareTurns();
-			updateBoard();
-			checkWinner();
 		}
 	}	
 	
@@ -664,7 +679,6 @@ public class View extends Application {
 		Ability a2 = champion.getAbilities().get(1);
 		Ability a3 = champion.getAbilities().get(2);
 
-//		showControls();
 		VBox temp = new VBox(5);
 		Button a1Button = actions.get(8);
 		Button a2Button = actions.get(9);
@@ -1024,29 +1038,18 @@ public class View extends Application {
 		region2.setMinWidth(5);
 		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
 //		if (punch) {
-			abilities.getChildren().add(castAbility(3, 11));
-//		}
-//		if (player1.getLeader() == game.getCurrentChampion() || player2.getLeader() == game.getCurrentChampion()) {
-			abilities.getChildren().add(useLeaderAbility());
-//		}
-//		// if 4rth ability
-//		for (Effect e : game.getCurrentChampion().getAppliedEffects()) {
-//			if (e instanceof Disarm) {
-//				punch = true;
-//				abilities.getChildren().add(castAbility(3, 11));
-//				break;
-//			}
-//		}
-//		// if leader
-//		if (game.getCurrentChampion() == player1.getLeader() || game.getCurrentChampion() == player2.getLeader()) {
-//			abilities.getChildren().add(useLeaderAbility());
-//		}
-		abilities.getChildren().addAll(region2, manualButton(), endTurn());
+		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
+			if (effect instanceof Disarm) {
+				punch = true;
+				break;
+			}
+		}
+		abilities.getChildren().addAll(castAbility(3, 11), useLeaderAbility(), region2, manualButton(), endTurn());
 		currentControls.getChildren().addAll(move, abilities);
 }
 	
 	public static Button manualButton() {
-		Button manual = new Button("Open Game Manual");
+		actions.get(13) = new Button("Open Game Manual");
 		manual.setMinHeight(30);
 		manual.setMinWidth(30);
 		actions.add(manual);
@@ -1531,6 +1534,7 @@ public class View extends Application {
 			actions.add(useless);
 			return useless;
 		}
+		
 		Ability ability = game.getCurrentChampion().getAbilities().get(abilityIndex);
 		AreaOfEffect area = ability.getCastArea();
 		Button castAbilityButton = new Button("Cast " + ability.getName());
