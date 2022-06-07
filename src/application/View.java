@@ -252,6 +252,7 @@ public class View extends Application {
 		VBox detailsVBox = new VBox();
 		GridPane champsgrid = new GridPane();
 		
+		
 		actions.add(new Button("Move Up"));
 		actions.add(new Button("Move Down"));
 		actions.add(new Button("Move Right"));
@@ -601,6 +602,12 @@ public class View extends Application {
 		currentInformation.setAlignment(Pos.TOP_LEFT);
 		currentInformation.setPadding(new Insets(10,10,10,10));
 		
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		showControls();
 		updateStatusBar();
 		prepareTurns();
@@ -608,7 +615,12 @@ public class View extends Application {
 		updateBoard();
 			
 		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-			computerAction(primaryStage);
+			try {
+				computerAction();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}	
 	
@@ -954,7 +966,7 @@ public class View extends Application {
 					else if (c == current && player2.getTeam().contains(current)) {
 						btn.setStyle("-fx-background-color: #9a0000; ");
 					}
-					if (!twoPlayerMode && player2.getTeam().contains(current) ) {
+					if (!twoPlayerMode && player2.getTeam().contains(current) && c == current) {
 						System.out.println("I should set background to red");
 						btn.setStyle("-fx-background-color: #9a0000; ");
 
@@ -1038,18 +1050,21 @@ public class View extends Application {
 		region2.setMinWidth(5);
 		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
 //		if (punch) {
+		punch  = false;
 		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
 			if (effect instanceof Disarm) {
 				punch = true;
 				break;
 			}
 		}
+		
+		
 		abilities.getChildren().addAll(castAbility(3, 11), useLeaderAbility(), region2, manualButton(), endTurn());
 		currentControls.getChildren().addAll(move, abilities);
 }
 	
 	public static Button manualButton() {
-		actions.get(13) = new Button("Open Game Manual");
+		Button manual = new Button("Open Game Manual");
 		manual.setMinHeight(30);
 		manual.setMinWidth(30);
 		actions.add(manual);
@@ -1304,16 +1319,16 @@ public class View extends Application {
 		moveUpButton.setOnAction(e -> {
 			try {
 				game.move(Direction.UP);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
 				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(0, false);				}
 				else {
@@ -1325,22 +1340,27 @@ public class View extends Application {
 	}
 	
 	public static Button moveDown() {
+//		primaryStage.setScene(gameview);
+//		System.out.println("New height: " + primaryStage.getScene().getHeight());
+//		System.out.println("New width: " + primaryStage.getScene().getWidth());
+		
 		Champion current = game.getCurrentChampion();
 		Button moveDownButton = new Button("Move Down");
 		actions.add(moveDownButton);
 		moveDownButton.setOnAction(e -> {
 			try {
 				game.move(Direction.DOWN);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					System.out.println("Moving down");
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
 				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(1, false);
 				}
@@ -1359,16 +1379,16 @@ public class View extends Application {
 		moveRightButton.setOnAction(e -> {
 			try {
 				game.move(Direction.RIGHT);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
 				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(2, false);
 					e1.printStackTrace();
@@ -1388,16 +1408,16 @@ public class View extends Application {
 		moveLeftButton.setOnAction(e -> {
 			try {
 				game.move(Direction.LEFT);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
 				updateBoard();
 				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
+			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(3, false);
 					e1.printStackTrace();
@@ -1417,9 +1437,9 @@ public class View extends Application {
 		attackUpButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.UP);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1446,9 +1466,9 @@ public class View extends Application {
 		attackDownButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.DOWN);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1475,9 +1495,9 @@ public class View extends Application {
 		attackRightButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.DOWN);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1504,9 +1524,9 @@ public class View extends Application {
 		attackLeftButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.DOWN);
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1543,9 +1563,9 @@ public class View extends Application {
 			if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 				try {
 					game.castAbility(ability);
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
-						Thread.sleep(2000);
-					}
+					//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
@@ -1702,9 +1722,9 @@ public class View extends Application {
 		useLeaderAbility.setOnAction(e -> {
 			try {
 				game.useLeaderAbility();
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					Thread.sleep(2000);
-				}
+//				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+//					Thread.sleep(2000);
+//				}
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1738,21 +1758,27 @@ public class View extends Application {
 			updateBoard();
 			checkWinner();
 			if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-				computerAction(primaryStage);
+				try {
+					computerAction();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}			
 		});
 		return endCurrentTurnButton;
 	}
 	
-	public static void computerAction(Stage PrimaryStage) {
-		System.out.println(game.getCurrentChampion().getName());
+	public static void computerAction() throws InterruptedException {
+		
 		showControls();
-		updateCurrentInformation();
 		updateStatusBar();
 		prepareTurns();
-		updateBoard();
-		checkWinner();
 		updateCurrentInformation();
+		updateBoard();
+//		Thread.sleep(3000);
+		actions.get(1).fire();
+		actions.get(14).fire();
+		System.out.println(game.getCurrentChampion().getName());
 		for (int i = 0; i < 15; i++) {
 			if (i == 13)
 				memo.add(false);
@@ -1765,38 +1791,24 @@ public class View extends Application {
 			random = (int)(Math.random() * 14);
 			System.out.println("Random: " + random);
 			tries++;
-			showControls();
-			updateCurrentInformation();
-			updateStatusBar();
-			prepareTurns();
-			updateBoard();
-			checkWinner();
-			updateCurrentInformation();
 			if (memo.get(random) == true) {
 				memo.set(random, false);
 				actions.get(random).fire();
-				System.out.println("FIRE");
-				System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
+				Thread.sleep(3000);
 				showControls();
-				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
-				updateBoard();
-				checkWinner();
 				updateCurrentInformation();
+				updateBoard();
+				
+				System.out.println("FIRE");
+				System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
 			}
 			if (tries == 3) {
 				break;
 			}
 		} while (game.getCurrentChampion().getCurrentActionPoints() > 1);
 		actions.get(14).fire();
-		showControls();
-		updateCurrentInformation();
-		updateStatusBar();
-		prepareTurns();
-		updateBoard();
-		checkWinner();
-		updateCurrentInformation();
 	}
 	
 	public static void checkWinner() {
