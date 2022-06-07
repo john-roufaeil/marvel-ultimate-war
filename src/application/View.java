@@ -84,7 +84,6 @@ public class View extends Application {
 	static ArrayList<Champion> player1Champions = new ArrayList<>();
 	static ArrayList<Champion> player2Champions = new ArrayList<>();
 	static ArrayList<Boolean> memo = new ArrayList<>(15);
-//	static boolean memo[] = new boolean[14];
 	static PriorityQueue q;
 	static PriorityQueue tmp;
 	static Object[][] board;
@@ -588,15 +587,6 @@ public class View extends Application {
 		updateBoard();
 			
 		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-//			for(Button b : actions) {
-//				b.setDisable(true);
-//			}
-			showControls();
-			updateCurrentInformation();
-			updateStatusBar();
-			prepareTurns();
-			updateBoard();
-			checkWinner();
 			computerAction(primaryStage);
 			showControls();
 			updateCurrentInformation();
@@ -949,6 +939,11 @@ public class View extends Application {
 					}
 					else if (c == current && player2.getTeam().contains(current)) {
 						btn.setStyle("-fx-background-color: #9a0000; ");
+					}
+					if (!twoPlayerMode && player2.getTeam().contains(current) ) {
+						System.out.println("I should set background to red");
+						btn.setStyle("-fx-background-color: #9a0000; ");
+
 					}
 					btn.setOnAction(e -> {
 						Stage currentHealth = new Stage();
@@ -1317,9 +1312,7 @@ public class View extends Application {
 				checkWinner();
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(0, false);
-					e1.printStackTrace();
-				}
+					memo.set(0, false);				}
 				else {
 					throwException(e1.getMessage());
 				}
@@ -1347,7 +1340,6 @@ public class View extends Application {
 			} catch (NotEnoughResourcesException | UnallowedMovementException | InterruptedException e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(1, false);
-					e1.printStackTrace();
 				}
 				else {
 					throwException(e1.getMessage());
@@ -1719,7 +1711,6 @@ public class View extends Application {
 			catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
 					memo.set(11, false);
-					e1.printStackTrace();
 				}
 				else {
 					throwException(e1.getMessage());
@@ -1733,43 +1724,18 @@ public class View extends Application {
 		Champion current = game.getCurrentChampion();
 		Button endCurrentTurnButton = new Button("End Turn");
 		actions.add(endCurrentTurnButton);
-		endCurrentTurnButton.setStyle("-fx-background-color: #ff0000;");
+		endCurrentTurnButton.setStyle("-fx-background-color: #bd6c6c;");
 		endCurrentTurnButton.setOnAction(e -> {
-			try {
-				game.endTurn();
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-				updateCurrentInformation();
-				if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-					showControls();
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-					checkWinner();
-					computerAction(primaryStage);
-					currentInformation.getChildren().clear();
-					showControls();
-					updateCurrentInformation();
-					updateStatusBar();
-					prepareTurns();
-					updateBoard();
-					checkWinner();
-				}
-				updateCurrentInformation();
-			}
-			catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					e1.printStackTrace();
-				}
-				else {
-					throwException(e1.getMessage());
-				}
-			}
+			game.endTurn();
+			showControls();
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+			if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+				computerAction(primaryStage);
+			}			
 		});
 		return endCurrentTurnButton;
 	}
