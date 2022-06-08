@@ -1707,9 +1707,9 @@ public class View extends Application {
 			updateBoard();
 			checkWinner();
 			
-//			if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-//				computerAction();
-//			}			
+			if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+				computerAction();
+			}			
 		});
 		return endCurrentTurnButton;
 	}
@@ -1723,17 +1723,15 @@ public class View extends Application {
 			else
 				memo.set(i, true);
 		}
-		int tries = 0;
+		
 		int random = 0;
-		do {
-			random = (int)(Math.random() * 2);
-			System.out.println("Random " + random);
-			tries++;
-			int r = random;
-			PauseTransition pause = new PauseTransition(Duration.seconds(3));
-
-			if (memo.get(random) == true) {
-				System.out.println("IM HERE");
+		for (int i = 0; i < 100; i++) {
+			random = (int)(Math.random() * 14);
+			if (game.getCurrentChampion().getCurrentActionPoints() > 2) 
+				break;
+			if (memo.get(i) == true) {
+				PauseTransition pause = new PauseTransition(Duration.seconds(3));
+				int r = random;
 				pause.setOnFinished(event -> {
 					System.out.println("trying to do");
 					actions.get(r).fire();
@@ -1742,11 +1740,33 @@ public class View extends Application {
 				});
 				pause.play();
 			}
-			if (tries == 3) {
-				break;
-			}
-		} while (game.getCurrentChampion().getCurrentActionPoints() > 1);
+		}
 		actions.get(14).fire();
+		
+//		int tries = 0;
+//		int random = 0;
+//		do {
+//			random = (int)(Math.random() * 2);
+//			System.out.println("Random " + random);
+//			tries++;
+//			int r = random;
+//			PauseTransition pause = new PauseTransition(Duration.seconds(3));
+//
+//			if (memo.get(random) == true) {
+//				System.out.println("IM HERE");
+//				pause.setOnFinished(event -> {
+//					System.out.println("trying to do");
+//					actions.get(r).fire();
+//					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
+//					System.out.println("FIRE");
+//				});
+//				pause.play();
+//			}
+//			if (tries == 3) {
+//				break;
+//			}
+//		} while (game.getCurrentChampion().getCurrentActionPoints() > 1);
+//		actions.get(14).fire();
 	}
 	
 	public static void checkWinner() {
