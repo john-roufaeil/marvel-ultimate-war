@@ -286,8 +286,7 @@ public class View extends Application {
 		chosen2_3.setFitHeight(50);
 		Label player2LabelScene2 = new Label(player2.getName());
 		// Configuring Nodes
-		chosenChampions.getChildren().addAll(player1LabelScene2, chosen1_1, chosen1_2, chosen1_3, region);
-		chosenChampions.getChildren().addAll(chosen2_1, chosen2_2, chosen2_3, player2LabelScene2);
+		chosenChampions.getChildren().addAll(player1LabelScene2, chosen1_1, chosen1_2, chosen1_3, region, chosen2_1, chosen2_2, chosen2_3, player2LabelScene2);
 		chosenChampions.setAlignment(Pos.CENTER);
 		chosenChampions.setSpacing(10);
 		chosenChampions.setPadding(new Insets(15, 15, 15, 15));
@@ -332,6 +331,7 @@ public class View extends Application {
 		champsgrid.setStyle("-fx-background-color: #222;");
 		champsgrid.setAlignment(Pos.CENTER);
 	}
+
 	
 	// Show Pressed Champion's Details
 	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn, Stage primaryStage) {
@@ -1313,13 +1313,13 @@ public class View extends Application {
 //		primaryStage.setScene(gameview);
 //		System.out.println("New height: " + primaryStage.getScene().getHeight());
 //		System.out.println("New width: " + primaryStage.getScene().getWidth());
-		
 		Champion current = game.getCurrentChampion();
 		Button moveDownButton = new Button("Move Down");
 		actions.add(moveDownButton);
 		moveDownButton.setOnAction(e -> {
 			try {
 				game.move(Direction.DOWN);
+				System.out.println(game.getCurrentChampion().getName());
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1688,60 +1688,86 @@ public class View extends Application {
 	}
 	
 	public static Button endTurn() {
-		Champion current = game.getCurrentChampion();
 		Button endCurrentTurnButton = new Button("End Turn");
 		actions.add(endCurrentTurnButton);
-		endCurrentTurnButton.setStyle("-fx-background-color: #bd6c6c;");
 		endCurrentTurnButton.setOnAction(e -> {
-			System.out.println("Previous: " + game.getCurrentChampion().getName());
-			System.out.println(player2.getTeam().contains(game.getCurrentChampion()));
 			game.endTurn();
-			System.out.println("Next: " + game.getCurrentChampion().getName());
-			System.out.println(player2.getTeam().contains(game.getCurrentChampion()));
-			if((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
-				computerAction();
-			}	
-
+			
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
 			updateBoard();
 			checkWinner();
-			
-					
+			if((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
+				computerAction();
+			}	
 		});
 		return endCurrentTurnButton;
 	}
 	
 	public static void computerAction() {
-		
-		System.out.println(game.getCurrentChampion().getName());
-		for (int i = 0; i < 15; i++) {
-			if (i == 13)
-				memo.set(13, false);
-			else
-				memo.set(i, true);
-		}
-		
-		int random = 0;
-		for (int i = 0; i < 3; i++) {
-			random = (int)(Math.random() * 14);
-			if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
-				break;
-			if (memo.get(random) == true) {
-				PauseTransition pause = new PauseTransition(Duration.seconds(3));
-				int r = random;
-				pause.setOnFinished(event -> {
+	for (int i = 0; i < 15; i++) {
+		if (i == 13)
+			memo.set(13, false);
+		else
+			memo.set(i, true);
+	}
+		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		pause.setOnFinished(event -> {
+			int random = 0;
+			for (int i = 0; i < 10; i++) {
+				random = (int)(Math.random() * 14);
+				System.out.println("Random: " + random);
+				if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
+					break;
+				if (memo.get(random) == true) {
 					System.out.println("trying to do");
-					actions.get(r).fire();
+					actions.get(random).fire();
 					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
-					System.out.println("FIRE");
-				});
-				pause.play();
+				}
 			}
-		}
-		actions.get(14).fire();
+			actions.get(14).fire();
+		});
+		pause.play();
+		
+		
+		
+		
+		
+		
+//		
+//		System.out.println(game.getCurrentChampion().getName());
+//		for (int i = 0; i < 15; i++) {
+//			if (i == 13)
+//				memo.set(13, false);
+//			else
+//				memo.set(i, true);
+//		}
+//		
+//		int random = 0;
+//		for (int i = 0; i < 3; i++) {
+//			random = (int)(Math.random() * 14);
+//			System.out.println("Random: " + random);
+//			if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
+//				break;
+//			if (memo.get(random) == true) {
+//				PauseTransition pause = new PauseTransition(Duration.seconds(3));
+//				int r = random;
+//				pause.setOnFinished(event -> {
+//					System.out.println("trying to do");
+//					actions.get(r).fire();
+//					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
+//					System.out.println("FIRE");
+//				});
+//				pause.play();
+//			}
+//		}
+//		actions.get(14).fire();
+		
+		
+		
+		
 		
 //		int tries = 0;
 //		int random = 0;
