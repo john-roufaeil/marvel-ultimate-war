@@ -1319,7 +1319,6 @@ public class View extends Application {
 		moveDownButton.setOnAction(e -> {
 			try {
 				game.move(Direction.DOWN);
-				System.out.println(game.getCurrentChampion().getName());
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1713,11 +1712,14 @@ public class View extends Application {
 		else
 			memo.set(i, true);
 	}
+	for (Button b : actions) {
+		b.setVisible(false);
+	}
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(event -> {
 			int random = 0;
-			for (int i = 0; i < 10; i++) {
-				random = (int)(Math.random() * 14);
+			for (int i = 0; i < 100; i++) {
+				random = (int)(Math.random() * 13);
 				System.out.println("Random: " + random);
 				if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
 					break;
