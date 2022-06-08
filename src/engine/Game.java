@@ -63,7 +63,7 @@ public class Game {
 		loadAbilities("Abilities.csv");
 		loadChampions("Champions.csv");
 		placeChampions();
-//		placeCovers();
+		placeCovers();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {

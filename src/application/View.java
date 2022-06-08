@@ -110,6 +110,7 @@ public class View extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
 		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -1448,7 +1449,7 @@ public class View extends Application {
 		actions.add(attackRightButton);
 		attackRightButton.setOnAction(e -> {
 			try {
-				game.attack(Direction.DOWN);
+				game.attack(Direction.RIGHT);
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1710,7 +1711,7 @@ public class View extends Application {
 		if (i == 13)
 			memo.set(13, false);
 		else
-			memo.set(i, true);
+			memo.set(i, true);                                                                               
 	}
 	for (Button b : actions) {
 		b.setVisible(false);
