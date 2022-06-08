@@ -1698,7 +1698,9 @@ public class View extends Application {
 			game.endTurn();
 			System.out.println("Next: " + game.getCurrentChampion().getName());
 			System.out.println(player2.getTeam().contains(game.getCurrentChampion()));
-
+			if((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
+				computerAction();
+			}	
 
 			showControls();
 			updateCurrentInformation();
@@ -1707,9 +1709,7 @@ public class View extends Application {
 			updateBoard();
 			checkWinner();
 			
-			if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-				computerAction();
-			}			
+					
 		});
 		return endCurrentTurnButton;
 	}
@@ -1725,11 +1725,11 @@ public class View extends Application {
 		}
 		
 		int random = 0;
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 3; i++) {
 			random = (int)(Math.random() * 14);
-			if (game.getCurrentChampion().getCurrentActionPoints() > 2) 
+			if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
 				break;
-			if (memo.get(i) == true) {
+			if (memo.get(random) == true) {
 				PauseTransition pause = new PauseTransition(Duration.seconds(3));
 				int r = random;
 				pause.setOnFinished(event -> {
