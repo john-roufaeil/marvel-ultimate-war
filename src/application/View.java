@@ -985,7 +985,6 @@ public class View extends Application {
 					Champion c = (Champion)board[i][j];
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
-					iv.setOpacity((double)(c.getCurrentHP())/c.getMaxHP()*2);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
