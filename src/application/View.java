@@ -70,6 +70,7 @@ import model.world.Condition;
 import model.world.Cover;
 import model.world.Direction;
 import model.world.Hero;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -83,6 +84,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class View extends Application {
@@ -565,6 +567,11 @@ public class View extends Application {
 
 	// Open Board Game View
 	public static void scene3(Stage primaryStage) throws IOException {
+		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
+		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
+		backgroundBoardIV.fitHeightProperty().bind(primaryStage.heightProperty());
+		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
+		
 		// Assign players' champions team arrays for image views
 		for (Champion c : player1.getTeam()) {
 			player1Champions.add(c);
@@ -582,6 +589,7 @@ public class View extends Application {
 		
 		// Scene organisation     
 		BorderPane root3 = new BorderPane();
+		root3.getChildren().add(backgroundBoardIV);
 		gameview = new Scene(root3);
 		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
@@ -596,7 +604,7 @@ public class View extends Application {
 		root3.setBottom(currentControls);
 		root3.setLeft(currentInformation);
 		root3.setCenter(boardView);
-		
+		                                                       
 		gameStatus.setPadding(new Insets(10,10,10,10));
 		gameStatus.setAlignment(Pos.CENTER);
 		turnOrderStatus.setPadding(new Insets(15,15,15,15));
@@ -609,7 +617,7 @@ public class View extends Application {
 		currentInformation.setMaxWidth(400);
 		currentInformation.setMinWidth(400);
 		currentInformation.setAlignment(Pos.TOP_LEFT);
-		currentInformation.setPadding(new Insets(10,10,10,10));
+		currentInformation.setPadding(new Insets(10, 10, 10, 30));
 		
 		showControls();
 		updateStatusBar();
@@ -662,8 +670,9 @@ public class View extends Application {
 		}
 		if (championEffects.length() >= 2)
 			championEffects = championEffects.substring(0,championEffects.length()-2) + ".";
-		Label championName = new Label("Name: " + champion.getName());
+		Label championName = new Label(champion.getName().toUpperCase());
 		championName.setFont(new Font("Didot.",15));
+		championName.setTextFill(Color.color(1, 1, 1));
 		Label championType = new Label("Type: " + type);
 		championType.setFont(new Font("Didot.",15));
 		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
@@ -730,6 +739,10 @@ public class View extends Application {
 			Label a1Action = new Label ("Required Action Points: " + a1.getRequiredActionPoints());
 			a1Action.setFont(new Font("Didot.",15));
 			temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
+			for (Node n : temp.getChildren()) {
+				if (n instanceof Label)
+					((Label)n).setTextFill(Color.color(1, 1, 1));
+			}
 		});
 		
 		// Second Ability's Attributes
@@ -766,6 +779,10 @@ public class View extends Application {
 			Label a2Action = new Label ("Required Action Points: " + a2.getRequiredActionPoints());	
 			a2Action.setFont(new Font("Didot.",15));
 			temp.getChildren().addAll(a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action);
+			for (Node n : temp.getChildren()) {
+				if (n instanceof Label)
+					((Label)n).setTextFill(Color.color(1, 1, 1));
+			}
 		});
 		
 		// Third Ability's Attributes
@@ -802,6 +819,10 @@ public class View extends Application {
 			Label a3Action = new Label ("Required Action Points: " + a3.getRequiredActionPoints());
 			a3Action.setFont(new Font("Didot.",15));
 			temp.getChildren().addAll(a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
+			for (Node n : temp.getChildren()) {
+				if (n instanceof Label)
+					((Label)n).setTextFill(Color.color(1, 1, 1));
+			}
 		});
 		
 		a1Button.setOnMouseExited(e -> {
@@ -852,6 +873,10 @@ public class View extends Application {
 				Label a4Action = new Label ("Required Action Points: " + a4.getRequiredActionPoints());
 				a4Action.setFont(new Font("Didot.",15));
 				temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
+				for (Node n : temp.getChildren()) {
+					if (n instanceof Label)
+						((Label)n).setTextFill(Color.color(1, 1, 1));
+				}
 			});
 			
 			a4Button.setOnMouseExited(e -> {
@@ -863,6 +888,11 @@ public class View extends Application {
 		currentInformation.getChildren().addAll(championName,championType,championMaxHP,championMana,championActions,
 				championSpeed, championRange, championDamage, championAppliedEffects, championCondition, 
 				region1, temp);
+		for (Node n : currentInformation.getChildren()) {
+			if (n instanceof Label)
+				((Label)n).setTextFill(Color.color(1, 1, 1));
+		}
+		
 	}
 		
 	// Update the Status of Players' Champions and Leader Ability
@@ -940,6 +970,7 @@ public class View extends Application {
 						Scene scene = new Scene(window);
 						Button OK = new Button("OK");
 						OK.setOnAction( ee -> currentHealth.close());
+						
 						currentHealth.setScene(scene);
 						currentHealth.setMinWidth(400);
 						currentHealth.setMinHeight(200);
@@ -1635,7 +1666,7 @@ public class View extends Application {
 			}
 			
 			else if (area == AreaOfEffect.SINGLETARGET) {
-				if (twoPlayerMode) {
+				if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
 					Stage chooseCell = new Stage();
 					chooseCell.setTitle("Choose a Cell to Cast Ability On");
 					VBox window = new VBox(10);

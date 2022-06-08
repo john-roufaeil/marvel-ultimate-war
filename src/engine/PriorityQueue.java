@@ -1,5 +1,7 @@
 package engine;
 
+import model.world.Champion;
+
 public class PriorityQueue {
 
 	private Comparable[] elements;
@@ -41,5 +43,13 @@ public class PriorityQueue {
 
 	public int size() {
 		return nItems;
+	}
+	
+	public String toString() {
+		String s = "";
+		while(!this.isEmpty()) {
+			s+= ((Champion)(this.peekMin())).getName() + "\n";
+		}
+		return s;
 	}
 }
