@@ -1,11 +1,11 @@
 /*
  * TODO
  *  
- *  add ImageView attributes to champions and covers 
- *  make a few cover images depending on cover's health points
- *  make champions and cover images fade a little when they become hit
+ *  add ImageView attributes to champions and covers  
+ *  make a few cover images depending on cover's health points // khaled
+ *  ----no?---- make champions and cover images fade a little when they become hit 
  *  
- * marvel video intro
+ * marvel video intro //home
  * improve landing page and update scene1 background to be a random photo
  * update scene2 original background
  * update scene 3 background
@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.GroupLayout.Alignment;
+
 import engine.Game;
 import engine.Player;
 import engine.PriorityQueue;
@@ -92,6 +95,7 @@ public class View extends Application {
 	static HashMap<Champion,Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
+	static HashMap<Champion, String> backgroundMap;
 	static ArrayList<Button> chooseLeaderButtons;
 	static ArrayList<Button> championsButtons = new ArrayList<>();
 	static ArrayList<Button> actions = new ArrayList<Button>();
@@ -107,6 +111,7 @@ public class View extends Application {
 	static boolean full = false;
 	static boolean punch = false;
 	static boolean twoPlayerMode;
+	static int randomBackgroundModePage = (int)(Math.random() * 7) + 1; // 1 to 7
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -123,10 +128,22 @@ public class View extends Application {
 	}
 	
 	public static void checkPlayingMode(Stage primaryStage) {
+		Image background = new Image("application/media/backgrounds/background" + randomBackgroundModePage + ".jpeg");
+		ImageView backgroundIV = new ImageView(background);
+		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
+		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
+		
 		// Scene Organisation
-		VBox root1 = new VBox(10);
-		root1.setAlignment(Pos.CENTER);
-		root1.setPadding(new Insets(10, 10, 10, 10));
+		BorderPane root1 = new BorderPane();
+		root1.getChildren().add(backgroundIV);
+		HBox chooseMode = new HBox(10);
+		HBox welcomeBox = new HBox(10);
+		Label welcome = new Label("WELCOME TO WAR!");
+		welcome.setFont(new Font("Didot.",70));
+		welcomeBox.setAlignment(Pos.CENTER);
+		welcomeBox.getChildren().add(welcome);
+		chooseMode.setPadding(new Insets(10, 10, 10, 10));
+		chooseMode.setAlignment(Pos.CENTER);
 		modePage = new Scene(root1,400,400);
 		Button onePlayer = new Button("1 Player");
 		onePlayer.setMinHeight(150);
@@ -141,7 +158,9 @@ public class View extends Application {
 			scene1(primaryStage);
 		});
 		
-		root1.getChildren().addAll(onePlayer,twoPlayers);
+		chooseMode.getChildren().addAll(onePlayer,twoPlayers);
+		root1.setBottom(chooseMode);
+		root1.setTop(welcomeBox);
 		primaryStage.setScene(modePage);
 		
 	}
@@ -935,6 +954,7 @@ public class View extends Application {
 					Champion c = (Champion)board[i][j];
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
+					iv.setOpacity((double)(c.getCurrentHP())/c.getMaxHP()*2);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
@@ -1475,7 +1495,7 @@ public class View extends Application {
 		actions.add(attackLeftButton);
 		attackLeftButton.setOnAction(e -> {
 			try {
-				game.attack(Direction.DOWN);
+				game.attack(Direction.LEFT);
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
