@@ -84,11 +84,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -123,7 +125,6 @@ public class View extends Application implements Initializable {
 	static boolean full = false;
 	static boolean punch = false;
 	static boolean twoPlayerMode;
-	static int randomBackgroundModePage = (int)(Math.random() * 7) + 1; // 1 to 7
 	static ImageView fire;
 	static TranslateTransition translateAttack;
 	static boolean picked;
@@ -326,18 +327,27 @@ public class View extends Application implements Initializable {
 		
 		
 	    // Champions Buttons GridPane
+//		champsgrid.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
 		chosenMap = new HashMap<Champion,Boolean>();
 		int a = 0; int b = 0;
+		champsgrid.setHgap(5);
+	    champsgrid.setVgap(5);
 		for(Champion c : champions) {
 			chosenMap.put(c, false);
 			Image ch = new Image(aliveMap.get(c));
 			ImageView iv = new ImageView(ch);
 			Button btn = new Button();
+			iv.setFitHeight(110);
+			iv.setFitWidth(110);
 			btn.setMinHeight(110);
+			btn.setMaxHeight(110);
 			btn.setMinWidth(110);
-			BackgroundImage bImage = new BackgroundImage(ch, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(btn.getWidth(), btn.getHeight(), true, true, true, false));
-			Background backGround = new Background(bImage);
-			btn.setBackground(backGround);
+			btn.setMaxWidth(110);
+			btn.setGraphic(iv);
+			
+//			BackgroundImage bImage = new BackgroundImage(ch, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(btn.getWidth(), btn.getHeight(), true, true, true, false));
+//			Background backGround = new Background(bImage);
+//			btn.setBackground(backGround);
 		    btn.setOnAction((e) -> {
 		    	picked = false;
 	    		show(c, root2, chosenChampions,ch, btn, primaryStage);
@@ -361,7 +371,6 @@ public class View extends Application implements Initializable {
 		champsgrid.setAlignment(Pos.CENTER);
 	}
 
-	
 	// Show Pressed Champion's Details
 	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn, Stage primaryStage) {
 		// Organisation
@@ -1962,10 +1971,12 @@ public class View extends Application implements Initializable {
 		launch(args);
 	}
 
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 }
