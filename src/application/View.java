@@ -37,10 +37,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.GroupLayout.Alignment;
 
@@ -52,7 +54,9 @@ import exceptions.LeaderNotCurrentException;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
@@ -80,6 +84,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -87,8 +95,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
 
-public class View extends Application {
+public class View extends Application implements Initializable {
 	static Game game;
 	static Player player1, player2;
 	static Scene modePage, homepage, begin, gameview;
@@ -115,6 +124,9 @@ public class View extends Application {
 	static boolean punch = false;
 	static boolean twoPlayerMode;
 	static int randomBackgroundModePage = (int)(Math.random() * 7) + 1; // 1 to 7
+	static ImageView fire;
+	static TranslateTransition translateAttack;
+	static boolean picked;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -131,7 +143,7 @@ public class View extends Application {
 	}
 	
 	public static void checkPlayingMode(Stage primaryStage) {
-		Image background = new Image("application/media/backgrounds/background" + randomBackgroundModePage + ".jpeg");
+		Image background = new Image("application/media/backgrounds/back1.jpeg");
 		ImageView backgroundIV = new ImageView(background);
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
@@ -145,90 +157,66 @@ public class View extends Application {
 		welcome.setFont(new Font("Didot.",70));
 		welcomeBox.setAlignment(Pos.CENTER);
 		welcomeBox.getChildren().add(welcome);
-		chooseMode.setPadding(new Insets(10, 10, 10, 10));
+		chooseMode.setPadding(new Insets(10, 10, 110, 10));
 		chooseMode.setAlignment(Pos.CENTER);
 		modePage = new Scene(root1,400,400);
 		Button onePlayer = new Button("1 Player");
-		onePlayer.setMinHeight(150);
-		onePlayer.setMinWidth(150);
+		onePlayer.setMinHeight(90);
+		onePlayer.setMinWidth(230);
 		onePlayer.setOnAction(e -> {
-			scene(primaryStage);
+			twoPlayerMode = false;
+			scene1(primaryStage);
 		});
 		Button twoPlayers = new Button("2 Players");
-		twoPlayers.setMinHeight(150);
-		twoPlayers.setMinWidth(150);
+		twoPlayers.setMinHeight(90);
+		twoPlayers.setMinWidth(230);
 		twoPlayers.setOnAction(e -> {
+			twoPlayerMode = true;
 			scene1(primaryStage);
 		});
 		
-		chooseMode.getChildren().addAll(onePlayer,twoPlayers);
+		Region region = new Region();
+		region.setMinWidth(30);
+		chooseMode.getChildren().addAll(onePlayer,region,twoPlayers);
 		root1.setBottom(chooseMode);
 		root1.setTop(welcomeBox);
 		primaryStage.setScene(modePage);
 		
 	}
 	
-	// 1 player mode
-	public static void scene(Stage primaryStage) {
-		twoPlayerMode = false;
-		String computerName = "Computer";
-		player2 = new Player(computerName);
-		
-		// Scene Organisation
-		VBox root1 = new VBox(10);
-		root1.setAlignment(Pos.CENTER);
-		root1.setPadding(new Insets(10, 10, 10, 10));
-		homepage = new Scene(root1,400,400);
-				
-		// First Player Enter Name
-		Label enterFirstPlayerNameLabel = new Label("Enter Your Name: ");
-		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
-		TextField name1TextField = new TextField();
-		HBox firstPlayerHBox = new HBox();
-		firstPlayerHBox.setAlignment(Pos.CENTER);
-		firstPlayerHBox.getChildren().addAll(enterFirstPlayerNameLabel, name1TextField);
-		
-		// Begin Game Button
-		Button startBtn = new Button("Begin Game!");
-		startBtn.setOnAction(e -> {
-			player1 = new Player(name1TextField.getText());
-			try {
-				game = new Game(player1, player2);
-				champions = Game.getAvailableChampions();
-				q = game.getTurnOrder();
-			} catch (IOException e1) {
-				throwException(e1.getMessage());;
-			}
-			scene2(primaryStage);
-		});
-		
-		// Configuring Nodes
-		HBox buttonHBox = new HBox();
-		buttonHBox.setAlignment(Pos.CENTER);
-		buttonHBox.getChildren().add(startBtn);
-		root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
-		primaryStage.setScene(homepage);
-		primaryStage.setFullScreen(true);
-		
-	}
-	
 	// Enter Players' Names
 	public static void scene1(Stage primaryStage) {
-		twoPlayerMode = true;
+		Image background = new Image("application/media/backgrounds/back1.jpeg");
+		ImageView backgroundIV = new ImageView(background);
+		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
+		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
+		
 		// Scene Organisation
+		BorderPane root = new BorderPane();
+		root.getChildren().add(backgroundIV);
+		
 		VBox root1 = new VBox(10);
 		root1.setAlignment(Pos.CENTER);
 		root1.setPadding(new Insets(10, 10, 10, 10));
-		homepage = new Scene(root1,400,400);
+		homepage = new Scene(root,400,400);
 		
 		// First Player Enter Name
-		Label enterFirstPlayerNameLabel = new Label("First Player Name: ");
+		Label enterFirstPlayerNameLabel = new Label();
+		if(twoPlayerMode) {
+			enterFirstPlayerNameLabel.setText("First Player Name:     ");
+		}
+		
+		else{
+			enterFirstPlayerNameLabel.setText("Enter You Name: ");
+		}
+		
 		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
 		TextField name1TextField = new TextField();
 		HBox firstPlayerHBox = new HBox();
 		firstPlayerHBox.setAlignment(Pos.CENTER);
 		firstPlayerHBox.getChildren().addAll(enterFirstPlayerNameLabel, name1TextField);
 		// Second Player Enter Name
+		
 		Label enterSecondPlayerNameLabel = new Label("Second Player Name: ");
 		enterSecondPlayerNameLabel.setFont(new Font("Didot.",14));
 		TextField name2TextField = new TextField();
@@ -239,7 +227,10 @@ public class View extends Application {
 		Button startBtn = new Button("Begin Game!");
 		startBtn.setOnAction(e -> {
 			player1 = new Player(name1TextField.getText());
-			player2 = new Player(name2TextField.getText());
+			if(twoPlayerMode)
+				player2 = new Player(name2TextField.getText());
+			else player2 = new Player("Computer");
+			
 			try {
 				game = new Game(player1, player2);
 				champions = Game.getAvailableChampions();
@@ -253,13 +244,22 @@ public class View extends Application {
 		HBox buttonHBox = new HBox();
 		buttonHBox.setAlignment(Pos.CENTER);
 		buttonHBox.getChildren().add(startBtn);
-		root1.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
+		if(twoPlayerMode)
+			root1.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
+		else root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
+		
+		root.setCenter(root1);
 		primaryStage.setScene(homepage);
 		primaryStage.setFullScreen(true);
 	}
 	
 	// Choose Champions
 	public static void scene2(Stage primaryStage){ 
+		Image background = new Image("application/media/backgrounds/chooseView.jpeg");
+		ImageView backgroundIV = new ImageView(background);
+		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
+		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
+		
 		// Map Champions with their Images
 		aliveMap = new HashMap<Champion,String>();
 		deadMap = new HashMap<Champion, String>();
@@ -270,6 +270,7 @@ public class View extends Application {
 		
 		// Scene Organisation
 		BorderPane root2 = new BorderPane();
+		root2.getChildren().add(backgroundIV);
 		begin = new Scene(root2);
 		primaryStage.setScene(begin);
 		primaryStage.setFullScreen(true);
@@ -331,13 +332,17 @@ public class View extends Application {
 			chosenMap.put(c, false);
 			Image ch = new Image(aliveMap.get(c));
 			ImageView iv = new ImageView(ch);
-			iv.setFitHeight(80);
-			iv.setFitWidth(80);
 			Button btn = new Button();
-			btn.setPrefSize(70, 70);
-		    btn.setGraphic(iv);
+			btn.setMinHeight(110);
+			btn.setMinWidth(110);
+			BackgroundImage bImage = new BackgroundImage(ch, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(btn.getWidth(), btn.getHeight(), true, true, true, false));
+			Background backGround = new Background(bImage);
+			btn.setBackground(backGround);
 		    btn.setOnAction((e) -> {
+		    	picked = false;
 	    		show(c, root2, chosenChampions,ch, btn, primaryStage);
+	    		if(picked)
+	    			btn.setDisable(true);
 		    });
 		    
 		    champsgrid.add(btn, a, b);
@@ -346,12 +351,13 @@ public class View extends Application {
 		    	a = 0;
 		    	b++;
 		    }
+		    
 		    championsButtons.add(btn);
 		}
 		
 		// Configuring Nodes
 		champsgrid.setPadding(new Insets(10, 10, 10, 10));
-		champsgrid.setStyle("-fx-background-color: #222;");
+//		champsgrid.setStyle("-fx-background-color: #222;");
 		champsgrid.setAlignment(Pos.CENTER);
 	}
 
@@ -359,7 +365,7 @@ public class View extends Application {
 	// Show Pressed Champion's Details
 	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn, Stage primaryStage) {
 		// Organisation
-		VBox details = new VBox(5);
+		VBox details = new VBox(15);
 		
 		// Configuring Nodes
     	details.setPadding(new Insets(10, 10, 10, 10));
@@ -374,21 +380,31 @@ public class View extends Application {
     		type = "Hero";
     	else
     		type = "Villain";
-    	Label championType = new Label("Champion's Type: " + type);
-		Label championName = new Label("Champion's Name: " + champion.getName());
-		Label championMaxHP = new Label("Champion's Maximum HP: " + champion.getMaxHP() + "");
-		Label championMana = new Label("Champion's Mana: " + champion.getMana() + "");
-		Label championActions = new Label("Champion's Maximum Actions Points per Turn: " + champion.getMaxActionPointsPerTurn() + "");
-		Label championSpeed = new Label ("Champion's Speed: " + champion.getSpeed() + "");
-		Label championRange = new Label ("Champion's Attack Range: " + champion.getAttackRange() + "");
-		Label championDamage = new Label ("Champion's Attack Damage: " + champion.getAttackDamage() + "");
+//    	Label championType = new Label("Type: " + type);
+//    	championType.setFont(new Font("Impact",20));
+		Label championNameAndType = new Label(champion.getName() + "(" + type + ")");
+		championNameAndType.setFont(new Font("Impact",20));
+		Label championMaxHP = new Label("Maximum HP: " + champion.getMaxHP() + "");
+		championMaxHP.setFont(new Font("Impact",20));
+		Label championMana = new Label("Mana: " + champion.getMana() + "");
+		championMana.setFont(new Font("Impact",20));
+		Label championActions = new Label("Maximum Actions Points per Turn: " + champion.getMaxActionPointsPerTurn() + "");
+		championActions.setFont(new Font("Impact",20));
+		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
+		championSpeed.setFont(new Font("Impact",20));
+		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
+		championRange.setFont(new Font("Impact",20));
+		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
+		championDamage.setFont(new Font("Impact",20));
 		Label championAbilities = new Label ("Abilities: " + champion.getAbilities().get(0).getName() + ", " +
-		champion.getAbilities().get(1).getName() + ", " + champion.getAbilities().get(2).getName() + ".");
+				champion.getAbilities().get(1).getName() + ", " + champion.getAbilities().get(2).getName() + ".");
+		championAbilities.setFont(new Font("Impact",20));
 		// Choose Button
-		Button choose = new Button("Confirm Champion");
+		Button choose = new Button("Pick");
 		boolean chosen = chosenMap.get(champion);
 		if(chosen) choose.setDisable(true);
 		choose.setOnAction(e -> {
+			picked = true;
 			// Putting the Chosen Champion's Image in Status Bar
 			if(player1.getTeam().size() < 3) {
 				player1.getTeam().add(champion);
@@ -491,8 +507,8 @@ public class View extends Application {
 					button.setPrefSize(50, 50);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
 				    button.setGraphic(img);
-				    img.setFitHeight(60);
-				    img.setFitWidth(60);
+				    img.setFitHeight(80);
+				    img.setFitWidth(80);
 					details.getChildren().add(button);
 				}
 				
@@ -525,9 +541,10 @@ public class View extends Application {
 		
 		if(player1.getTeam().size()==3 && !twoPlayerMode) choose.fire();
 		
-		if (!full)
-				details.getChildren().addAll(championType, championName, championMaxHP, championMana, championActions,
-				championSpeed, championRange, championDamage,championAbilities, choose);		
+		if (!full) {
+				details.getChildren().addAll(championNameAndType, championMaxHP, championMana, championActions,
+				championSpeed, championRange, championDamage,championAbilities, choose);
+		}
 	}
 	
 	// Set Leader and Disable Choosing Another Leader
@@ -907,7 +924,7 @@ public class View extends Application {
 		
 		for (Champion c : player1Champions) {
 			Image image = new Image(aliveMap.get(c));
-			if (c.getCondition() == Condition.KNOCKEDOUT)
+			if (c.getCurrentHP() == 0)
 				image = new Image(deadMap.get(c));
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
@@ -934,7 +951,7 @@ public class View extends Application {
 		
 		for (Champion c : player2Champions) {
 			Image image = new Image(aliveMap.get(c));
-			if (c.getCondition() == Condition.KNOCKEDOUT)
+			if (c.getCurrentHP() == 0)
 				image = new Image(deadMap.get(c));
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
@@ -948,9 +965,11 @@ public class View extends Application {
 		gameStatus.getChildren().add(player2Name);
 	}
 	
-	public static void updateBoard() {
+	public static void updateBoard() {		
 		for(int i=0;i<5;i++) {
 			for(int j=0;j<5;j++) {
+				boolean isCurrent1 = false;
+				boolean isCurrent2 = false;
 				Button btn = new Button();
 				btn.setMinHeight(100);
 				btn.setMinWidth(100);
@@ -994,10 +1013,12 @@ public class View extends Application {
 					btn.setGraphic(iv);
 					Champion current = game.getCurrentChampion();
 					if (c == current && player1.getTeam().contains(current)) {
-						btn.setStyle("-fx-background-color: #010098;");
+//						btn.setStyle("-fx-background-color: #010098;");
+						isCurrent1 = true;
 					}
 					else if (c == current && player2.getTeam().contains(current)) {
-						btn.setStyle("-fx-background-color: #9a0000; ");
+//						btn.setStyle("-fx-background-color: #9a0000; ");
+						isCurrent2 = true;
 					}
 					btn.setOnAction(e -> {
 						Stage currentHealth = new Stage();
@@ -1041,6 +1062,15 @@ public class View extends Application {
 						window.setPadding(new Insets(10,10,10,10));
 						currentHealth.show();
 					});
+				}
+				
+				if(!isCurrent1&&!isCurrent2)
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #ccccff");
+				else if(isCurrent1) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #010098");
+				}
+				else if(isCurrent2) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #9a0000");
 				}
 				boardView.add(btn,j,4-i);
 			}
@@ -1449,9 +1479,19 @@ public class View extends Application {
 		Champion current = game.getCurrentChampion();
 		Button attackUpButton = new Button("Attack Up");
 		actions.add(attackUpButton);
+		
+		Image img = new Image("./application/animations/fire.jpeg");
+		fire = new ImageView(img);
+		fire.setFitWidth(30);
+		fire.setFitHeight(30);
+		translateAttack = new TranslateTransition(Duration.seconds(0.7), fire);
+		translateAttack.setNode(fire);
+		translateAttack.setByX(200);
+		
 		attackUpButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.UP);
+//				translateAttack.play();				
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1478,6 +1518,16 @@ public class View extends Application {
 		attackDownButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.DOWN);
+				
+				Image img = new Image("./application/animations/fire.jpeg");
+				ImageView fireView = new ImageView(img);
+				fireView.setFitWidth(30);
+				fireView.setFitHeight(30);
+				translateAttack = new TranslateTransition();
+				translateAttack.setNode(fireView);
+				translateAttack.setByY(200);
+				translateAttack.play();
+				
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1504,6 +1554,16 @@ public class View extends Application {
 		attackRightButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.RIGHT);
+				
+				Image img = new Image("./application/animations/fire.jpeg");
+				ImageView fireView = new ImageView(img);
+				fireView.setFitWidth(30);
+				fireView.setFitHeight(30);
+				translateAttack = new TranslateTransition();
+				translateAttack.setNode(fireView);
+				translateAttack.setByY(200);
+				translateAttack.play();
+				
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1530,6 +1590,16 @@ public class View extends Application {
 		attackLeftButton.setOnAction(e -> {
 			try {
 				game.attack(Direction.LEFT);
+				
+				Image img = new Image("./application/animations/fire.jpeg");
+				ImageView fireView = new ImageView(img);
+				fireView.setFitWidth(30);
+				fireView.setFitHeight(30);
+				translateAttack = new TranslateTransition();
+				translateAttack.setNode(fireView);
+//				translateAttack.setByY(200);
+				translateAttack.play();
+				
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
@@ -1787,69 +1857,6 @@ public class View extends Application {
 			actions.get(14).fire();
 		});
 		pause.play();
-		
-		
-		
-		
-		
-		
-//		
-//		System.out.println(game.getCurrentChampion().getName());
-//		for (int i = 0; i < 15; i++) {
-//			if (i == 13)
-//				memo.set(13, false);
-//			else
-//				memo.set(i, true);
-//		}
-//		
-//		int random = 0;
-//		for (int i = 0; i < 3; i++) {
-//			random = (int)(Math.random() * 14);
-//			System.out.println("Random: " + random);
-//			if (game.getCurrentChampion().getCurrentActionPoints() < 2) 
-//				break;
-//			if (memo.get(random) == true) {
-//				PauseTransition pause = new PauseTransition(Duration.seconds(3));
-//				int r = random;
-//				pause.setOnFinished(event -> {
-//					System.out.println("trying to do");
-//					actions.get(r).fire();
-//					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
-//					System.out.println("FIRE");
-//				});
-//				pause.play();
-//			}
-//		}
-//		actions.get(14).fire();
-		
-		
-		
-		
-		
-//		int tries = 0;
-//		int random = 0;
-//		do {
-//			random = (int)(Math.random() * 2);
-//			System.out.println("Random " + random);
-//			tries++;
-//			int r = random;
-//			PauseTransition pause = new PauseTransition(Duration.seconds(3));
-//
-//			if (memo.get(random) == true) {
-//				System.out.println("IM HERE");
-//				pause.setOnFinished(event -> {
-//					System.out.println("trying to do");
-//					actions.get(r).fire();
-//					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
-//					System.out.println("FIRE");
-//				});
-//				pause.play();
-//			}
-//			if (tries == 3) {
-//				break;
-//			}
-//		} while (game.getCurrentChampion().getCurrentActionPoints() > 1);
-//		actions.get(14).fire();
 	}
 	
 	public static void checkWinner() {
@@ -1864,7 +1871,7 @@ public class View extends Application {
 			window.setAlignment(Pos.CENTER);
 			Scene scene = new Scene(window);
 			Button exitGame = new Button("Exit Game");
-			exitGame.setOnAction( k ->  {
+			exitGame.setOnAction(k -> {
 				gameOver.close();
 				primaryStage.close();
 			});
@@ -1876,6 +1883,8 @@ public class View extends Application {
 			window.setPadding(new Insets(10,10,10,10));
 			gameOver.show();
 		}
+		
+		
 	}
 
 	public static  void keyMoved() {
@@ -1933,6 +1942,12 @@ public class View extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
