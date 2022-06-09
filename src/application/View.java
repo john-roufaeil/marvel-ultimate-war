@@ -1119,6 +1119,12 @@ public class View extends Application implements Initializable {
 		
 		abilities.getChildren().addAll(castAbility(3, 11), useLeaderAbility(), region2, manualButton(), endTurn());
 		currentControls.getChildren().addAll(move, abilities);
+		
+		if(!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+			for (Button b : actions) {
+				b.setVisible(false);
+			}
+		}
 }
 	
 	public static Button manualButton() {
@@ -1890,53 +1896,65 @@ public class View extends Application implements Initializable {
 	public static  void keyMoved() {
 		gameview.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.NUMPAD8) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(0).fire();
 			}
 			if (e.getCode() == KeyCode.NUMPAD2) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(1).fire();
 			}
 			if (e.getCode() == KeyCode.NUMPAD6) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(2).fire();
 			}
 			if (e.getCode() == KeyCode.NUMPAD4) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(3).fire();
 			}
 			if (e.getCode() == KeyCode.W) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(4).fire();
 			}
 			if (e.getCode() == KeyCode.S) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(5).fire();
 			}
 			if (e.getCode() == KeyCode.D) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(6).fire();
 			}
 			if (e.getCode() == KeyCode.A) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(7).fire();
 			}
 			if (e.getCode() == KeyCode.DIGIT1) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(8).fire();
 			}
 			if (e.getCode() == KeyCode.DIGIT2) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(9).fire();
 			}
 			if (e.getCode() == KeyCode.DIGIT3) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(10).fire();
 			}
 			if (e.getCode() == KeyCode.DIGIT4) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(11).fire();
 			}
 			if (e.getCode() == KeyCode.DIGIT5) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(12).fire();
 			}
 			if (e.getCode() == KeyCode.H) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(13).fire();
 			}
 			if (e.getCode() == KeyCode.E) {
+				if(twoPlayerMode || (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
 				actions.get(14).fire();
 			}
-//			switch(e.getCode()) {
-//			case KeyCode.UP: 
-//			}
 		});
 	}
 	
