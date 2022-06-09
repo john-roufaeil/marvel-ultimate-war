@@ -1861,7 +1861,7 @@ public class View extends Application {
 			window.setAlignment(Pos.CENTER);
 			Scene scene = new Scene(window);
 			Button exitGame = new Button("Exit Game");
-			exitGame.setOnAction( k -> gameOver.close());
+			exitGame.setOnAction( k -> primaryStage.close());
 			gameOver.setScene(scene);
 			gameOver.setMinWidth(400);
 			gameOver.setMinHeight(200);
