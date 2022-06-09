@@ -64,6 +64,7 @@ public class Game {
 		loadChampions("Champions.csv");
 		placeChampions();
 		placeCovers();
+		prepareChampionTurns();
 	}
 
 	public static void loadAbilities(String filePath) throws IOException {
