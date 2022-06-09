@@ -568,7 +568,8 @@ public class View extends Application {
 
 	// Open Board Game View
 	public static void scene3(Stage primaryStage) throws IOException {
-		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
+		int random =(int)( Math.random() * 2 + 1);
+		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-" + random + ".jpeg");
 		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
 		backgroundBoardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
