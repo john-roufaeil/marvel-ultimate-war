@@ -77,6 +77,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -591,6 +592,7 @@ public class View extends Application {
 		BorderPane root3 = new BorderPane();
 		root3.getChildren().add(backgroundBoardIV);
 		gameview = new Scene(root3);
+		keyMoved();
 		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
 		
@@ -1861,7 +1863,10 @@ public class View extends Application {
 			window.setAlignment(Pos.CENTER);
 			Scene scene = new Scene(window);
 			Button exitGame = new Button("Exit Game");
-			exitGame.setOnAction( k -> primaryStage.close());
+			exitGame.setOnAction( k ->  {
+				gameOver.close();
+				primaryStage.close();
+			});
 			gameOver.setScene(scene);
 			gameOver.setMinWidth(400);
 			gameOver.setMinHeight(200);
@@ -1871,7 +1876,60 @@ public class View extends Application {
 			gameOver.show();
 		}
 	}
-		
+
+	public static  void keyMoved() {
+		gameview.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.NUMPAD8) {
+				actions.get(0).fire();
+			}
+			if (e.getCode() == KeyCode.NUMPAD2) {
+				actions.get(1).fire();
+			}
+			if (e.getCode() == KeyCode.NUMPAD6) {
+				actions.get(2).fire();
+			}
+			if (e.getCode() == KeyCode.NUMPAD4) {
+				actions.get(3).fire();
+			}
+			if (e.getCode() == KeyCode.W) {
+				actions.get(4).fire();
+			}
+			if (e.getCode() == KeyCode.S) {
+				actions.get(5).fire();
+			}
+			if (e.getCode() == KeyCode.D) {
+				actions.get(6).fire();
+			}
+			if (e.getCode() == KeyCode.A) {
+				actions.get(7).fire();
+			}
+			if (e.getCode() == KeyCode.DIGIT1) {
+				actions.get(8).fire();
+			}
+			if (e.getCode() == KeyCode.DIGIT2) {
+				actions.get(9).fire();
+			}
+			if (e.getCode() == KeyCode.DIGIT3) {
+				actions.get(10).fire();
+			}
+			if (e.getCode() == KeyCode.DIGIT4) {
+				actions.get(11).fire();
+			}
+			if (e.getCode() == KeyCode.DIGIT5) {
+				actions.get(12).fire();
+			}
+			if (e.getCode() == KeyCode.H) {
+				actions.get(13).fire();
+			}
+			if (e.getCode() == KeyCode.E) {
+				actions.get(14).fire();
+			}
+//			switch(e.getCode()) {
+//			case KeyCode.UP: 
+//			}
+		});
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
