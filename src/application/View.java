@@ -109,7 +109,6 @@ public class View extends Application implements Initializable {
 	static HashMap<Champion,Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
-	static HashMap<Champion, String> backgroundMap;
 	static ArrayList<Button> chooseLeaderButtons;
 	static ArrayList<Button> championsButtons = new ArrayList<>();
 	static ArrayList<Button> actions = new ArrayList<Button>();
@@ -144,94 +143,86 @@ public class View extends Application implements Initializable {
 	}
 	
 	public static void checkPlayingMode(Stage primaryStage) {
+		// Scene Organisation
+		BorderPane root1 = new BorderPane();
 		Image background = new Image("application/media/backgrounds/back1.jpeg");
 		ImageView backgroundIV = new ImageView(background);
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
-		
-		// Scene Organisation
-		BorderPane root1 = new BorderPane();
 		root1.getChildren().add(backgroundIV);
-		HBox chooseMode = new HBox(10);
+		modePage = new Scene(root1,400,400);
+
+		
+		// Choose Player Mode
+		HBox chooseMode = new HBox(50);
 		HBox welcomeBox = new HBox(10);
 		Label welcome = new Label("WELCOME TO WAR!");
 		welcome.setFont(new Font("Didot.",70));
 		welcomeBox.setAlignment(Pos.CENTER);
 		welcomeBox.getChildren().add(welcome);
-		chooseMode.setPadding(new Insets(10, 10, 110, 10));
+		chooseMode.setPadding(new Insets(10, 10, 70, 10));
 		chooseMode.setAlignment(Pos.CENTER);
-		modePage = new Scene(root1,400,400);
+		
 		Button onePlayer = new Button("1 Player");
 		onePlayer.setMinHeight(90);
 		onePlayer.setMinWidth(230);
 		onePlayer.setOnAction(e -> {
 			twoPlayerMode = false;
-			scene1(primaryStage);
+			enterNames(primaryStage, root1);
+//			scene1(primaryStage);
 		});
+		
 		Button twoPlayers = new Button("2 Players");
 		twoPlayers.setMinHeight(90);
 		twoPlayers.setMinWidth(230);
 		twoPlayers.setOnAction(e -> {
 			twoPlayerMode = true;
-			scene1(primaryStage);
+			enterNames(primaryStage, root1);
+//			scene1(primaryStage);
 		});
 		
-		Region region = new Region();
-		region.setMinWidth(30);
-		chooseMode.getChildren().addAll(onePlayer,region,twoPlayers);
+		chooseMode.getChildren().addAll(onePlayer, twoPlayers);
 		root1.setBottom(chooseMode);
 		root1.setTop(welcomeBox);
 		primaryStage.setScene(modePage);
 		
 	}
 	
-	// Enter Players' Names
-	public static void scene1(Stage primaryStage) {
-		Image background = new Image("application/media/backgrounds/back1.jpeg");
-		ImageView backgroundIV = new ImageView(background);
-		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
-		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
-		
-		// Scene Organisation
-		BorderPane root = new BorderPane();
-		root.getChildren().add(backgroundIV);
-		
-		VBox root1 = new VBox(10);
-		root1.setAlignment(Pos.CENTER);
-		root1.setPadding(new Insets(10, 10, 10, 10));
-		homepage = new Scene(root,400,400);
-		
-		// First Player Enter Name
+	public static void enterNames(Stage primaryStage, BorderPane root1) {
+		VBox enterNamesVBox = new VBox(15);
+		enterNamesVBox.setPadding(new Insets(10,10,70,10));
+		root1.setBottom(enterNamesVBox);
 		Label enterFirstPlayerNameLabel = new Label();
 		if(twoPlayerMode) {
-			enterFirstPlayerNameLabel.setText("First Player Name:     ");
+			enterFirstPlayerNameLabel.setText("First Player Name: ");
 		}
-		
 		else{
-			enterFirstPlayerNameLabel.setText("Enter You Name: ");
+			enterFirstPlayerNameLabel.setText("Enter Your Name: ");
 		}
-		
-		enterFirstPlayerNameLabel.setFont(new Font("Didot.",14));
+		enterFirstPlayerNameLabel.setTextFill(Color.color(1, 1, 1));
+		enterFirstPlayerNameLabel.setFont(new Font("Didot.",16));
 		TextField name1TextField = new TextField();
 		HBox firstPlayerHBox = new HBox();
 		firstPlayerHBox.setAlignment(Pos.CENTER);
 		firstPlayerHBox.getChildren().addAll(enterFirstPlayerNameLabel, name1TextField);
-		// Second Player Enter Name
 		
+		// Second Player Enter Name
 		Label enterSecondPlayerNameLabel = new Label("Second Player Name: ");
-		enterSecondPlayerNameLabel.setFont(new Font("Didot.",14));
+		enterSecondPlayerNameLabel.setTextFill(Color.color(1, 1, 1));
+		enterSecondPlayerNameLabel.setFont(new Font("Didot.",16));
 		TextField name2TextField = new TextField();
 		HBox secondPlayerHBox = new HBox();
 		secondPlayerHBox.setAlignment(Pos.CENTER);
 		secondPlayerHBox.getChildren().addAll(enterSecondPlayerNameLabel, name2TextField);
+		
 		// Begin Game Button
 		Button startBtn = new Button("Begin Game!");
 		startBtn.setOnAction(e -> {
 			player1 = new Player(name1TextField.getText());
-			if(twoPlayerMode)
+			if (twoPlayerMode)
 				player2 = new Player(name2TextField.getText());
-			else player2 = new Player("Computer");
-			
+			else
+				player2 = new Player("Computer");
 			try {
 				game = new Game(player1, player2);
 				champions = Game.getAvailableChampions();
@@ -246,11 +237,11 @@ public class View extends Application implements Initializable {
 		buttonHBox.setAlignment(Pos.CENTER);
 		buttonHBox.getChildren().add(startBtn);
 		if(twoPlayerMode)
-			root1.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
-		else root1.getChildren().addAll(firstPlayerHBox, buttonHBox);
+			enterNamesVBox.getChildren().addAll(firstPlayerHBox, secondPlayerHBox, buttonHBox);
+		else enterNamesVBox.getChildren().addAll(firstPlayerHBox, buttonHBox);
 		
-		root.setCenter(root1);
-		primaryStage.setScene(homepage);
+		root1.setBottom(enterNamesVBox);
+//		primaryStage.setScene(homepage);
 		primaryStage.setFullScreen(true);
 	}
 	
@@ -1116,7 +1107,6 @@ public class View extends Application implements Initializable {
 		Region region2 = new Region();
 		region2.setMinWidth(5);
 		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
-//		if (punch) {
 		punch  = false;
 		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
 			if (effect instanceof Disarm) {
@@ -1124,7 +1114,6 @@ public class View extends Application implements Initializable {
 				break;
 			}
 		}
-		
 		
 		abilities.getChildren().addAll(castAbility(3, 11), useLeaderAbility(), region2, manualButton(), endTurn());
 		currentControls.getChildren().addAll(move, abilities);
