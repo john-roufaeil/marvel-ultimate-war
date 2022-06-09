@@ -1044,7 +1044,7 @@ public class View extends Application implements Initializable {
 						Text conditionText =new Text("Champion's condition: " + c.getCondition());
 						String effects = "";
 						for (Effect effect : c.getAppliedEffects()) {
-							effects += effect.getName() + ", ";
+							effects += effect.getName() + "(" + effect.getDuration() + "), ";
 						}
 						if (effects.length() >= 2)
 							effects = effects.substring(0, effects.length()-2);
