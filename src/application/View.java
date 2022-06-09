@@ -278,29 +278,33 @@ public class View extends Application implements Initializable {
 		// Chosen Champions Bar
 		// First Player Label and Selected Champions ImageViews
 		Label player1LabelScene2 = new Label(player1.getName());
+		player1LabelScene2.setTextFill(Color.color(1, 1, 1));
+		player1LabelScene2.setFont(new Font("Didot.",15));
 		Image notYetSelected = new Image("application/media/gameIcon.jpeg");
 		ImageView chosen1_1 = new ImageView(notYetSelected);
-		chosen1_1.setFitWidth(50);
-		chosen1_1.setFitHeight(50);
+		chosen1_1.setFitWidth(70);
+		chosen1_1.setFitHeight(70);
 		ImageView chosen1_2 = new ImageView(notYetSelected);
-		chosen1_2.setFitWidth(50);
-		chosen1_2.setFitHeight(50);
+		chosen1_2.setFitWidth(70);
+		chosen1_2.setFitHeight(70);
 		ImageView chosen1_3 = new ImageView(notYetSelected);
-		chosen1_3.setFitWidth(50);
-		chosen1_3.setFitHeight(50);
+		chosen1_3.setFitWidth(70);
+		chosen1_3.setFitHeight(70);
 		Region region = new Region();
 		region.setMinWidth(100);
 		// Second Player Label and Selected Champions ImageViews
 		ImageView chosen2_1 = new ImageView(notYetSelected);
-		chosen2_1.setFitWidth(50);
-		chosen2_1.setFitHeight(50);
+		chosen2_1.setFitWidth(70);
+		chosen2_1.setFitHeight(70);
 		ImageView chosen2_2 = new ImageView(notYetSelected);
-		chosen2_2.setFitWidth(50);
-		chosen2_2.setFitHeight(50);
+		chosen2_2.setFitWidth(70);
+		chosen2_2.setFitHeight(70);
 		ImageView chosen2_3 = new ImageView(notYetSelected);
-		chosen2_3.setFitWidth(50);
-		chosen2_3.setFitHeight(50);
+		chosen2_3.setFitWidth(70);
+		chosen2_3.setFitHeight(70);
 		Label player2LabelScene2 = new Label(player2.getName());
+		player2LabelScene2.setTextFill(Color.color(1, 1, 1));
+		player2LabelScene2.setFont(new Font("Didot.",15));
 		// Configuring Nodes
 		chosenChampions.getChildren().addAll(player1LabelScene2, chosen1_1, chosen1_2, chosen1_3, region, chosen2_1, chosen2_2, chosen2_3, player2LabelScene2);
 		chosenChampions.setAlignment(Pos.CENTER);
@@ -328,12 +332,12 @@ public class View extends Application implements Initializable {
 			Image ch = new Image(aliveMap.get(c));
 			ImageView iv = new ImageView(ch);
 			Button btn = new Button();
-			iv.setFitHeight(110);
-			iv.setFitWidth(110);
-			btn.setMinHeight(110);
-			btn.setMaxHeight(110);
-			btn.setMinWidth(110);
-			btn.setMaxWidth(110);
+			iv.setFitHeight(100);
+			iv.setFitWidth(100);
+			btn.setMinHeight(100);
+			btn.setMaxHeight(100);
+			btn.setMinWidth(100);
+			btn.setMaxWidth(100);
 			btn.setGraphic(iv);
 			
 //			BackgroundImage bImage = new BackgroundImage(ch, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(btn.getWidth(), btn.getHeight(), true, true, true, false));
@@ -381,24 +385,24 @@ public class View extends Application implements Initializable {
     	else
     		type = "Villain";
 //    	Label championType = new Label("Type: " + type);
-//    	championType.setFont(new Font("Impact",20));
-		Label championNameAndType = new Label(champion.getName() + "(" + type + ")");
-		championNameAndType.setFont(new Font("Impact",20));
+//    	championType.setFont(new Font("Impact",18));
+		Label championNameAndType = new Label(champion.getName().toUpperCase() + " (" + type + ")");
+		championNameAndType.setFont(new Font("Impact",18));
 		Label championMaxHP = new Label("Maximum HP: " + champion.getMaxHP() + "");
-		championMaxHP.setFont(new Font("Impact",20));
+		championMaxHP.setFont(new Font("Impact",18));
 		Label championMana = new Label("Mana: " + champion.getMana() + "");
-		championMana.setFont(new Font("Impact",20));
+		championMana.setFont(new Font("Impact",18));
 		Label championActions = new Label("Maximum Actions Points per Turn: " + champion.getMaxActionPointsPerTurn() + "");
-		championActions.setFont(new Font("Impact",20));
+		championActions.setFont(new Font("Impact",18));
 		Label championSpeed = new Label ("Speed: " + champion.getSpeed() + "");
-		championSpeed.setFont(new Font("Impact",20));
+		championSpeed.setFont(new Font("Impact",18));
 		Label championRange = new Label ("Attack Range: " + champion.getAttackRange() + "");
-		championRange.setFont(new Font("Impact",20));
+		championRange.setFont(new Font("Impact",18));
 		Label championDamage = new Label ("Attack Damage: " + champion.getAttackDamage() + "");
-		championDamage.setFont(new Font("Impact",20));
+		championDamage.setFont(new Font("Impact",18));
 		Label championAbilities = new Label ("Abilities: " + champion.getAbilities().get(0).getName() + ", " +
 				champion.getAbilities().get(1).getName() + ", " + champion.getAbilities().get(2).getName() + ".");
-		championAbilities.setFont(new Font("Impact",20));
+		championAbilities.setFont(new Font("Impact",18));
 		// Choose Button
 		Button choose = new Button("Pick");
 		boolean chosen = chosenMap.get(champion);
@@ -486,6 +490,7 @@ public class View extends Application implements Initializable {
 			
 			// Disable All Champions Buttons When Teams Full and Ask to Choose Leaders
 			if (player1.getTeam().size() + player2.getTeam().size() == 6) {
+				root2.setBottom(null);
 				for(Button b : championsButtons) {
 					b.setDisable(true);
 				}
@@ -504,7 +509,10 @@ public class View extends Application implements Initializable {
 					button.setOnAction(event -> {
 						chooseLeader(player1, player1.getTeam().get(a), details, primaryStage);
 					});
-					button.setPrefSize(50, 50);
+					button.setMaxHeight(80);
+					button.setMinHeight(80);
+					button.setMaxWidth(80);
+					button.setMinWidth(80);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
 				    button.setGraphic(img);
 				    img.setFitHeight(80);
@@ -522,11 +530,14 @@ public class View extends Application implements Initializable {
 					button.setOnAction(event -> {
 						chooseLeader(player2,player2.getTeam().get(a), details, primaryStage);
 					});
-					button.setPrefSize(50, 50);
+					button.setMaxHeight(80);
+					button.setMinHeight(80);
+					button.setMaxWidth(80);
+					button.setMinWidth(80);
 					ImageView img = (ImageView)(chosenChampions.getChildren().get(i));
 				    button.setGraphic(img);
-				    img.setFitHeight(60);
-				    img.setFitWidth(60);
+				    img.setFitHeight(80);
+				    img.setFitWidth(80);
 					details.getChildren().add(button);
 				}
 				if(!twoPlayerMode) {
@@ -655,6 +666,8 @@ public class View extends Application implements Initializable {
 		turnOrderStatus.getChildren().clear();
 		tmp = new PriorityQueue(q.size());
 		Label turnLabel = new Label("Next in Turn: ");
+		turnLabel.setTextFill(Color.color(1, 1, 1));
+		turnLabel.setFont(new Font("Didot.",15));
 		turnOrderStatus.getChildren().add(turnLabel);
 		while(!q.isEmpty()){
 			Image img = new Image(aliveMap.get((Champion)q.peekMin()));
