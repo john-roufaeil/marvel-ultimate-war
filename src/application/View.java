@@ -938,9 +938,10 @@ public class View extends Application {
 			iv.setFitWidth(80);
 			gameStatus.getChildren().add(iv);
 		}
-		
 		Label player2Name = new Label(player2.getName());
-		player1Name.setFont(new Font("Didot.",16));
+		player2Name.setFont(new Font("Didot.",16));
+		player1Name.setTextFill(Color.color(1, 1, 1));
+		player2Name.setTextFill(Color.color(1, 1, 1));
 		gameStatus.getChildren().add(player2Name);
 	}
 	
