@@ -4,11 +4,9 @@
  *  TO FIX
  *  
  *  TO IMPROVE
- *  manipulate buttons and their functions
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
  *  TO ADD
- *  show a status bar below each champion and cover icon on the board indicating their health points
  *  change cover image depending on health
  *  marvel video intro
  *  attack & cast ability animation
@@ -974,36 +972,19 @@ public class View extends Application implements Initializable {
 				btn.setMaxHeight(100);
 				btn.setMaxWidth(100);
 				boardButtons[j][4 - i] = btn;
-
+				
 				if (board[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
 					Image img = new Image("./application/media/cover.jpeg");
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
-					int a = i;
-					int b = j;
-					btn.setOnAction(e -> {
-						Stage currentHealth = new Stage();
-						currentHealth.setTitle("Cover");
-						VBox window = new VBox(10);
-						window.setAlignment(Pos.CENTER);
-						Scene scene = new Scene(window);
-						Button OK = new Button("OK");
-						OK.setOnAction(ee -> currentHealth.close());
-
-						currentHealth.setScene(scene);
-						currentHealth.setMinWidth(400);
-						currentHealth.setMinHeight(200);
-						Text msgText = new Text("Cover's health: " + ((Cover) (board[a][b])).getCurrentHP());
-						window.getChildren().addAll(msgText, OK);
-						window.setPadding(new Insets(10, 10, 10, 10));
-						currentHealth.show();
-					});
 				}
 
 				else if (board[i][j] instanceof Champion) {
 					Champion c = (Champion) board[i][j];
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
@@ -1570,7 +1551,6 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void moveDown() {
 		Champion current = game.getCurrentChampion();
 		try {
@@ -1589,7 +1569,6 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void moveRight() {
 		Champion current = game.getCurrentChampion();
 		try {
@@ -1607,7 +1586,6 @@ public class View extends Application implements Initializable {
 			}
 		}
 	}
-
 
 	public static void moveLeft() {
 		Champion current = game.getCurrentChampion();
@@ -2036,11 +2014,9 @@ public class View extends Application implements Initializable {
 		});
 	}
 
-
 	public static void main(String[] args) {
 		launch(args);
 	}
-
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
