@@ -30,18 +30,13 @@ import javafx.scene.text.TextAlignment;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.swing.GroupLayout.Alignment;
-
 import engine.Game;
 import engine.Player;
 import engine.PriorityQueue;
-import exceptions.LeaderAbilityAlreadyUsedException;
-import exceptions.LeaderNotCurrentException;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
@@ -61,7 +56,6 @@ import model.effects.Disarm;
 import model.effects.Effect;
 import model.world.AntiHero;
 import model.world.Champion;
-import model.world.Condition;
 import model.world.Cover;
 import model.world.Direction;
 import model.world.Hero;
@@ -70,42 +64,32 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 
 public class View extends Application implements Initializable {
 	static Game game;
 	static Player player1, player2;
 	static Scene homePage, begin, gameview;
 	static GridPane boardView;
-	static HBox gameStatus;
-	static VBox turnOrderStatus, currentInformation, currentControls;
+	static HBox gameStatus, currentControls;
+	static VBox turnOrderStatus, currentInformation;
 	static HashMap<Champion, Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
 	static ArrayList<Button> championsButtons = new ArrayList<>();
-	static ArrayList<Button> actions = new ArrayList<Button>();
 	static ArrayList<Champion> champions;
 	static ArrayList<Champion> player1Champions = new ArrayList<>();
 	static ArrayList<Champion> player2Champions = new ArrayList<>();
-	static ArrayList<Boolean> memo = new ArrayList<>(15);
 	static PriorityQueue q;
 	static PriorityQueue tmp;
 	static Object[][] board;
@@ -115,7 +99,6 @@ public class View extends Application implements Initializable {
 	static boolean punch = false;
 	static boolean twoPlayerMode;
 	static boolean picked;
-
 	static ImageView fire;
 	static TranslateTransition translateAttack;
 
@@ -237,7 +220,6 @@ public class View extends Application implements Initializable {
 	}
 
 	// Choose Champions
-
 	public static void scene2(Stage primaryStage) {
 		Image background = new Image("application/media/backgrounds/chooseView.jpeg");
 		ImageView backgroundIV = new ImageView(background);
@@ -358,7 +340,6 @@ public class View extends Application implements Initializable {
 	}
 
 	// Show Pressed Champion's Details
-
 	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn,
 			Stage primaryStage) {
 		// Organisation
@@ -554,7 +535,6 @@ public class View extends Application implements Initializable {
 	}
 
 	// Set Leader and Disable Choosing Another Leader
-
 	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
 
 		if (player == player1) {
@@ -592,10 +572,10 @@ public class View extends Application implements Initializable {
 	}
 
 	// Open Board Game View
-
 	public static void scene3(Stage primaryStage) throws IOException {
-		int random = (int) (Math.random() * 2 + 1);
-		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-" + random + ".jpeg");
+//		int random = (int) (Math.random() * 2 + 1);
+//		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-" + random + ".jpeg");
+		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
 		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
 		backgroundBoardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
@@ -611,10 +591,6 @@ public class View extends Application implements Initializable {
 		game.placeChampions();
 		game.prepareChampionTurns();
 
-		for (int i = 0; i < 15; i++) {
-			memo.add(true);
-		}
-
 		// Scene organisation
 		BorderPane root3 = new BorderPane();
 		root3.getChildren().add(backgroundBoardIV);
@@ -625,7 +601,7 @@ public class View extends Application implements Initializable {
 
 		gameStatus = new HBox(10);
 		turnOrderStatus = new VBox(15);
-		currentControls = new VBox(5);
+		currentControls = new HBox(30);
 		boardView = new GridPane();
 		currentInformation = new VBox(5);
 		root3.setTop(gameStatus);
@@ -660,7 +636,6 @@ public class View extends Application implements Initializable {
 	}
 
 	// Update the Turn Order Status
-
 	public static void prepareTurns() {
 		turnOrderStatus.getChildren().clear();
 		tmp = new PriorityQueue(q.size());
@@ -671,8 +646,8 @@ public class View extends Application implements Initializable {
 		while (!q.isEmpty()) {
 			Image img = new Image(aliveMap.get((Champion) q.peekMin()));
 			ImageView iv = new ImageView(img);
-			iv.setFitHeight(75);
-			iv.setFitWidth(75);
+			iv.setFitHeight(60);
+			iv.setFitWidth(60);
 
 			turnOrderStatus.getChildren().add(iv);
 			tmp.insert((Champion) q.remove());
@@ -683,7 +658,6 @@ public class View extends Application implements Initializable {
 	}
 
 	// Update Current Champion's Information
-
 	public static void updateCurrentInformation() {
 		currentInformation.getChildren().clear();
 		// Get Current Champion
@@ -733,184 +707,185 @@ public class View extends Application implements Initializable {
 		Ability a3 = champion.getAbilities().get(2);
 
 		VBox temp = new VBox(5);
-		Button a1Button = actions.get(8);
-		Button a2Button = actions.get(9);
-		Button a3Button = actions.get(10);
+		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
+			Button a1Button = (Button) currentControls.getChildren().get(0);
+			Button a2Button = (Button) currentControls.getChildren().get(1);
+			Button a3Button = (Button) currentControls.getChildren().get(2);
 
-		// First Ability's Attributes
-
-		a1Button.setOnMouseEntered(e -> {
-			Label a1Name = new Label("First Ability: " + a1.getName());
-			a1Name.setFont(new Font("Didot.", 15));
-			String abilityType1 = "";
-			String abilityAmount1 = "";
-			if (a1 instanceof DamagingAbility) {
-				abilityType1 = "Damaging Ability";
-				abilityAmount1 = "Damaging amount: " + ((DamagingAbility) a1).getDamageAmount();
-			}
-			if (a1 instanceof HealingAbility) {
-				abilityType1 = "Healing Ability";
-				abilityAmount1 = "Healing amount: " + ((HealingAbility) a1).getHealAmount();
-			} else if (a1 instanceof CrowdControlAbility) {
-				abilityType1 = "Crowd Control Ability";
-				abilityAmount1 = "Casted effect: " + ((CrowdControlAbility) a1).getEffect().getName() + "("
-						+ ((CrowdControlAbility) a1).getEffect().getDuration() + " turns)";
-			}
-			Label a1Type = new Label("Type: " + abilityType1);
-			a1Type.setFont(new Font("Didot.", 15));
-			Label a1Amount = new Label(abilityAmount1);
-			a1Amount.setFont(new Font("Didot.", 15));
-			Label a1Mana = new Label("Mana Cost: " + a1.getManaCost());
-			a1Mana.setFont(new Font("Didot.", 15));
-			Label a1Cool = new Label("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
-			a1Cool.setFont(new Font("Didot.", 15));
-			Label a1Range = new Label("Range: " + a1.getCastRange());
-			a1Range.setFont(new Font("Didot.", 15));
-			Label a1Area = new Label("Cast Area: " + a1.getCastArea());
-			a1Area.setFont(new Font("Didot.", 15));
-			Label a1Action = new Label("Required Action Points: " + a1.getRequiredActionPoints());
-			a1Action.setFont(new Font("Didot.", 15));
-			temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
-			for (Node n : temp.getChildren()) {
-				if (n instanceof Label)
-					((Label) n).setTextFill(Color.color(1, 1, 1));
-			}
-		});
-
-		// Second Ability's Attributes
-		a2Button.setOnMouseEntered(e -> {
-			Label a2Name = new Label("Second Ability: " + a2.getName());
-			a2Name.setFont(new Font("Didot.", 15));
-			String abilityType2 = "";
-			String abilityAmount2 = "";
-			if (a2 instanceof DamagingAbility) {
-				abilityType2 = "Damaging Ability";
-				abilityAmount2 = "Damaging amount: " + ((DamagingAbility) a2).getDamageAmount();
-			}
-			if (a2 instanceof HealingAbility) {
-				abilityType2 = "Healing Ability";
-				abilityAmount2 = "Healing amount: " + ((HealingAbility) a2).getHealAmount();
-			} else if (a2 instanceof CrowdControlAbility) {
-				abilityType2 = "Crowd Control Ability";
-				abilityAmount2 = "Casted effect: " + ((CrowdControlAbility) a2).getEffect().getName() + "("
-						+ ((CrowdControlAbility) a2).getEffect().getDuration() + " turns)";
-			}
-			Label a2Type = new Label("Type: " + abilityType2);
-			a2Type.setFont(new Font("Didot.", 15));
-			Label a2Amount = new Label(abilityAmount2);
-			a2Amount.setFont(new Font("Didot.", 15));
-			Label a2Mana = new Label("Mana Cost: " + a2.getManaCost());
-			a2Mana.setFont(new Font("Didot.", 15));
-			Label a2Cool = new Label("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
-			a2Cool.setFont(new Font("Didot.", 15));
-			Label a2Range = new Label("Range: " + a2.getCastRange());
-			a2Range.setFont(new Font("Didot.", 15));
-			Label a2Area = new Label("Cast Area: " + a2.getCastArea());
-			a2Area.setFont(new Font("Didot.", 15));
-			Label a2Action = new Label("Required Action Points: " + a2.getRequiredActionPoints());
-			a2Action.setFont(new Font("Didot.", 15));
-			temp.getChildren().addAll(a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action);
-			for (Node n : temp.getChildren()) {
-				if (n instanceof Label)
-					((Label) n).setTextFill(Color.color(1, 1, 1));
-			}
-		});
-
-		// Third Ability's Attributes
-		a3Button.setOnMouseEntered(e -> {
-			Label a3Name = new Label("Third Ability: " + a3.getName());
-			a3Name.setFont(new Font("Didot.", 15));
-			String abilityType3 = "";
-			String abilityAmount3 = "";
-			if (a3 instanceof DamagingAbility) {
-				abilityType3 = "Damaging Ability";
-				abilityAmount3 = "Damaging amount: " + ((DamagingAbility) a3).getDamageAmount();
-			}
-			if (a3 instanceof HealingAbility) {
-				abilityType3 = "Healing Ability";
-				abilityAmount3 = "Healing amount: " + ((HealingAbility) a3).getHealAmount();
-			} else if (a3 instanceof CrowdControlAbility) {
-				abilityType3 = "Crowd Control Ability";
-				abilityAmount3 = "Casted effect: " + ((CrowdControlAbility) a3).getEffect().getName() + "("
-						+ ((CrowdControlAbility) a3).getEffect().getDuration() + " turns)";
-			}
-			Label a3Type = new Label("Type: " + abilityType3);
-			a3Type.setFont(new Font("Didot.", 15));
-			Label a3Amount = new Label(abilityAmount3);
-			a3Amount.setFont(new Font("Didot.", 15));
-			Label a3Mana = new Label("Mana Cost: " + a3.getManaCost());
-			a3Mana.setFont(new Font("Didot.", 15));
-			Label a3Cool = new Label("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
-			a3Cool.setFont(new Font("Didot.", 15));
-			Label a3Range = new Label("Range: " + a3.getCastRange());
-			a3Range.setFont(new Font("Didot.", 15));
-			Label a3Area = new Label("Cast Area: " + a3.getCastArea());
-			a3Area.setFont(new Font("Didot.", 15));
-			Label a3Action = new Label("Required Action Points: " + a3.getRequiredActionPoints());
-			a3Action.setFont(new Font("Didot.", 15));
-			temp.getChildren().addAll(a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
-			for (Node n : temp.getChildren()) {
-				if (n instanceof Label)
-					((Label) n).setTextFill(Color.color(1, 1, 1));
-			}
-		});
-
-		a1Button.setOnMouseExited(e -> {
-			temp.getChildren().clear();
-		});
-
-		a2Button.setOnMouseExited(e -> {
-			temp.getChildren().clear();
-		});
-
-		a3Button.setOnMouseExited(e -> {
-			temp.getChildren().clear();
-		});
-
-		if (punch && game.getCurrentChampion().getAbilities().size() > 3) {
-			Button a4Button = actions.get(11);
-			Ability a4 = game.getCurrentChampion().getAbilities().get(3);
-			a4Button.setOnMouseEntered(e -> {
-				Label a4Name = new Label("Fourth Ability: " + a4.getName());
-				a4Name.setFont(new Font("Didot.", 15));
-				String abilityType4 = "";
-				String abilityAmount4 = "";
-				if (a4 instanceof DamagingAbility) {
-					abilityType4 = "Damaging Ability";
-					abilityAmount4 = "Damaging amount: " + ((DamagingAbility) a4).getDamageAmount();
+			// First Ability's Attributes
+			a1Button.setOnMouseEntered(e -> {
+				Label a1Name = new Label("First Ability: " + a1.getName());
+				a1Name.setFont(new Font("Didot.", 15));
+				String abilityType1 = "";
+				String abilityAmount1 = "";
+				if (a1 instanceof DamagingAbility) {
+					abilityType1 = "Damaging Ability";
+					abilityAmount1 = "Damaging amount: " + ((DamagingAbility) a1).getDamageAmount();
 				}
-				if (a4 instanceof HealingAbility) {
-					abilityType4 = "Healing Ability";
-					abilityAmount4 = "Healing amount: " + ((HealingAbility) a4).getHealAmount();
-				} else if (a4 instanceof CrowdControlAbility) {
-					abilityType4 = "Crowd Control Ability";
-					abilityAmount4 = "Casted effect: " + ((CrowdControlAbility) a4).getEffect().getName() + "("
-							+ ((CrowdControlAbility) a4).getEffect().getDuration() + " turns)";
+				if (a1 instanceof HealingAbility) {
+					abilityType1 = "Healing Ability";
+					abilityAmount1 = "Healing amount: " + ((HealingAbility) a1).getHealAmount();
+				} else if (a1 instanceof CrowdControlAbility) {
+					abilityType1 = "Crowd Control Ability";
+					abilityAmount1 = "Casted effect: " + ((CrowdControlAbility) a1).getEffect().getName() + "("
+							+ ((CrowdControlAbility) a1).getEffect().getDuration() + " turns)";
 				}
-				Label a4Type = new Label("Type: " + abilityType4);
-				a4Type.setFont(new Font("Didot.", 15));
-				Label a4Amount = new Label(abilityAmount4);
-				a4Amount.setFont(new Font("Didot.", 15));
-				Label a4Mana = new Label("Mana Cost: " + a4.getManaCost());
-				a4Mana.setFont(new Font("Didot.", 15));
-				Label a4Cool = new Label("Cooldown: " + a4.getCurrentCooldown() + "/" + a4.getBaseCooldown());
-				a4Cool.setFont(new Font("Didot.", 15));
-				Label a4Range = new Label("Range: " + a4.getCastRange());
-				a4Range.setFont(new Font("Didot.", 15));
-				Label a4Area = new Label("Cast Area: " + a4.getCastArea());
-				a4Area.setFont(new Font("Didot.", 15));
-				Label a4Action = new Label("Required Action Points: " + a4.getRequiredActionPoints());
-				a4Action.setFont(new Font("Didot.", 15));
-				temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
+				Label a1Type = new Label("Type: " + abilityType1);
+				a1Type.setFont(new Font("Didot.", 15));
+				Label a1Amount = new Label(abilityAmount1);
+				a1Amount.setFont(new Font("Didot.", 15));
+				Label a1Mana = new Label("Mana Cost: " + a1.getManaCost());
+				a1Mana.setFont(new Font("Didot.", 15));
+				Label a1Cool = new Label("Cooldown: " + a1.getCurrentCooldown() + "/" + a1.getBaseCooldown());
+				a1Cool.setFont(new Font("Didot.", 15));
+				Label a1Range = new Label("Range: " + a1.getCastRange());
+				a1Range.setFont(new Font("Didot.", 15));
+				Label a1Area = new Label("Cast Area: " + a1.getCastArea());
+				a1Area.setFont(new Font("Didot.", 15));
+				Label a1Action = new Label("Required Action Points: " + a1.getRequiredActionPoints());
+				a1Action.setFont(new Font("Didot.", 15));
+				temp.getChildren().addAll(a1Name, a1Type, a1Amount, a1Mana, a1Cool, a1Range, a1Area, a1Action);
 				for (Node n : temp.getChildren()) {
 					if (n instanceof Label)
 						((Label) n).setTextFill(Color.color(1, 1, 1));
 				}
 			});
 
-			a4Button.setOnMouseExited(e -> {
+			// Second Ability's Attributes
+			a2Button.setOnMouseEntered(e -> {
+				Label a2Name = new Label("Second Ability: " + a2.getName());
+				a2Name.setFont(new Font("Didot.", 15));
+				String abilityType2 = "";
+				String abilityAmount2 = "";
+				if (a2 instanceof DamagingAbility) {
+					abilityType2 = "Damaging Ability";
+					abilityAmount2 = "Damaging amount: " + ((DamagingAbility) a2).getDamageAmount();
+				}
+				if (a2 instanceof HealingAbility) {
+					abilityType2 = "Healing Ability";
+					abilityAmount2 = "Healing amount: " + ((HealingAbility) a2).getHealAmount();
+				} else if (a2 instanceof CrowdControlAbility) {
+					abilityType2 = "Crowd Control Ability";
+					abilityAmount2 = "Casted effect: " + ((CrowdControlAbility) a2).getEffect().getName() + "("
+							+ ((CrowdControlAbility) a2).getEffect().getDuration() + " turns)";
+				}
+				Label a2Type = new Label("Type: " + abilityType2);
+				a2Type.setFont(new Font("Didot.", 15));
+				Label a2Amount = new Label(abilityAmount2);
+				a2Amount.setFont(new Font("Didot.", 15));
+				Label a2Mana = new Label("Mana Cost: " + a2.getManaCost());
+				a2Mana.setFont(new Font("Didot.", 15));
+				Label a2Cool = new Label("Cooldown: " + a2.getCurrentCooldown() + "/" + a2.getBaseCooldown());
+				a2Cool.setFont(new Font("Didot.", 15));
+				Label a2Range = new Label("Range: " + a2.getCastRange());
+				a2Range.setFont(new Font("Didot.", 15));
+				Label a2Area = new Label("Cast Area: " + a2.getCastArea());
+				a2Area.setFont(new Font("Didot.", 15));
+				Label a2Action = new Label("Required Action Points: " + a2.getRequiredActionPoints());
+				a2Action.setFont(new Font("Didot.", 15));
+				temp.getChildren().addAll(a2Name, a2Type, a2Amount, a2Mana, a2Cool, a2Range, a2Area, a2Action);
+				for (Node n : temp.getChildren()) {
+					if (n instanceof Label)
+						((Label) n).setTextFill(Color.color(1, 1, 1));
+				}
+			});
+
+			// Third Ability's Attributes
+			a3Button.setOnMouseEntered(e -> {
+				Label a3Name = new Label("Third Ability: " + a3.getName());
+				a3Name.setFont(new Font("Didot.", 15));
+				String abilityType3 = "";
+				String abilityAmount3 = "";
+				if (a3 instanceof DamagingAbility) {
+					abilityType3 = "Damaging Ability";
+					abilityAmount3 = "Damaging amount: " + ((DamagingAbility) a3).getDamageAmount();
+				}
+				if (a3 instanceof HealingAbility) {
+					abilityType3 = "Healing Ability";
+					abilityAmount3 = "Healing amount: " + ((HealingAbility) a3).getHealAmount();
+				} else if (a3 instanceof CrowdControlAbility) {
+					abilityType3 = "Crowd Control Ability";
+					abilityAmount3 = "Casted effect: " + ((CrowdControlAbility) a3).getEffect().getName() + "("
+							+ ((CrowdControlAbility) a3).getEffect().getDuration() + " turns)";
+				}
+				Label a3Type = new Label("Type: " + abilityType3);
+				a3Type.setFont(new Font("Didot.", 15));
+				Label a3Amount = new Label(abilityAmount3);
+				a3Amount.setFont(new Font("Didot.", 15));
+				Label a3Mana = new Label("Mana Cost: " + a3.getManaCost());
+				a3Mana.setFont(new Font("Didot.", 15));
+				Label a3Cool = new Label("Cooldown: " + a3.getCurrentCooldown() + "/" + a3.getBaseCooldown());
+				a3Cool.setFont(new Font("Didot.", 15));
+				Label a3Range = new Label("Range: " + a3.getCastRange());
+				a3Range.setFont(new Font("Didot.", 15));
+				Label a3Area = new Label("Cast Area: " + a3.getCastArea());
+				a3Area.setFont(new Font("Didot.", 15));
+				Label a3Action = new Label("Required Action Points: " + a3.getRequiredActionPoints());
+				a3Action.setFont(new Font("Didot.", 15));
+				temp.getChildren().addAll(a3Name, a3Type, a3Amount, a3Mana, a3Cool, a3Range, a3Area, a3Action);
+				for (Node n : temp.getChildren()) {
+					if (n instanceof Label)
+						((Label) n).setTextFill(Color.color(1, 1, 1));
+				}
+			});
+
+			a1Button.setOnMouseExited(e -> {
 				temp.getChildren().clear();
 			});
+
+			a2Button.setOnMouseExited(e -> {
+				temp.getChildren().clear();
+			});
+
+			a3Button.setOnMouseExited(e -> {
+				temp.getChildren().clear();
+			});
+
+			if (punch && game.getCurrentChampion().getAbilities().size() > 3) {
+				Button a4Button = (Button) currentControls.getChildren().get(5);
+				Ability a4 = game.getCurrentChampion().getAbilities().get(3);
+				a4Button.setOnMouseEntered(e -> {
+					Label a4Name = new Label("Fourth Ability: " + a4.getName());
+					a4Name.setFont(new Font("Didot.", 15));
+					String abilityType4 = "";
+					String abilityAmount4 = "";
+					if (a4 instanceof DamagingAbility) {
+						abilityType4 = "Damaging Ability";
+						abilityAmount4 = "Damaging amount: " + ((DamagingAbility) a4).getDamageAmount();
+					}
+					if (a4 instanceof HealingAbility) {
+						abilityType4 = "Healing Ability";
+						abilityAmount4 = "Healing amount: " + ((HealingAbility) a4).getHealAmount();
+					} else if (a4 instanceof CrowdControlAbility) {
+						abilityType4 = "Crowd Control Ability";
+						abilityAmount4 = "Casted effect: " + ((CrowdControlAbility) a4).getEffect().getName() + "("
+								+ ((CrowdControlAbility) a4).getEffect().getDuration() + " turns)";
+					}
+					Label a4Type = new Label("Type: " + abilityType4);
+					a4Type.setFont(new Font("Didot.", 15));
+					Label a4Amount = new Label(abilityAmount4);
+					a4Amount.setFont(new Font("Didot.", 15));
+					Label a4Mana = new Label("Mana Cost: " + a4.getManaCost());
+					a4Mana.setFont(new Font("Didot.", 15));
+					Label a4Cool = new Label("Cooldown: " + a4.getCurrentCooldown() + "/" + a4.getBaseCooldown());
+					a4Cool.setFont(new Font("Didot.", 15));
+					Label a4Range = new Label("Range: " + a4.getCastRange());
+					a4Range.setFont(new Font("Didot.", 15));
+					Label a4Area = new Label("Cast Area: " + a4.getCastArea());
+					a4Area.setFont(new Font("Didot.", 15));
+					Label a4Action = new Label("Required Action Points: " + a4.getRequiredActionPoints());
+					a4Action.setFont(new Font("Didot.", 15));
+					temp.getChildren().addAll(a4Name, a4Type, a4Amount, a4Mana, a4Cool, a4Range, a4Area, a4Action);
+					for (Node n : temp.getChildren()) {
+						if (n instanceof Label)
+							((Label) n).setTextFill(Color.color(1, 1, 1));
+					}
+				});
+
+				a4Button.setOnMouseExited(e -> {
+					temp.getChildren().clear();
+				});
+			}
 		}
 
 		// Configuring Nodec
@@ -925,8 +900,17 @@ public class View extends Application implements Initializable {
 	}
 
 	// Update the Status of Players' Champions and Leader Ability
-
 	public static void updateStatusBar() {
+//		AnchorPane root = new AnchorPane();
+//
+//		Button b = new Button("Button ");
+//
+//		// place button in the top right corner
+//		AnchorPane.setRightAnchor(b, 0d); // distance 0 from right side of 
+//		AnchorPane.setTopAnchor(b, 0d); // distance 0 from top
+//
+//		root.getChildren().add(b);
+
 		gameStatus.getChildren().clear();
 		Label player1Name = new Label(player1.getName());
 		player1Name.setFont(new Font("Didot.", 16));
@@ -1108,392 +1092,544 @@ public class View extends Application implements Initializable {
 		exception.show();
 	}
 
+	// Show controls only if player's turn
 	public static void showControls() {
-		actions.clear();
 		currentControls.getChildren().clear();
-		HBox move = new HBox(10);
-		move.setAlignment(Pos.CENTER);
-		Region region1 = new Region();
-		region1.setMinWidth(5);
-		move.getChildren().addAll(moveUp(), moveDown(), moveRight(), moveLeft(), region1, attackUp(), attackDown(),
-				attackRight(), attackLeft());
-		HBox abilities = new HBox(10);
-		abilities.setAlignment(Pos.CENTER);
-		Region region2 = new Region();
-		region2.setMinWidth(5);
-		abilities.getChildren().addAll(castAbility(0, 8), castAbility(1, 9), castAbility(2, 10));
-		punch = false;
-		for (Effect effect : game.getCurrentChampion().getAppliedEffects()) {
-			if (effect instanceof Disarm) {
-				punch = true;
-				break;
+		Champion current = game.getCurrentChampion();
+		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(current)) {
+			Button btnAbility1 = new Button("First\nAbility");
+			if (current.getAbilities().get(0) instanceof HealingAbility) {
+				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+			} else if (current.getAbilities().get(0) instanceof DamagingAbility) {
+				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+			} else {
+				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+			}
+			btnAbility1.setTextAlignment(TextAlignment.CENTER);
+			btnAbility1.setOnAction(e -> castAbility(0));
+			btnAbility1.setMinHeight(70);
+			btnAbility1.setMaxHeight(70);
+			btnAbility1.setMinWidth(70);
+			btnAbility1.setMaxWidth(70);
+
+			Button btnAbility2 = new Button("Second\nAbility");
+			if (current.getAbilities().get(1) instanceof HealingAbility) {
+				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+			} else if (current.getAbilities().get(1) instanceof DamagingAbility) {
+				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+			} else {
+				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+			}
+			btnAbility2.setTextAlignment(TextAlignment.CENTER);
+			btnAbility2.setOnAction(e -> castAbility(1));
+			btnAbility2.setMinHeight(70);
+			btnAbility2.setMaxHeight(70);
+			btnAbility2.setMinWidth(70);
+			btnAbility2.setMaxWidth(70);
+
+			Button btnAbility3 = new Button("Third\nAbility");
+			if (current.getAbilities().get(2) instanceof HealingAbility) {
+				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+			} else if (current.getAbilities().get(2) instanceof DamagingAbility) {
+				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+			} else {
+				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+			}
+			btnAbility3.setTextAlignment(TextAlignment.CENTER);
+			btnAbility3.setOnAction(e -> castAbility(2));
+			btnAbility3.setMinHeight(70);
+			btnAbility3.setMaxHeight(70);
+			btnAbility3.setMinWidth(70);
+			btnAbility3.setMaxWidth(70);
+
+			Button btnEndTurn = new Button("END TURN");
+			btnEndTurn.setStyle("-fx-background-radius: 1em; -fx-background-color: #AD343E; -fx-text-fill: #fff");
+			btnEndTurn.setOnAction(e -> endTurn());
+			btnEndTurn.setMinHeight(70);
+			btnEndTurn.setMaxHeight(70);
+			btnEndTurn.setMinWidth(170);
+			btnEndTurn.setMaxWidth(170);
+
+			Button btnLeaderAbility = new Button("Leader\nAbility");
+			btnLeaderAbility.setStyle("-fx-background-radius: 1em;");
+			btnLeaderAbility.setOnAction(e -> useLeaderAbility());
+			btnLeaderAbility.setMinHeight(70);
+			btnLeaderAbility.setMaxHeight(70);
+			btnLeaderAbility.setMinWidth(70);
+
+			Button btnPunch = new Button("Punch");
+			btnPunch.setStyle("-fx-background-radius: 1em;");
+			btnPunch.setOnAction(e -> castAbility(3));
+			btnPunch.setMinHeight(70);
+			btnPunch.setMaxHeight(70);
+			btnPunch.setMinWidth(70);
+			btnPunch.setMaxWidth(70);
+
+			BorderPane attackOptions = new BorderPane();
+			Region r = new Region();
+			r.setMinHeight(30);
+			r.setMaxHeight(30);
+			r.setMinWidth(30);
+			r.setMaxWidth(30);
+			attackOptions.setCenter(r);
+
+			Button btnAttackUp = new Button();
+			btnAttackUp.setStyle("-fx-background-radius: 5em;");
+//			ImageView iv1 = new ImageView(new Image("/application/media/attackUp.jpeg"));
+//			iv1.setFitHeight(30);
+//			iv1.setFitWidth(30);
+//			iv1.setStyle("-fx-background-radius: 5em;");
+//			btnAttackUp.setGraphic(iv1);
+			btnAttackUp.setOnAction(e -> attackUp());
+			btnAttackUp.setMinHeight(30);
+			btnAttackUp.setMaxHeight(30);
+			btnAttackUp.setMinWidth(30);
+			btnAttackUp.setMaxWidth(30);
+			HBox box1 = new HBox();
+			box1.getChildren().add(btnAttackUp);
+			box1.setAlignment(Pos.CENTER);
+			attackOptions.setTop(box1);
+
+			Button btnAttackDown = new Button();
+			btnAttackDown.setStyle("-fx-background-radius: 5em;");
+			btnAttackDown.setOnAction(e -> attackDown());
+			btnAttackDown.setMinHeight(30);
+			btnAttackDown.setMaxHeight(30);
+			btnAttackDown.setMinWidth(30);
+			btnAttackDown.setMaxWidth(30);
+			attackOptions.setBottom(btnAttackDown);
+			HBox box2 = new HBox();
+			box2.getChildren().add(btnAttackDown);
+			box2.setAlignment(Pos.CENTER);
+			attackOptions.setBottom(box2);
+			
+			Button btnAttackRight = new Button();
+			btnAttackRight.setStyle("-fx-background-radius: 5em;");
+			btnAttackRight.setOnAction(e -> attackRight());
+			btnAttackRight.setMinHeight(30);
+			btnAttackRight.setMaxHeight(30);
+			btnAttackRight.setMinWidth(30);
+			btnAttackRight.setMaxWidth(30);
+			HBox box3 = new HBox();
+			box3.getChildren().add(btnAttackRight);
+			box3.setAlignment(Pos.CENTER);
+			attackOptions.setRight(box3);
+			
+			Button btnAttackLeft = new Button();
+			btnAttackLeft.setStyle("-fx-background-radius: 5em;");
+			btnAttackLeft.setOnAction(e -> attackLeft());
+			btnAttackLeft.setMinHeight(30);
+			btnAttackLeft.setMaxHeight(30);
+			btnAttackLeft.setMinWidth(30);
+			btnAttackLeft.setMaxWidth(30);
+			HBox box4 = new HBox();
+			box4.getChildren().add(btnAttackLeft);
+			box4.setAlignment(Pos.CENTER);
+			attackOptions.setLeft(box4);
+			
+			BorderPane moveOptions = new BorderPane();
+			Region r1 = new Region();
+			r1.setMinHeight(30);
+			r1.setMaxHeight(30);
+			r1.setMinWidth(30);
+			r1.setMaxWidth(30);
+			moveOptions.setCenter(r1);
+
+			Button btnMoveUp = new Button();
+			btnMoveUp.setStyle("-fx-background-radius: 5em;");
+//			ImageView iv2 = new ImageView(new Image("/application/media/moveUp.jpeg"));
+//			iv2.setFitHeight(30);
+//			iv2.setFitWidth(30);
+//			iv2.setStyle("-fx-background-radius: 5em;");
+//			btnMoveUp.setGraphic(iv2);
+			btnMoveUp.setOnAction(e -> moveUp());
+			btnMoveUp.setMinHeight(30);
+			btnMoveUp.setMaxHeight(30);
+			btnMoveUp.setMinWidth(30);
+			btnMoveUp.setMaxWidth(30);
+			moveOptions.setTop(btnMoveUp);
+			HBox box5 = new HBox();
+			box5.getChildren().add(btnMoveUp);
+			box5.setAlignment(Pos.CENTER);
+			moveOptions.setTop(box5);
+
+			Button btnMoveDown = new Button();
+			btnMoveDown.setStyle("-fx-background-radius: 5em;");
+			btnMoveDown.setOnAction(e -> moveDown());
+			btnMoveDown.setMinHeight(30);
+			btnMoveDown.setMaxHeight(30);
+			btnMoveDown.setMinWidth(30);
+			btnMoveDown.setMaxWidth(30);
+			HBox box6 = new HBox();
+			box6.getChildren().add(btnMoveDown);
+			box6.setAlignment(Pos.CENTER);
+			moveOptions.setBottom(box6);
+
+			Button btnMoveRight = new Button();
+			btnMoveRight.setStyle("-fx-background-radius: 5em;");
+			btnMoveRight.setOnAction(e -> moveRight());
+			btnMoveRight.setMinHeight(30);
+			btnMoveRight.setMaxHeight(30);
+			btnMoveRight.setMinWidth(30);
+			btnMoveRight.setMaxWidth(30);
+			HBox box7 = new HBox();
+			box7.getChildren().add(btnMoveRight);
+			box7.setAlignment(Pos.CENTER);
+			moveOptions.setRight(box7);
+
+			Button btnMoveLeft = new Button();
+			btnMoveLeft.setStyle("-fx-background-radius: 5em;");
+			btnMoveLeft.setOnAction(e -> moveLeft());
+			btnMoveLeft.setMinHeight(30);
+			btnMoveLeft.setMaxHeight(30);
+			btnMoveLeft.setMinWidth(30);
+			btnMoveLeft.setMaxWidth(30);
+			HBox box8 = new HBox();
+			box8.getChildren().add(btnMoveLeft);
+			box8.setAlignment(Pos.CENTER);
+			moveOptions.setLeft(box8);
+
+			currentControls.getChildren().addAll(btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
+
+			punch = false;
+			for (Effect e : current.getAppliedEffects()) {
+				if (e instanceof Disarm) {
+					punch = true;
+					break;
+				}
+			}
+			if (punch) {
+				currentControls.getChildren().add(btnPunch);
+			} else {
+				currentControls.getChildren().add(attackOptions);
+			}
+
+			currentControls.getChildren().add(moveOptions);
+
+			if (!(player1.getLeader() == current || player2.getLeader() == current)) {
+				btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
 			}
 		}
+	}
 
-		abilities.getChildren().addAll(castAbility(3, 11), useLeaderAbility(), region2, manualButton(), endTurn());
-		currentControls.getChildren().addAll(move, abilities);
+	public static void manualButton() {
+		Stage manualStage = new Stage();
+		manualStage.setTitle("Game Manual");
+		VBox mainBox = new VBox(10);
+		mainBox.setAlignment(Pos.CENTER);
+		VBox tmpBox = new VBox(10);
+		tmpBox.setAlignment(Pos.CENTER);
+		VBox effectBox = new VBox(10);
+		effectBox.setAlignment(Pos.CENTER);
+		Scene mainScene = new Scene(mainBox);
+		Scene tmpScene = new Scene(tmpBox);
+		Scene effectScene = new Scene(effectBox);
+		// Abilities Manual Button
+		Button abilities = new Button("Abilities");
+		abilities.setOnAction(ee -> {
+			tmpBox.getChildren().clear();
+			manualStage.setTitle("Abilities Manual");
+			Text info = new Text(
+					"There are 3 types of abilities:\n " + "Damaging Ability, Healing Ability, Crowd Control Ability.\n"
+							+ "Each Ability requires a ceratin amount of actions and mana to be casted.\n"
+							+ "Each Ability has a specific Casting Area.");
+			info.setTextAlignment(TextAlignment.CENTER);
+			Text DA = new Text(
+					"Damaging Abilities deal a certain amount\n" + "of damage to enemies within Casting Area.");
+			Text HA = new Text(
+					"Healing Abilities add a certain amount\n" + "of health to friends within Casting Area.");
+			Text CCA = new Text(
+					"Crowd Control Abilities activate a certain\n" + "effect on targets within Casting Area.");
+			Button back = new Button("Go Back");
+			back.setOnAction(eee -> {
+				manualStage.setTitle("Game Manual");
+				manualStage.setScene(mainScene);
+			});
+			tmpBox.getChildren().addAll(info, DA, HA, CCA, back);
+			manualStage.setScene(tmpScene);
+		});
 
-		if (!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
-			for (Button b : actions) {
-				b.setVisible(false);
+		// Effects Manual Button
+		Button effects = new Button("Effects");
+		effects.setOnAction(ee -> {
+			tmpBox.getChildren().clear();
+			manualStage.setTitle("Effects Manual");
+
+			Label selectEffect = new Label("Select an Effect");
+
+			Button disarm = new Button("Disarm");
+			disarm.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Disarm Effect");
+				Text disarmText = new Text(
+						"Target cannot use normal attacks.\n" + "Gain a SINGLETARGET damaging ability");
+				disarmText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(disarmText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button dodge = new Button("Dodge");
+			dodge.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Dodge Effect");
+				Text dodgeText = new Text(
+						"Target has a 50% chance of dodging normal attacks.\n" + "Increase speed by 5%");
+				dodgeText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(dodgeText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button embrace = new Button("Embrace");
+			embrace.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Embrace Effect");
+				Text embraceText = new Text("Permanently add 20% from maxHP to currentHP,\n"
+						+ "Permanently increase mana by 20%,\n" + "Increase speed and attackDamage by 20%.");
+				embraceText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(embraceText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button powerup = new Button("PowerUp");
+			powerup.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("PowerUp Effect");
+				Text powerupText = new Text("Increase damageAmount and healAmount of all damaging\n"
+						+ "and healing abilities of the target by 20%");
+				powerupText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(powerupText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button root = new Button("Root");
+			root.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Root Effect");
+				Text rootText = new Text("Target cannot move.");
+				rootText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(rootText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button shield = new Button("Shield");
+			shield.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Shield Effect");
+				Text shieldText = new Text("Block the next attack or damaging ability cast on target.\n"
+						+ "Once an attack or ability is blocked, the effect will be removed.\n"
+						+ "Increase speed by 2%.");
+				shieldText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(shieldText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button shock = new Button("Shock");
+			shock.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Shock Effect");
+				Text shockText = new Text(
+						"Decrease target speed by 10%\n" + "Decrease the target’s normal attack damage by 10%\n"
+								+ "Decrease max action points per turn and current action points by 1.");
+				shockText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(shockText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button silence = new Button("Silence");
+			silence.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Silence Effect");
+				Text silenceText = new Text("Target cannot use abilities.\n"
+						+ "Increase max action points per turn and current action points by 2");
+				silenceText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(silenceText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button speedup = new Button("SpeedUp");
+			speedup.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("SpeedUp Effect");
+				Text speedupText = new Text("Increase speed by 15%.\n"
+						+ "Increase max action points per turn and current action points by 1.");
+				speedupText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(speedupText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button stun = new Button("Stun");
+			stun.setOnAction(eee -> {
+				effectBox.getChildren().clear();
+				manualStage.setTitle("Stun Effect");
+				Text stunText = new Text(
+						"Set target to INACTIVE.\n" + "Target is not allowed to play their turn for the duration.");
+				stunText.setTextAlignment(TextAlignment.CENTER);
+				Button backToTmp = new Button("Back to Effects List");
+				backToTmp.setOnAction(eeee -> {
+					manualStage.setTitle("Effects Manual");
+					manualStage.setScene(tmpScene);
+				});
+				effectBox.getChildren().addAll(stunText, backToTmp);
+				manualStage.setScene(effectScene);
+			});
+
+			Button back = new Button("Go Back");
+			back.setOnAction(eee -> {
+				manualStage.setScene(mainScene);
+			});
+
+			disarm.setMinWidth(100);
+			dodge.setMinWidth(100);
+			embrace.setMinWidth(100);
+			powerup.setMinWidth(100);
+			root.setMinWidth(100);
+			shield.setMinWidth(100);
+			shock.setMinWidth(100);
+			silence.setMinWidth(100);
+			speedup.setMinWidth(100);
+			stun.setMinWidth(100);
+			tmpBox.getChildren().addAll(selectEffect, disarm, dodge, embrace, powerup, root, shield, shock, silence,
+					speedup, stun, back);
+			manualStage.setScene(tmpScene);
+		});
+
+		Button close = new Button("Close");
+		close.setOnAction(ee -> manualStage.close());
+
+		manualStage.setScene(mainScene);
+		manualStage.setMinWidth(400);
+		manualStage.setMinHeight(200);
+		mainBox.getChildren().addAll(abilities, effects, close);
+		mainBox.setPadding(new Insets(10, 10, 10, 10));
+		tmpBox.setPadding(new Insets(10, 10, 10, 10));
+		effectBox.setPadding(new Insets(10, 10, 10, 10));
+		manualStage.centerOnScreen();
+		manualStage.show();
+	}
+
+	public static void moveUp() {
+		Champion current = game.getCurrentChampion();
+		try {
+			game.move(Direction.UP);
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
 			}
 		}
 	}
 
-	public static Button manualButton() {
-		Button manual = new Button("Open Game Manual");
-		manual.setMinHeight(30);
-		manual.setMinWidth(30);
-		actions.add(manual);
-		manual.setOnAction(e -> {
-			Stage manualStage = new Stage();
-			manualStage.setTitle("Game Manual");
-			VBox mainBox = new VBox(10);
-			mainBox.setAlignment(Pos.CENTER);
-			VBox tmpBox = new VBox(10);
-			tmpBox.setAlignment(Pos.CENTER);
-			VBox effectBox = new VBox(10);
-			effectBox.setAlignment(Pos.CENTER);
-			Scene mainScene = new Scene(mainBox);
-			Scene tmpScene = new Scene(tmpBox);
-			Scene effectScene = new Scene(effectBox);
-			// Abilities Manual Button
-			Button abilities = new Button("Abilities");
-			abilities.setOnAction(ee -> {
-				tmpBox.getChildren().clear();
-				manualStage.setTitle("Abilities Manual");
-				Text info = new Text("There are 3 types of abilities:\n "
-						+ "Damaging Ability, Healing Ability, Crowd Control Ability.\n"
-						+ "Each Ability requires a ceratin amount of actions and mana to be casted.\n"
-						+ "Each Ability has a specific Casting Area.");
-				info.setTextAlignment(TextAlignment.CENTER);
-				Text DA = new Text(
-						"Damaging Abilities deal a certain amount\n" + "of damage to enemies within Casting Area.");
-				Text HA = new Text(
-						"Healing Abilities add a certain amount\n" + "of health to friends within Casting Area.");
-				Text CCA = new Text(
-						"Crowd Control Abilities activate a certain\n" + "effect on targets within Casting Area.");
-				Button back = new Button("Go Back");
-				back.setOnAction(eee -> {
-					manualStage.setTitle("Game Manual");
-					manualStage.setScene(mainScene);
-				});
-				tmpBox.getChildren().addAll(info, DA, HA, CCA, back);
-				manualStage.setScene(tmpScene);
-			});
 
-			// Effects Manual Button
-			Button effects = new Button("Effects");
-			effects.setOnAction(ee -> {
-				tmpBox.getChildren().clear();
-				manualStage.setTitle("Effects Manual");
-
-				Label selectEffect = new Label("Select an Effect");
-
-				Button disarm = new Button("Disarm");
-				disarm.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Disarm Effect");
-					Text disarmText = new Text(
-							"Target cannot use normal attacks.\n" + "Gain a SINGLETARGET damaging ability");
-					disarmText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(disarmText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button dodge = new Button("Dodge");
-				dodge.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Dodge Effect");
-					Text dodgeText = new Text(
-							"Target has a 50% chance of dodging normal attacks.\n" + "Increase speed by 5%");
-					dodgeText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(dodgeText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button embrace = new Button("Embrace");
-				embrace.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Embrace Effect");
-					Text embraceText = new Text("Permanently add 20% from maxHP to currentHP,\n"
-							+ "Permanently increase mana by 20%,\n" + "Increase speed and attackDamage by 20%.");
-					embraceText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(embraceText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button powerup = new Button("PowerUp");
-				powerup.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("PowerUp Effect");
-					Text powerupText = new Text("Increase damageAmount and healAmount of all damaging\n"
-							+ "and healing abilities of the target by 20%");
-					powerupText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(powerupText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button root = new Button("Root");
-				root.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Root Effect");
-					Text rootText = new Text("Target cannot move.");
-					rootText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(rootText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button shield = new Button("Shield");
-				shield.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Shield Effect");
-					Text shieldText = new Text("Block the next attack or damaging ability cast on target.\n"
-							+ "Once an attack or ability is blocked, the effect will be removed.\n"
-							+ "Increase speed by 2%.");
-					shieldText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(shieldText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button shock = new Button("Shock");
-				shock.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Shock Effect");
-					Text shockText = new Text(
-							"Decrease target speed by 10%\n" + "Decrease the target’s normal attack damage by 10%\n"
-									+ "Decrease max action points per turn and current action points by 1.");
-					shockText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(shockText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button silence = new Button("Silence");
-				silence.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Silence Effect");
-					Text silenceText = new Text("Target cannot use abilities.\n"
-							+ "Increase max action points per turn and current action points by 2");
-					silenceText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(silenceText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button speedup = new Button("SpeedUp");
-				speedup.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("SpeedUp Effect");
-					Text speedupText = new Text("Increase speed by 15%.\n"
-							+ "Increase max action points per turn and current action points by 1.");
-					speedupText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(speedupText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button stun = new Button("Stun");
-				stun.setOnAction(eee -> {
-					effectBox.getChildren().clear();
-					manualStage.setTitle("Stun Effect");
-					Text stunText = new Text(
-							"Set target to INACTIVE.\n" + "Target is not allowed to play their turn for the duration.");
-					stunText.setTextAlignment(TextAlignment.CENTER);
-					Button backToTmp = new Button("Back to Effects List");
-					backToTmp.setOnAction(eeee -> {
-						manualStage.setTitle("Effects Manual");
-						manualStage.setScene(tmpScene);
-					});
-					effectBox.getChildren().addAll(stunText, backToTmp);
-					manualStage.setScene(effectScene);
-				});
-
-				Button back = new Button("Go Back");
-				back.setOnAction(eee -> {
-					manualStage.setScene(mainScene);
-				});
-
-				disarm.setMinWidth(100);
-				dodge.setMinWidth(100);
-				embrace.setMinWidth(100);
-				powerup.setMinWidth(100);
-				root.setMinWidth(100);
-				shield.setMinWidth(100);
-				shock.setMinWidth(100);
-				silence.setMinWidth(100);
-				speedup.setMinWidth(100);
-				stun.setMinWidth(100);
-				tmpBox.getChildren().addAll(selectEffect, disarm, dodge, embrace, powerup, root, shield, shock, silence,
-						speedup, stun, back);
-				manualStage.setScene(tmpScene);
-			});
-
-			Button close = new Button("Close");
-			close.setOnAction(ee -> manualStage.close());
-
-			manualStage.setScene(mainScene);
-			manualStage.setMinWidth(400);
-			manualStage.setMinHeight(200);
-			mainBox.getChildren().addAll(abilities, effects, close);
-			mainBox.setPadding(new Insets(10, 10, 10, 10));
-			tmpBox.setPadding(new Insets(10, 10, 10, 10));
-			effectBox.setPadding(new Insets(10, 10, 10, 10));
-			manualStage.centerOnScreen();
-			manualStage.show();
-		});
-		return manual;
-	}
-
-	public static Button moveUp() {
+	public static void moveDown() {
 		Champion current = game.getCurrentChampion();
-		Button moveUpButton = new Button("Move Up");
-		actions.add(moveUpButton);
-		moveUpButton.setOnAction(e -> {
-			try {
-				game.move(Direction.UP);
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(0, false);
-				} else {
-					throwException(e1.getMessage());
-				}
+		try {
+			game.move(Direction.DOWN);
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
 			}
-		});
-		return moveUpButton;
+		}
 	}
 
-	public static Button moveDown() {
-//		primaryStage.setScene(gameview);
-//		System.out.println("New height: " + primaryStage.getScene().getHeight());
-//		System.out.println("New width: " + primaryStage.getScene().getWidth());
+
+	public static void moveRight() {
 		Champion current = game.getCurrentChampion();
-		Button moveDownButton = new Button("Move Down");
-		actions.add(moveDownButton);
-		moveDownButton.setOnAction(e -> {
-			try {
-				game.move(Direction.DOWN);
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(1, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
+		try {
+			game.move(Direction.RIGHT);
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
 			}
-		});
-		return moveDownButton;
+		}
 	}
 
-	public static Button moveRight() {
+
+	public static void moveLeft() {
 		Champion current = game.getCurrentChampion();
-		Button moveRightButton = new Button("Move Right");
-		actions.add(moveRightButton);
-		moveRightButton.setOnAction(e -> {
-			try {
-				game.move(Direction.RIGHT);
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(2, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
+		try {
+			game.move(Direction.LEFT);
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
 			}
-		});
-		return moveRightButton;
+		}
 	}
 
-	public static Button moveLeft() {
-		Champion current = game.getCurrentChampion();
-		Button moveLeftButton = new Button("Move Left");
-		actions.add(moveLeftButton);
-		moveLeftButton.setOnAction(e -> {
-			try {
-				game.move(Direction.LEFT);
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(3, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
-			}
-		});
-		return moveLeftButton;
-	}
 
-	public static Button attackUp() {
+	public static void attackUp() {
 		Champion current = game.getCurrentChampion();
-		Button attackUpButton = new Button("Attack Up");
-		actions.add(attackUpButton);
-
 		Image img = new Image("./application/animations/fire.jpeg");
 		fire = new ImageView(img);
 		fire.setFitWidth(30);
@@ -1501,12 +1637,115 @@ public class View extends Application implements Initializable {
 		translateAttack = new TranslateTransition(Duration.seconds(0.7), fire);
 		translateAttack.setNode(fire);
 		translateAttack.setByX(200);
+		try {
+			game.attack(Direction.UP);
+			translateAttack.play();
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (Exception e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
+			}
+		}
+	}
 
-		attackUpButton.setOnAction(e -> {
+
+	public static void attackDown() {
+		Champion current = game.getCurrentChampion();
+		try {
+			game.attack(Direction.DOWN);
+			Image img = new Image("./application/animations/fire.jpeg");
+			ImageView fireView = new ImageView(img);
+			fireView.setFitWidth(30);
+			fireView.setFitHeight(30);
+			translateAttack = new TranslateTransition();
+			translateAttack.setNode(fireView);
+			translateAttack.setByY(200);
+			translateAttack.play();
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (Exception e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
+			}
+		}
+	}
+
+
+	public static void attackRight() {
+		Champion current = game.getCurrentChampion();
+		try {
+			game.attack(Direction.RIGHT);
+
+			Image img = new Image("./application/animations/fire.jpeg");
+			ImageView fireView = new ImageView(img);
+			fireView.setFitWidth(30);
+			fireView.setFitHeight(30);
+			translateAttack = new TranslateTransition();
+			translateAttack.setNode(fireView);
+			translateAttack.setByY(200);
+			translateAttack.play();
+
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (Exception e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
+			}
+		}
+	}
+
+
+	public static void attackLeft() {
+		Champion current = game.getCurrentChampion();
+		try {
+			game.attack(Direction.LEFT);
+			Image img = new Image("./application/animations/fire.jpeg");
+			ImageView fireView = new ImageView(img);
+			fireView.setFitWidth(30);
+			fireView.setFitHeight(30);
+			translateAttack = new TranslateTransition();
+			translateAttack.setNode(fireView);
+//			translateAttack.setByY(200);
+			translateAttack.play();
+
+			updateCurrentInformation();
+			updateStatusBar();
+			prepareTurns();
+			updateBoard();
+			checkWinner();
+		} catch (Exception e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
+			}
+		}
+	}
+
+
+	public static void castAbility(int abilityIndex) {
+		Champion current = game.getCurrentChampion();
+		Ability ability = current.getAbilities().get(abilityIndex);
+		AreaOfEffect area = ability.getCastArea();
+		if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 			try {
-				game.attack(Direction.UP);
-//				translateAttack.play();				
-				showControls();
+				game.castAbility(ability);
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
@@ -1514,139 +1753,24 @@ public class View extends Application implements Initializable {
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(4, false);
 					e1.printStackTrace();
 				} else {
 					throwException(e1.getMessage());
 				}
 			}
-		});
-		return attackUpButton;
-	}
-
-	public static Button attackDown() {
-		Champion current = game.getCurrentChampion();
-		Button attackDownButton = new Button("Attack Down");
-		actions.add(attackDownButton);
-		attackDownButton.setOnAction(e -> {
-			try {
-				game.attack(Direction.DOWN);
-
-				Image img = new Image("./application/animations/fire.jpeg");
-				ImageView fireView = new ImageView(img);
-				fireView.setFitWidth(30);
-				fireView.setFitHeight(30);
-				translateAttack = new TranslateTransition();
-				translateAttack.setNode(fireView);
-				translateAttack.setByY(200);
-				translateAttack.play();
-
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(5, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
-			}
-		});
-		return attackDownButton;
-	}
-
-	public static Button attackRight() {
-		Champion current = game.getCurrentChampion();
-		Button attackRightButton = new Button("Attack Right");
-		actions.add(attackRightButton);
-		attackRightButton.setOnAction(e -> {
-			try {
-				game.attack(Direction.RIGHT);
-
-				Image img = new Image("./application/animations/fire.jpeg");
-				ImageView fireView = new ImageView(img);
-				fireView.setFitWidth(30);
-				fireView.setFitHeight(30);
-				translateAttack = new TranslateTransition();
-				translateAttack.setNode(fireView);
-				translateAttack.setByY(200);
-				translateAttack.play();
-
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(6, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
-			}
-		});
-		return attackRightButton;
-	}
-
-	public static Button attackLeft() {
-		Champion current = game.getCurrentChampion();
-		Button attackLeftButton = new Button("Attack Left");
-		actions.add(attackLeftButton);
-		attackLeftButton.setOnAction(e -> {
-			try {
-				game.attack(Direction.LEFT);
-
-				Image img = new Image("./application/animations/fire.jpeg");
-				ImageView fireView = new ImageView(img);
-				fireView.setFitWidth(30);
-				fireView.setFitHeight(30);
-				translateAttack = new TranslateTransition();
-				translateAttack.setNode(fireView);
-//				translateAttack.setByY(200);
-				translateAttack.play();
-
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(7, false);
-					e1.printStackTrace();
-				} else {
-					throwException(e1.getMessage());
-				}
-			}
-		});
-		return attackLeftButton;
-	}
-
-	public static Button castAbility(int abilityIndex, int buttonIndex) {
-		Champion current = game.getCurrentChampion();
-		Button useless = new Button();
-		useless.setVisible(false);
-		if (abilityIndex == 3 && !punch) {
-			actions.add(useless);
-			return useless;
 		}
 
-		Ability ability = game.getCurrentChampion().getAbilities().get(abilityIndex);
-		AreaOfEffect area = ability.getCastArea();
-		Button castAbilityButton = new Button("Cast " + ability.getName());
-		actions.add(castAbilityButton);
-		castAbilityButton.setOnAction(e -> {
-			if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
+		else if (area == AreaOfEffect.DIRECTIONAL) {
+			Stage chooseDirection = new Stage();
+			chooseDirection.setTitle("Choose a Direction to Cast Ability");
+			VBox window = new VBox(10);
+			window.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(window);
+			Button up = new Button("UP");
+			up.setOnAction(ee -> {
+				chooseDirection.close();
 				try {
-					game.castAbility(ability);
-					showControls();
+					game.castAbility(ability, Direction.UP);
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1654,218 +1778,160 @@ public class View extends Application implements Initializable {
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
-						memo.set(buttonIndex, false);
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
 					}
 				}
-			}
-
-			else if (area == AreaOfEffect.DIRECTIONAL) {
-				if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
-					Stage chooseDirection = new Stage();
-					chooseDirection.setTitle("Choose a Direction to Cast Ability");
-					VBox window = new VBox(10);
-					window.setAlignment(Pos.CENTER);
-					Scene scene = new Scene(window);
-					Button up = new Button("UP");
-					up.setOnAction(ee -> {
-						chooseDirection.close();
-						try {
-							game.castAbility(ability, Direction.UP);
-							showControls();
-							updateCurrentInformation();
-							updateStatusBar();
-							prepareTurns();
-							updateBoard();
-							checkWinner();
-						} catch (Exception e1) {
-							throwException(e1.getMessage());
-						}
-					});
-					Button down = new Button("DOWN");
-					down.setOnAction(ee -> {
-						chooseDirection.close();
-						try {
-							game.castAbility(ability, Direction.DOWN);
-							showControls();
-							updateCurrentInformation();
-							updateStatusBar();
-							prepareTurns();
-							updateBoard();
-							checkWinner();
-						} catch (Exception e1) {
-							throwException(e1.getMessage());
-						}
-					});
-					Button right = new Button("RIGHT");
-					right.setOnAction(ee -> {
-						chooseDirection.close();
-						try {
-							game.castAbility(ability, Direction.RIGHT);
-							showControls();
-							updateCurrentInformation();
-							updateStatusBar();
-							prepareTurns();
-							updateBoard();
-							checkWinner();
-						} catch (Exception e1) {
-							throwException(e1.getMessage());
-						}
-					});
-					Button left = new Button("LEFT");
-					left.setOnAction(ee -> {
-						chooseDirection.close();
-						try {
-							game.castAbility(ability, Direction.LEFT);
-							showControls();
-							updateCurrentInformation();
-							updateStatusBar();
-							prepareTurns();
-							updateBoard();
-							checkWinner();
-						} catch (Exception e1) {
-							throwException(e1.getMessage());
-						}
-					});
-					chooseDirection.setScene(scene);
-					chooseDirection.setMinWidth(400);
-					chooseDirection.setMinHeight(200);
-					window.getChildren().addAll(up, down, right, left);
-					window.setPadding(new Insets(10, 10, 10, 10));
-					chooseDirection.show();
+			});
+			Button down = new Button("DOWN");
+			down.setOnAction(ee -> {
+				chooseDirection.close();
+				try {
+					game.castAbility(ability, Direction.DOWN);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					checkWinner();
+				} catch (Exception e1) {
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						e1.printStackTrace();
+					} else {
+						throwException(e1.getMessage());
+					}
 				}
-
-				else if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(buttonIndex, false);
+			});
+			Button right = new Button("RIGHT");
+			right.setOnAction(ee -> {
+				chooseDirection.close();
+				try {
+					game.castAbility(ability, Direction.RIGHT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					checkWinner();
+				} catch (Exception e1) {
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						e1.printStackTrace();
+					} else {
+						throwException(e1.getMessage());
+					}
 				}
-			}
-
-			else if (area == AreaOfEffect.SINGLETARGET) {
-				if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
-					Stage chooseCell = new Stage();
-					chooseCell.setTitle("Choose a Cell to Cast Ability On");
-					VBox window = new VBox(10);
-					window.setAlignment(Pos.CENTER);
-					Scene scene = new Scene(window);
-					TextField xField = new TextField("X co-ordinate (0 is bottom)");
-					TextField yField = new TextField("Y co-ordinate (0 is left)");
-					Button confirm = new Button("Confirm");
-					confirm.setOnAction(ee -> {
-						chooseCell.close();
-						try {
-							game.castAbility(ability, Integer.parseInt(xField.getText()),
-									Integer.parseInt(yField.getText()));
-							showControls();
-							updateCurrentInformation();
-							updateStatusBar();
-							prepareTurns();
-							updateBoard();
-							checkWinner();
-						} catch (Exception e1) {
-							throwException(e1.getMessage());
-						}
-					});
-					chooseCell.setScene(scene);
-					chooseCell.setMinWidth(400);
-					chooseCell.setMinHeight(200);
-					window.getChildren().addAll(xField, yField, confirm);
-					window.setPadding(new Insets(10, 10, 10, 10));
-					chooseCell.show();
+			});
+			Button left = new Button("LEFT");
+			left.setOnAction(ee -> {
+				chooseDirection.close();
+				try {
+					game.castAbility(ability, Direction.LEFT);
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					checkWinner();
+				} catch (Exception e1) {
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						e1.printStackTrace();
+					} else {
+						throwException(e1.getMessage());
+					}
 				}
-
-				else if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(buttonIndex, false);
-				}
-			}
-		});
-		return castAbilityButton;
-	}
-
-	public static Button useLeaderAbility() {
-		Champion current = game.getCurrentChampion();
-		Button useless = new Button();
-		useless.setVisible(false);
-		if (current != player1.getLeader() && current != player2.getLeader()) {
-			actions.add(useless);
-			return useless;
+			});
+			chooseDirection.setScene(scene);
+			chooseDirection.setMinWidth(400);
+			chooseDirection.setMinHeight(200);
+			window.getChildren().addAll(up, down, right, left);
+			window.setPadding(new Insets(10, 10, 10, 10));
+			chooseDirection.show();
 		}
-		Button useLeaderAbility = new Button("Use Leader Ability");
-		actions.add(useLeaderAbility);
-		useLeaderAbility.setOnAction(e -> {
-			try {
-				game.useLeaderAbility();
-				showControls();
-				updateCurrentInformation();
-				updateStatusBar();
-				prepareTurns();
-				updateBoard();
-				checkWinner();
-			} catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
-					memo.set(11, false);
-				} else {
-					throwException(e1.getMessage());
+
+		else if (area == AreaOfEffect.SINGLETARGET) {
+			Stage chooseCell = new Stage();
+			chooseCell.setTitle("Choose a Cell to Cast Ability On");
+			VBox window = new VBox(10);
+			window.setAlignment(Pos.CENTER);
+			Scene scene = new Scene(window);
+			TextField xField = new TextField();
+			xField.setPromptText("X co-ordinate (0 is bottom)");
+			TextField yField = new TextField();
+			yField.setPromptText("Y co-ordinate (0 is left)");
+			Button confirm = new Button("Confirm");
+			confirm.setOnAction(ee -> {
+				chooseCell.close();
+				try {
+					game.castAbility(ability, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+					updateCurrentInformation();
+					updateStatusBar();
+					prepareTurns();
+					updateBoard();
+					checkWinner();
+				} catch (Exception e1) {
+					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+						e1.printStackTrace();
+					} else {
+						throwException(e1.getMessage());
+					}
 				}
-			}
-		});
-		return useLeaderAbility;
+			});
+			chooseCell.setScene(scene);
+			chooseCell.setMinWidth(400);
+			chooseCell.setMinHeight(200);
+			window.getChildren().addAll(xField, yField, confirm);
+			window.setPadding(new Insets(10, 10, 10, 10));
+			chooseCell.show();
+		}
 	}
 
-	public static Button endTurn() {
-		Button endCurrentTurnButton = new Button("End Turn");
-		actions.add(endCurrentTurnButton);
-		endCurrentTurnButton.setOnAction(e -> {
-			game.endTurn();
 
-			showControls();
+	public static void useLeaderAbility() {
+		Champion current = game.getCurrentChampion();
+		try {
+			game.useLeaderAbility();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
 			updateBoard();
 			checkWinner();
-			if ((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
-				computerAction();
+		} catch (Exception e1) {
+			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				e1.printStackTrace();
+			} else {
+				throwException(e1.getMessage());
 			}
-		});
-		return endCurrentTurnButton;
+		}
 	}
 
+
+	public static void endTurn() {
+		game.endTurn();
+		showControls();
+		updateCurrentInformation();
+		updateStatusBar();
+		prepareTurns();
+		updateBoard();
+		checkWinner();
+		if ((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
+			computerAction();
+		}
+	}
+
+
 	public static void computerAction() {
-		for (int i = 0; i < 15; i++) {
-			if (i == 13)
-				memo.set(13, false);
-			else
-				memo.set(i, true);
-		}
-		for (Button b : actions) {
-			b.setVisible(false);
-		}
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(event -> {
-			int random = 0;
-			for (int i = 0; i < 100; i++) {
-				random = (int) (Math.random() * 13);
-				System.out.println("Random: " + random);
-				if (game.getCurrentChampion().getCurrentActionPoints() < 2)
-					break;
-				if (memo.get(random) == true) {
-					System.out.println("trying to do");
-					actions.get(random).fire();
-					System.out.println("Current actions: " + game.getCurrentChampion().getCurrentActionPoints());
-				}
-			}
-			actions.get(14).fire();
 		});
 		pause.play();
 	}
 
+
 	public static void checkWinner() {
 		Player winner = game.checkGameOver();
 		if (winner != null) {
-			for (Button b : actions) {
-				b.setDisable(true);
+			for (Node n : currentControls.getChildren()) {
+				if (n instanceof Button) {
+					((Button) n).setDisable(true);
+				}
 			}
 			Stage gameOver = new Stage();
 			gameOver.setTitle("Game Over");
@@ -1894,80 +1960,82 @@ public class View extends Application implements Initializable {
 			if (e.getCode() == KeyCode.NUMPAD8) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(0).fire();
+					moveUp();
 			}
 			if (e.getCode() == KeyCode.NUMPAD2) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(1).fire();
+					moveDown();
 			}
 			if (e.getCode() == KeyCode.NUMPAD6) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(2).fire();
+					moveRight();
 			}
 			if (e.getCode() == KeyCode.NUMPAD4) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(3).fire();
+					moveLeft();
 			}
 			if (e.getCode() == KeyCode.W) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(4).fire();
+					attackUp();
 			}
 			if (e.getCode() == KeyCode.S) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(5).fire();
+					attackDown();
 			}
 			if (e.getCode() == KeyCode.D) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(6).fire();
+					attackRight();
 			}
 			if (e.getCode() == KeyCode.A) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(7).fire();
+					attackLeft();
 			}
 			if (e.getCode() == KeyCode.DIGIT1) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(8).fire();
+					castAbility(0);
 			}
 			if (e.getCode() == KeyCode.DIGIT2) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(9).fire();
+					castAbility(1);
 			}
 			if (e.getCode() == KeyCode.DIGIT3) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(10).fire();
+					castAbility(2);
 			}
 			if (e.getCode() == KeyCode.DIGIT4) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(11).fire();
+					castAbility(3);
 			}
 			if (e.getCode() == KeyCode.DIGIT5) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(12).fire();
+					useLeaderAbility();
 			}
 			if (e.getCode() == KeyCode.H) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(13).fire();
+					manualButton();
 			}
 			if (e.getCode() == KeyCode.E) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())))
-					actions.get(14).fire();
+					endTurn();
+
 			}
 		});
 	}
+
 
 	public static void main(String[] args) {
 		launch(args);
