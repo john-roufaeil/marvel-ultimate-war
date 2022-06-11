@@ -9,7 +9,9 @@
  *  TO ADD
  *  change cover image depending on health
  *  marvel video intro
- *  attack & cast ability animation
+ *  add music
+ *  add sound effects on buttons click (different actions -> different sounds)
+ *  attack, cast ability, leader ability animation
  *  add detailed instructions and help manual in good design
  * 
  *  GOALS
@@ -25,6 +27,8 @@ package application;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +61,8 @@ import model.world.Champion;
 import model.world.Cover;
 import model.world.Direction;
 import model.world.Hero;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -72,12 +78,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class View extends Application implements Initializable {
 	static Game game;
 	static Player player1, player2;
-	static Scene homePage, begin, gameview;
+	static Scene videoPage, homePage, begin, gameview;
 	static GridPane boardView;
 	static HBox gameStatus, currentControls;
 	static VBox turnOrderStatus, currentInformation;
@@ -102,19 +112,37 @@ public class View extends Application implements Initializable {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
 		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		Image icon = new Image("./application/media/gameIcon.jpeg");
 		primaryStage.getIcons().add(icon);
-
-		checkPlayingMode(primaryStage);
-//		scene(primaryStage);
+		
+		File mediaFile = new File( "intro.mp4");
+	    Media media = new Media(mediaFile.toURI().toString());
+		MediaPlayer introMediaPlayer = new MediaPlayer(media);
+		introMediaPlayer.setAutoPlay(true);
+		MediaView introMediaView = new MediaView(introMediaPlayer);
+		introMediaView.setMediaPlayer(introMediaPlayer);
+		introMediaView.fitHeightProperty().bind(primaryStage.heightProperty());
+		introMediaView.fitWidthProperty().bind(primaryStage.widthProperty());
+		introMediaView.setVisible(true);
+		HBox hi = new HBox();
+		hi.getChildren().add(introMediaView);
+		BorderPane root0 = new BorderPane();
+		root0.setCenter(hi);
+		videoPage = new Scene(root0);
+		primaryStage.setScene(videoPage);
+		introMediaView.setOnMouseClicked(e -> {
+			introMediaPlayer.stop();
+			checkPlayingMode(primaryStage);
+		});
+		
+		introMediaPlayer.setOnEndOfMedia( () -> checkPlayingMode(primaryStage));
 		primaryStage.show();
 	}
 
-	public static void checkPlayingMode(Stage primaryStage) {
+	public static void checkPlayingMode(Stage primaryStage) {		
 		// Scene Organisation
 		BorderPane root1 = new BorderPane();
 		Image background = new Image("application/media/backgrounds/back1.jpeg");
@@ -156,7 +184,7 @@ public class View extends Application implements Initializable {
 		root1.setBottom(chooseMode);
 		root1.setTop(welcomeBox);
 		primaryStage.setScene(homePage);
-
+		primaryStage.setFullScreen(true);
 	}
 
 	public static void enterNames(Stage primaryStage, BorderPane root1) {
@@ -1217,12 +1245,15 @@ public class View extends Application implements Initializable {
 			moveOptions.setCenter(r1);
 
 			Button btnMoveUp = new Button();
+//			btnMoveUp.setStyle("-fx-background-radius: 5em;");
+			ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
+			iv1.setFitHeight(30);
+			iv1.setFitWidth(30);
+			Circle circle = new Circle();
+//			circle.setFill(iv1);
+//			iv1.setClip();
+			btnMoveUp.setGraphic(iv1);
 			btnMoveUp.setStyle("-fx-background-radius: 5em;");
-//			ImageView iv2 = new ImageView(new Image("/application/media/moveUp.jpeg"));
-//			iv2.setFitHeight(30);
-//			iv2.setFitWidth(30);
-//			iv2.setStyle("-fx-background-radius: 5em;");
-//			btnMoveUp.setGraphic(iv2);
 			btnMoveUp.setOnAction(e -> moveUp());
 			btnMoveUp.setMinHeight(30);
 			btnMoveUp.setMaxHeight(30);
@@ -1605,11 +1636,12 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void attackUp() {
 		Champion current = game.getCurrentChampion();
 		Image img = new Image("./application/animations/fire.jpeg");
 		fire = new ImageView(img);
+		fire.setX(0);
+		fire.setY(0);
 		fire.setFitWidth(30);
 		fire.setFitHeight(30);
 		translateAttack = new TranslateTransition(Duration.seconds(0.7), fire);
@@ -1631,7 +1663,6 @@ public class View extends Application implements Initializable {
 			}
 		}
 	}
-
 
 	public static void attackDown() {
 		Champion current = game.getCurrentChampion();
@@ -1658,7 +1689,6 @@ public class View extends Application implements Initializable {
 			}
 		}
 	}
-
 
 	public static void attackRight() {
 		Champion current = game.getCurrentChampion();
@@ -1688,7 +1718,6 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void attackLeft() {
 		Champion current = game.getCurrentChampion();
 		try {
@@ -1715,7 +1744,6 @@ public class View extends Application implements Initializable {
 			}
 		}
 	}
-
 
 	public static void castAbility(int abilityIndex) {
 		Champion current = game.getCurrentChampion();
@@ -1861,7 +1889,6 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void useLeaderAbility() {
 		Champion current = game.getCurrentChampion();
 		try {
@@ -1880,7 +1907,6 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void endTurn() {
 		game.endTurn();
 		showControls();
@@ -1894,14 +1920,12 @@ public class View extends Application implements Initializable {
 		}
 	}
 
-
 	public static void computerAction() {
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(event -> {
 		});
 		pause.play();
 	}
-
 
 	public static void checkWinner() {
 		Player winner = game.checkGameOver();
@@ -1931,7 +1955,6 @@ public class View extends Application implements Initializable {
 		}
 
 	}
-
 
 	public static void keyMoved() {
 		gameview.setOnKeyPressed(e -> {
