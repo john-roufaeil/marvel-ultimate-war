@@ -1102,228 +1102,248 @@ public class View extends Application implements Initializable {
 	public static void showControls() {
 		currentControls.getChildren().clear();
 		Champion current = game.getCurrentChampion();
-		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(current)) {
-			Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
-			HBox actionsLeftBox = new HBox();
-			actionsLeftBox.getChildren().add(actionsLeft);
-			actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
-			actionsLeft.setTextAlignment(TextAlignment.LEFT);
-			actionsLeft.setTextFill(Color.color(1, 1, 1));
-			actionsLeft.setFont(new Font("Didot.", 16));
-			
-			Button btnAbility1 = new Button("First\nAbility");
-			if (current.getAbilities().get(0) instanceof HealingAbility) {
-				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
-			} else if (current.getAbilities().get(0) instanceof DamagingAbility) {
-				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
-			} else {
-				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
-			}
-			btnAbility1.setTextAlignment(TextAlignment.CENTER);
-			btnAbility1.setOnAction(e -> castAbility(0));
-			btnAbility1.setMinHeight(70);
-			btnAbility1.setMaxHeight(70);
-			btnAbility1.setMinWidth(70);
-			btnAbility1.setMaxWidth(70);
+		ArrayList<Button> actions = new ArrayList<>();
+		
+		Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
+		HBox actionsLeftBox = new HBox();
+		actionsLeftBox.getChildren().add(actionsLeft);
+		actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
+		actionsLeft.setTextAlignment(TextAlignment.LEFT);
+		actionsLeft.setTextFill(Color.color(1, 1, 1));
+		actionsLeft.setFont(new Font("Didot.", 16));
+		
+		Button btnAbility1 = new Button("First\nAbility");
+		if (current.getAbilities().get(0) instanceof HealingAbility) {
+			btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+		} else if (current.getAbilities().get(0) instanceof DamagingAbility) {
+			btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+		} else {
+			btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+		}
+		btnAbility1.setTextAlignment(TextAlignment.CENTER);
+		btnAbility1.setOnAction(e -> castAbility(0));
+		btnAbility1.setMinHeight(70);
+		btnAbility1.setMaxHeight(70);
+		btnAbility1.setMinWidth(70);
+		btnAbility1.setMaxWidth(70);
 
-			Button btnAbility2 = new Button("Second\nAbility");
-			if (current.getAbilities().get(1) instanceof HealingAbility) {
-				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
-			} else if (current.getAbilities().get(1) instanceof DamagingAbility) {
-				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
-			} else {
-				btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
-			}
-			btnAbility2.setTextAlignment(TextAlignment.CENTER);
-			btnAbility2.setOnAction(e -> castAbility(1));
-			btnAbility2.setMinHeight(70);
-			btnAbility2.setMaxHeight(70);
-			btnAbility2.setMinWidth(70);
-			btnAbility2.setMaxWidth(70);
+		Button btnAbility2 = new Button("Second\nAbility");
+		if (current.getAbilities().get(1) instanceof HealingAbility) {
+			btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+		} else if (current.getAbilities().get(1) instanceof DamagingAbility) {
+			btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+		} else {
+			btnAbility2.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+		}
+		btnAbility2.setTextAlignment(TextAlignment.CENTER);
+		btnAbility2.setOnAction(e -> castAbility(1));
+		btnAbility2.setMinHeight(70);
+		btnAbility2.setMaxHeight(70);
+		btnAbility2.setMinWidth(70);
+		btnAbility2.setMaxWidth(70);
 
-			Button btnAbility3 = new Button("Third\nAbility");
-			if (current.getAbilities().get(2) instanceof HealingAbility) {
-				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
-			} else if (current.getAbilities().get(2) instanceof DamagingAbility) {
-				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
-			} else {
-				btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
-			}
-			btnAbility3.setTextAlignment(TextAlignment.CENTER);
-			btnAbility3.setOnAction(e -> castAbility(2));
-			btnAbility3.setMinHeight(70);
-			btnAbility3.setMaxHeight(70);
-			btnAbility3.setMinWidth(70);
-			btnAbility3.setMaxWidth(70);
+		Button btnAbility3 = new Button("Third\nAbility");
+		if (current.getAbilities().get(2) instanceof HealingAbility) {
+			btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
+		} else if (current.getAbilities().get(2) instanceof DamagingAbility) {
+			btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #272635; -fx-text-fill: #fff");
+		} else {
+			btnAbility3.setStyle("-fx-background-radius: 5em; -fx-background-color: #144878; -fx-text-fill: #fff");
+		}
+		btnAbility3.setTextAlignment(TextAlignment.CENTER);
+		btnAbility3.setOnAction(e -> castAbility(2));
+		btnAbility3.setMinHeight(70);
+		btnAbility3.setMaxHeight(70);
+		btnAbility3.setMinWidth(70);
+		btnAbility3.setMaxWidth(70);
 
-			Button btnEndTurn = new Button("END TURN");
-			btnEndTurn.setStyle("-fx-background-radius: 1em; -fx-background-color: #AD343E; -fx-text-fill: #fff");
-			btnEndTurn.setOnAction(e -> endTurn());
-			btnEndTurn.setMinHeight(70);
-			btnEndTurn.setMaxHeight(70);
-			btnEndTurn.setMinWidth(170);
-			btnEndTurn.setMaxWidth(170);
+		Button btnEndTurn = new Button("END TURN");
+		btnEndTurn.setStyle("-fx-background-radius: 1em; -fx-background-color: #AD343E; -fx-text-fill: #fff");
+		btnEndTurn.setOnAction(e -> endTurn());
+		btnEndTurn.setMinHeight(70);
+		btnEndTurn.setMaxHeight(70);
+		btnEndTurn.setMinWidth(170);
+		btnEndTurn.setMaxWidth(170);
 
-			Button btnLeaderAbility = new Button("Leader\nAbility");
-			btnLeaderAbility.setStyle("-fx-background-radius: 1em;");
-			btnLeaderAbility.setOnAction(e -> useLeaderAbility());
-			btnLeaderAbility.setMinHeight(70);
-			btnLeaderAbility.setMaxHeight(70);
-			btnLeaderAbility.setMinWidth(70);
+		Button btnLeaderAbility = new Button("Leader\nAbility");
+		btnLeaderAbility.setStyle("-fx-background-radius: 1em;");
+		btnLeaderAbility.setOnAction(e -> useLeaderAbility());
+		btnLeaderAbility.setMinHeight(70);
+		btnLeaderAbility.setMaxHeight(70);
+		btnLeaderAbility.setMinWidth(70);
 
-			Button btnPunch = new Button("Punch");
-			btnPunch.setStyle("-fx-background-radius: 1em;");
-			btnPunch.setOnAction(e -> castAbility(3));
-			btnPunch.setMinHeight(70);
-			btnPunch.setMaxHeight(70);
-			btnPunch.setMinWidth(70);
-			btnPunch.setMaxWidth(70);
+		Button btnPunch = new Button("Punch");
+		btnPunch.setStyle("-fx-background-radius: 1em;");
+		btnPunch.setOnAction(e -> castAbility(3));
+		btnPunch.setMinHeight(70);
+		btnPunch.setMaxHeight(70);
+		btnPunch.setMinWidth(70);
+		btnPunch.setMaxWidth(70);
 
-			BorderPane attackOptions = new BorderPane();
-			Region r = new Region();
-			r.setMinHeight(30);
-			r.setMaxHeight(30);
-			r.setMinWidth(30);
-			r.setMaxWidth(30);
-			attackOptions.setCenter(r);
+		BorderPane attackOptions = new BorderPane();
+		Region r = new Region();
+		r.setMinHeight(30);
+		r.setMaxHeight(30);
+		r.setMinWidth(30);
+		r.setMaxWidth(30);
+		attackOptions.setCenter(r);
 
-			Button btnAttackUp = new Button();
-			btnAttackUp.setStyle("-fx-background-radius: 5em;");
+		Button btnAttackUp = new Button();
+		btnAttackUp.setStyle("-fx-background-radius: 5em;");
 //			ImageView iv1 = new ImageView(new Image("/application/media/attackUp.jpeg"));
 //			iv1.setFitHeight(30);
 //			iv1.setFitWidth(30);
 //			iv1.setStyle("-fx-background-radius: 5em;");
 //			btnAttackUp.setGraphic(iv1);
-			btnAttackUp.setOnAction(e -> attackUp());
-			btnAttackUp.setMinHeight(30);
-			btnAttackUp.setMaxHeight(30);
-			btnAttackUp.setMinWidth(30);
-			btnAttackUp.setMaxWidth(30);
-			HBox box1 = new HBox();
-			box1.getChildren().add(btnAttackUp);
-			box1.setAlignment(Pos.CENTER);
-			attackOptions.setTop(box1);
+		btnAttackUp.setOnAction(e -> attackUp());
+		btnAttackUp.setMinHeight(30);
+		btnAttackUp.setMaxHeight(30);
+		btnAttackUp.setMinWidth(30);
+		btnAttackUp.setMaxWidth(30);
+		HBox box1 = new HBox();
+		box1.getChildren().add(btnAttackUp);
+		box1.setAlignment(Pos.CENTER);
+		attackOptions.setTop(box1);
 
-			Button btnAttackDown = new Button();
-			btnAttackDown.setStyle("-fx-background-radius: 5em;");
-			btnAttackDown.setOnAction(e -> attackDown());
-			btnAttackDown.setMinHeight(30);
-			btnAttackDown.setMaxHeight(30);
-			btnAttackDown.setMinWidth(30);
-			btnAttackDown.setMaxWidth(30);
-			attackOptions.setBottom(btnAttackDown);
-			HBox box2 = new HBox();
-			box2.getChildren().add(btnAttackDown);
-			box2.setAlignment(Pos.CENTER);
-			attackOptions.setBottom(box2);
-			
-			Button btnAttackRight = new Button();
-			btnAttackRight.setStyle("-fx-background-radius: 5em;");
-			btnAttackRight.setOnAction(e -> attackRight());
-			btnAttackRight.setMinHeight(30);
-			btnAttackRight.setMaxHeight(30);
-			btnAttackRight.setMinWidth(30);
-			btnAttackRight.setMaxWidth(30);
-			HBox box3 = new HBox();
-			box3.getChildren().add(btnAttackRight);
-			box3.setAlignment(Pos.CENTER);
-			attackOptions.setRight(box3);
-			
-			Button btnAttackLeft = new Button();
-			btnAttackLeft.setStyle("-fx-background-radius: 5em;");
-			btnAttackLeft.setOnAction(e -> attackLeft());
-			btnAttackLeft.setMinHeight(30);
-			btnAttackLeft.setMaxHeight(30);
-			btnAttackLeft.setMinWidth(30);
-			btnAttackLeft.setMaxWidth(30);
-			HBox box4 = new HBox();
-			box4.getChildren().add(btnAttackLeft);
-			box4.setAlignment(Pos.CENTER);
-			attackOptions.setLeft(box4);
-			
-			BorderPane moveOptions = new BorderPane();
-			Region r1 = new Region();
-			r1.setMinHeight(30);
-			r1.setMaxHeight(30);
-			r1.setMinWidth(30);
-			r1.setMaxWidth(30);
-			moveOptions.setCenter(r1);
+		Button btnAttackDown = new Button();
+		btnAttackDown.setStyle("-fx-background-radius: 5em;");
+		btnAttackDown.setOnAction(e -> attackDown());
+		btnAttackDown.setMinHeight(30);
+		btnAttackDown.setMaxHeight(30);
+		btnAttackDown.setMinWidth(30);
+		btnAttackDown.setMaxWidth(30);
+		attackOptions.setBottom(btnAttackDown);
+		HBox box2 = new HBox();
+		box2.getChildren().add(btnAttackDown);
+		box2.setAlignment(Pos.CENTER);
+		attackOptions.setBottom(box2);
+		
+		Button btnAttackRight = new Button();
+		btnAttackRight.setStyle("-fx-background-radius: 5em;");
+		btnAttackRight.setOnAction(e -> attackRight());
+		btnAttackRight.setMinHeight(30);
+		btnAttackRight.setMaxHeight(30);
+		btnAttackRight.setMinWidth(30);
+		btnAttackRight.setMaxWidth(30);
+		HBox box3 = new HBox();
+		box3.getChildren().add(btnAttackRight);
+		box3.setAlignment(Pos.CENTER);
+		attackOptions.setRight(box3);
+		
+		Button btnAttackLeft = new Button();
+		btnAttackLeft.setStyle("-fx-background-radius: 5em;");
+		btnAttackLeft.setOnAction(e -> attackLeft());
+		btnAttackLeft.setMinHeight(30);
+		btnAttackLeft.setMaxHeight(30);
+		btnAttackLeft.setMinWidth(30);
+		btnAttackLeft.setMaxWidth(30);
+		HBox box4 = new HBox();
+		box4.getChildren().add(btnAttackLeft);
+		box4.setAlignment(Pos.CENTER);
+		attackOptions.setLeft(box4);
+		
+		BorderPane moveOptions = new BorderPane();
+		Region r1 = new Region();
+		r1.setMinHeight(30);
+		r1.setMaxHeight(30);
+		r1.setMinWidth(30);
+		r1.setMaxWidth(30);
+		moveOptions.setCenter(r1);
 
-			Button btnMoveUp = new Button();
+		Button btnMoveUp = new Button();
 //			btnMoveUp.setStyle("-fx-background-radius: 5em;");
-			ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
-			iv1.setFitHeight(30);
-			iv1.setFitWidth(30);
+		ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
+		iv1.setFitHeight(30);
+		iv1.setFitWidth(30);
 //			circle.setFill(iv1);
 //			iv1.setClip();
-			btnMoveUp.setGraphic(iv1);
-			btnMoveUp.setStyle("-fx-background-radius: 5em;");
-			btnMoveUp.setOnAction(e -> moveUp());
-			btnMoveUp.setMinHeight(30);
-			btnMoveUp.setMaxHeight(30);
-			btnMoveUp.setMinWidth(30);
-			btnMoveUp.setMaxWidth(30);
-			moveOptions.setTop(btnMoveUp);
-			HBox box5 = new HBox();
-			box5.getChildren().add(btnMoveUp);
-			box5.setAlignment(Pos.CENTER);
-			moveOptions.setTop(box5);
+		btnMoveUp.setGraphic(iv1);
+		btnMoveUp.setStyle("-fx-background-radius: 5em;");
+		btnMoveUp.setOnAction(e -> moveUp());
+		btnMoveUp.setMinHeight(30);
+		btnMoveUp.setMaxHeight(30);
+		btnMoveUp.setMinWidth(30);
+		btnMoveUp.setMaxWidth(30);
+		moveOptions.setTop(btnMoveUp);
+		HBox box5 = new HBox();
+		box5.getChildren().add(btnMoveUp);
+		box5.setAlignment(Pos.CENTER);
+		moveOptions.setTop(box5);
 
-			Button btnMoveDown = new Button();
-			btnMoveDown.setStyle("-fx-background-radius: 5em;");
-			btnMoveDown.setOnAction(e -> moveDown());
-			btnMoveDown.setMinHeight(30);
-			btnMoveDown.setMaxHeight(30);
-			btnMoveDown.setMinWidth(30);
-			btnMoveDown.setMaxWidth(30);
-			HBox box6 = new HBox();
-			box6.getChildren().add(btnMoveDown);
-			box6.setAlignment(Pos.CENTER);
-			moveOptions.setBottom(box6);
+		Button btnMoveDown = new Button();
+		btnMoveDown.setStyle("-fx-background-radius: 5em;");
+		btnMoveDown.setOnAction(e -> moveDown());
+		btnMoveDown.setMinHeight(30);
+		btnMoveDown.setMaxHeight(30);
+		btnMoveDown.setMinWidth(30);
+		btnMoveDown.setMaxWidth(30);
+		HBox box6 = new HBox();
+		box6.getChildren().add(btnMoveDown);
+		box6.setAlignment(Pos.CENTER);
+		moveOptions.setBottom(box6);
 
-			Button btnMoveRight = new Button();
-			btnMoveRight.setStyle("-fx-background-radius: 5em;");
-			btnMoveRight.setOnAction(e -> moveRight());
-			btnMoveRight.setMinHeight(30);
-			btnMoveRight.setMaxHeight(30);
-			btnMoveRight.setMinWidth(30);
-			btnMoveRight.setMaxWidth(30);
-			HBox box7 = new HBox();
-			box7.getChildren().add(btnMoveRight);
-			box7.setAlignment(Pos.CENTER);
-			moveOptions.setRight(box7);
+		Button btnMoveRight = new Button();
+		btnMoveRight.setStyle("-fx-background-radius: 5em;");
+		btnMoveRight.setOnAction(e -> moveRight());
+		btnMoveRight.setMinHeight(30);
+		btnMoveRight.setMaxHeight(30);
+		btnMoveRight.setMinWidth(30);
+		btnMoveRight.setMaxWidth(30);
+		HBox box7 = new HBox();
+		box7.getChildren().add(btnMoveRight);
+		box7.setAlignment(Pos.CENTER);
+		moveOptions.setRight(box7);
 
-			Button btnMoveLeft = new Button();
-			btnMoveLeft.setStyle("-fx-background-radius: 5em;");
-			btnMoveLeft.setOnAction(e -> moveLeft());
-			btnMoveLeft.setMinHeight(30);
-			btnMoveLeft.setMaxHeight(30);
-			btnMoveLeft.setMinWidth(30);
-			btnMoveLeft.setMaxWidth(30);
-			HBox box8 = new HBox();
-			box8.getChildren().add(btnMoveLeft);
-			box8.setAlignment(Pos.CENTER);
-			moveOptions.setLeft(box8);
+		Button btnMoveLeft = new Button();
+		btnMoveLeft.setStyle("-fx-background-radius: 5em;");
+		btnMoveLeft.setOnAction(e -> moveLeft());
+		btnMoveLeft.setMinHeight(30);
+		btnMoveLeft.setMaxHeight(30);
+		btnMoveLeft.setMinWidth(30);
+		btnMoveLeft.setMaxWidth(30);
+		HBox box8 = new HBox();
+		box8.getChildren().add(btnMoveLeft);
+		box8.setAlignment(Pos.CENTER);
+		moveOptions.setLeft(box8);
 
-			currentControls.getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
-
-			punch = false;
-			for (Effect e : current.getAppliedEffects()) {
-				if (e instanceof Disarm) {
-					punch = true;
-					break;
-				}
+		currentControls.getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
+		actions.add(btnAbility1);
+		actions.add(btnAbility2);
+		actions.add(btnAbility3);
+		actions.add(btnEndTurn);
+		actions.add(btnLeaderAbility);
+		
+		punch = false;
+		for (Effect e : current.getAppliedEffects()) {
+			if (e instanceof Disarm) {
+				punch = true;
+				break;
 			}
-			if (punch) {
-				currentControls.getChildren().add(btnPunch);
-			} else {
-				currentControls.getChildren().add(attackOptions);
-			}
+		}
+		if (punch) {
+			currentControls.getChildren().add(btnPunch);
+			actions.add(btnPunch);
+		} else {
+			currentControls.getChildren().add(attackOptions);
+			actions.add(btnAttackUp);
+			actions.add(btnAttackDown);
+			actions.add(btnAttackRight);
+			actions.add(btnAttackLeft);
+		}
 
-			currentControls.getChildren().add(moveOptions);
-
-			if (!(player1.getLeader() == current || player2.getLeader() == current)) {
-				btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
+		currentControls.getChildren().add(moveOptions);
+		actions.add(btnMoveUp);
+		actions.add(btnMoveDown);
+		actions.add(btnMoveRight);
+		actions.add(btnMoveLeft);
+		
+		if (!(player1.getLeader() == current || player2.getLeader() == current)) {
+			btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
+		}
+		
+		if (!(twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(current))) {
+			for (Button b : actions) {
+				b.setDisable(true);
 			}
 		}
 	}
