@@ -1,14 +1,11 @@
 /*
  * TODO
  * 
- *  TO FIX
- *  
- *  TO IMPROVE
+ *  AI-mode
+ *  network mode
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
- *  TO ADD
  *  change cover image depending on health
- *  marvel video intro
  *  add music
  *  add sound effects on buttons click (different actions -> different sounds)
  *  attack, cast ability, leader ability animation
@@ -734,9 +731,9 @@ public class View extends Application implements Initializable {
 
 		VBox temp = new VBox(5);
 		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
-			Button a1Button = (Button) currentControls.getChildren().get(0);
-			Button a2Button = (Button) currentControls.getChildren().get(1);
-			Button a3Button = (Button) currentControls.getChildren().get(2);
+			Button a1Button = (Button) currentControls.getChildren().get(1);
+			Button a2Button = (Button) currentControls.getChildren().get(2);
+			Button a3Button = (Button) currentControls.getChildren().get(3);
 
 			// First Ability's Attributes
 			a1Button.setOnMouseEntered(e -> {
@@ -868,7 +865,7 @@ public class View extends Application implements Initializable {
 			});
 
 			if (punch && game.getCurrentChampion().getAbilities().size() > 3) {
-				Button a4Button = (Button) currentControls.getChildren().get(5);
+				Button a4Button = (Button) currentControls.getChildren().get(6);
 				Ability a4 = game.getCurrentChampion().getAbilities().get(3);
 				a4Button.setOnMouseEntered(e -> {
 					Label a4Name = new Label("Fourth Ability: " + a4.getName());
@@ -1106,6 +1103,14 @@ public class View extends Application implements Initializable {
 		currentControls.getChildren().clear();
 		Champion current = game.getCurrentChampion();
 		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(current)) {
+			Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
+			HBox actionsLeftBox = new HBox();
+			actionsLeftBox.getChildren().add(actionsLeft);
+			actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
+			actionsLeft.setTextAlignment(TextAlignment.LEFT);
+			actionsLeft.setTextFill(Color.color(1, 1, 1));
+			actionsLeft.setFont(new Font("Didot.", 16));
+			
 			Button btnAbility1 = new Button("First\nAbility");
 			if (current.getAbilities().get(0) instanceof HealingAbility) {
 				btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
@@ -1249,7 +1254,6 @@ public class View extends Application implements Initializable {
 			ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
 			iv1.setFitHeight(30);
 			iv1.setFitWidth(30);
-			Circle circle = new Circle();
 //			circle.setFill(iv1);
 //			iv1.setClip();
 			btnMoveUp.setGraphic(iv1);
@@ -1301,7 +1305,7 @@ public class View extends Application implements Initializable {
 			box8.setAlignment(Pos.CENTER);
 			moveOptions.setLeft(box8);
 
-			currentControls.getChildren().addAll(btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
+			currentControls.getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
 
 			punch = false;
 			for (Effect e : current.getAppliedEffects()) {
@@ -1568,6 +1572,7 @@ public class View extends Application implements Initializable {
 		Champion current = game.getCurrentChampion();
 		try {
 			game.move(Direction.UP);
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1586,6 +1591,7 @@ public class View extends Application implements Initializable {
 		Champion current = game.getCurrentChampion();
 		try {
 			game.move(Direction.DOWN);
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1604,6 +1610,7 @@ public class View extends Application implements Initializable {
 		Champion current = game.getCurrentChampion();
 		try {
 			game.move(Direction.RIGHT);
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1622,6 +1629,7 @@ public class View extends Application implements Initializable {
 		Champion current = game.getCurrentChampion();
 		try {
 			game.move(Direction.LEFT);
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1650,6 +1658,7 @@ public class View extends Application implements Initializable {
 		try {
 			game.attack(Direction.UP);
 			translateAttack.play();
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1676,6 +1685,7 @@ public class View extends Application implements Initializable {
 			translateAttack.setNode(fireView);
 			translateAttack.setByY(200);
 			translateAttack.play();
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1703,7 +1713,7 @@ public class View extends Application implements Initializable {
 			translateAttack.setNode(fireView);
 			translateAttack.setByY(200);
 			translateAttack.play();
-
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1730,7 +1740,7 @@ public class View extends Application implements Initializable {
 			translateAttack.setNode(fireView);
 //			translateAttack.setByY(200);
 			translateAttack.play();
-
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
@@ -1752,6 +1762,7 @@ public class View extends Application implements Initializable {
 		if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 			try {
 				game.castAbility(ability);
+				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 				prepareTurns();
@@ -1777,6 +1788,7 @@ public class View extends Application implements Initializable {
 				chooseDirection.close();
 				try {
 					game.castAbility(ability, Direction.UP);
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1795,6 +1807,7 @@ public class View extends Application implements Initializable {
 				chooseDirection.close();
 				try {
 					game.castAbility(ability, Direction.DOWN);
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1813,6 +1826,7 @@ public class View extends Application implements Initializable {
 				chooseDirection.close();
 				try {
 					game.castAbility(ability, Direction.RIGHT);
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1831,6 +1845,7 @@ public class View extends Application implements Initializable {
 				chooseDirection.close();
 				try {
 					game.castAbility(ability, Direction.LEFT);
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1867,6 +1882,7 @@ public class View extends Application implements Initializable {
 				chooseCell.close();
 				try {
 					game.castAbility(ability, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 					prepareTurns();
@@ -1893,6 +1909,7 @@ public class View extends Application implements Initializable {
 		Champion current = game.getCurrentChampion();
 		try {
 			game.useLeaderAbility();
+			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
 			prepareTurns();
