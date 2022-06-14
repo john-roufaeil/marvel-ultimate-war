@@ -133,14 +133,6 @@ public class View extends Application implements Initializable {
 		root0.setCenter(hi);
 		videoPage = new Scene(root0);
 		
-		
-//		song1Player.setAutoPlay(true);
-//		song1Player.setOnEndOfMedia(new Runnable() {
-//		      public void run() {
-//		        song1Player.seek(Duration.ZERO);
-//		      }
-//		});
-		
 		introMediaView.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
 //			song1Player.play();
@@ -160,6 +152,11 @@ public class View extends Application implements Initializable {
 	public static void checkPlayingMode(Stage primaryStage) {
 		Media song1 = new Media(new File("song1.wav").toURI().toString());
 		song1Player = new MediaPlayer(song1);
+		song1Player.setOnEndOfMedia(new Runnable() {
+		      public void run() {
+		        song1Player.seek(Duration.ZERO);
+		      }
+		});
 		song1Player.setAutoPlay(true);
 		song1Player.play();
 		
