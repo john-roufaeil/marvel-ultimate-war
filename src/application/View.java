@@ -131,10 +131,15 @@ public class View extends Application implements Initializable {
 		BorderPane root0 = new BorderPane();
 		root0.setCenter(hi);
 		videoPage = new Scene(root0);
+		
+//		Media song1 = new Media(new File("").toURI().toString());
+//		MediaPlayer song1Player = new MediaPlayer(song1);  
+		
 		primaryStage.setScene(videoPage);
 		introMediaView.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
 			checkPlayingMode(primaryStage);
+			
 		});
 		
 		introMediaPlayer.setOnEndOfMedia( () -> checkPlayingMode(primaryStage));
@@ -1106,7 +1111,7 @@ public class View extends Application implements Initializable {
 					btn.setGraphic(iv);
 					ImageView ivp = null;
 					if (board[i][j] == attackTarget) {
-						Image pow = new Image("/application/animations/pow.jpeg");
+						Image pow = new Image("/application/media/animation/pow.jpeg");
 						ivp = new ImageView(pow);
 						ivp.setFitHeight(100);
 						ivp.setFitWidth(100);
@@ -1137,7 +1142,7 @@ public class View extends Application implements Initializable {
 					
 					ImageView ivp = null;
 					if (c == attackTarget) {
-						Image pow = new Image("/application/media/animations/pow.jpeg");
+						Image pow = new Image("/application/media/animation/pow.jpeg");
 						ivp = new ImageView(pow);
 						ivp.setFitHeight(100);
 						ivp.setFitWidth(100);
@@ -1230,11 +1235,11 @@ public class View extends Application implements Initializable {
 					ImageView ivp = null;
 					if (targets.contains(board[i][j])) {
 						if (ability instanceof HealingAbility) {
-							Image plus = new Image("./application/animations/plus.jpeg");
+							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
 						}
 						if (ability instanceof DamagingAbility) {
-							Image minus = new Image("./application/animations/minus.jpeg");
+							Image minus = new Image("./application/media/animation/minus.jpeg");
 							ivp = new ImageView(minus);
 						}
 						ivp.setFitHeight(100);
@@ -1267,11 +1272,11 @@ public class View extends Application implements Initializable {
 					ImageView ivp = null;
 					if (targets.contains(board[i][j])) {
 						if (ability instanceof HealingAbility) {
-							Image plus = new Image("./application/animations/plus.jpeg");
+							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
 						}
 						if (ability instanceof DamagingAbility) {
-							Image minus = new Image("./application/animations/minus.jpeg");
+							Image minus = new Image("./application/media/animation/minus.jpeg");
 							ivp = new ImageView(minus);
 						}
 						ivp.setFitHeight(100);
