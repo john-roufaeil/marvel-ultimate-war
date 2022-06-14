@@ -108,6 +108,7 @@ public class View extends Application implements Initializable {
 	static boolean picked;
 	static ImageView fire;
 	static TranslateTransition translateAttack;
+	static MediaPlayer song1Player;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -132,21 +133,36 @@ public class View extends Application implements Initializable {
 		root0.setCenter(hi);
 		videoPage = new Scene(root0);
 		
-//		Media song1 = new Media(new File("").toURI().toString());
-//		MediaPlayer song1Player = new MediaPlayer(song1);  
 		
-		primaryStage.setScene(videoPage);
+//		song1Player.setAutoPlay(true);
+//		song1Player.setOnEndOfMedia(new Runnable() {
+//		      public void run() {
+//		        song1Player.seek(Duration.ZERO);
+//		      }
+//		});
+		
 		introMediaView.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
+//			song1Player.play();
 			checkPlayingMode(primaryStage);
-			
 		});
 		
-		introMediaPlayer.setOnEndOfMedia( () -> checkPlayingMode(primaryStage));
+		introMediaPlayer.setOnEndOfMedia( () -> {
+//			song1Player.play();
+			checkPlayingMode(primaryStage);
+		});
+		
+		primaryStage.setScene(videoPage);
 		primaryStage.show();
+		
 	}
 
-	public static void checkPlayingMode(Stage primaryStage) {		
+	public static void checkPlayingMode(Stage primaryStage) {
+		Media song1 = new Media(new File("song1.wav").toURI().toString());
+		song1Player = new MediaPlayer(song1);
+		song1Player.setAutoPlay(true);
+		song1Player.play();
+		
 		// Scene Organisation
 		BorderPane root1 = new BorderPane();
 		Image background = new Image("application/media/backgrounds/back1.jpeg");
