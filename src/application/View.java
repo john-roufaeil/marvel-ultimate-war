@@ -2112,16 +2112,17 @@ public class View extends Application implements Initializable {
 			VBox window = new VBox(10);
 			window.setAlignment(Pos.CENTER);
 			Scene scene = new Scene(window);
+			Label chooseCellLabel = new Label("Insert cell co-ordinates to cast ability.");
 			TextField xField = new TextField();
-			xField.setPromptText("X co-ordinate (0 is bottom)");
+			xField.setPromptText("X co-ordinate (1 is top)");
 			TextField yField = new TextField();
-			yField.setPromptText("Y co-ordinate (0 is left)");
+			yField.setPromptText("Y co-ordinate (1 is left)");
 			Button confirm = new Button("Confirm");
 			confirm.setOnAction(ee -> {
 				chooseCell.close();
 				try {
-					ArrayList<Damageable> targets = game.castAbility(ability, Integer.parseInt(xField.getText()), 
-							Integer.parseInt(yField.getText()));
+					ArrayList<Damageable> targets = game.castAbility(ability,
+							Math.abs(5 - Integer.parseInt(xField.getText())),Integer.parseInt(yField.getText()) - 1);
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
@@ -2138,7 +2139,7 @@ public class View extends Application implements Initializable {
 			chooseCell.setScene(scene);
 			chooseCell.setMinWidth(400);
 			chooseCell.setMinHeight(200);
-			window.getChildren().addAll(xField, yField, confirm);
+			window.getChildren().addAll(chooseCellLabel, xField, yField, confirm);
 			window.setPadding(new Insets(10, 10, 10, 10));
 			chooseCell.show();
 		}
