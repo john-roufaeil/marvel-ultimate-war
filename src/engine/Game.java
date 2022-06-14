@@ -897,65 +897,58 @@ public class Game {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void endTurn() {
 		turnOrder.remove();
 		if(turnOrder.isEmpty())
 			prepareChampionTurns();
 		
 		while(!this.turnOrder.isEmpty() && (((Champion)turnOrder.peekMin()).getCondition() == Condition.INACTIVE)) {
-			Champion c = ((Champion)turnOrder.peekMin());
-			
-			ArrayList<Effect> cloned = (ArrayList<Effect>) c.getAppliedEffects().clone();
-			for(Effect effect : cloned) {
-				effect.setDuration(effect.getDuration()-1);
-				if(effect.getDuration() == 0) {
-					c.getAppliedEffects().remove(effect);
-					effect.remove(c);
-				}
-			}
-			
-			for(Ability ability : c.getAbilities()) {
-				ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
-			}
-			
 			turnOrder.remove();
 			if(turnOrder.isEmpty()) {
 				prepareChampionTurns();
 			}
-		}
-		
-		// the new current champion that is Active
-		Champion c = ((Champion)turnOrder.peekMin());
-		ArrayList<Effect> cloned = (ArrayList<Effect>) c.getAppliedEffects().clone();
-		for(Effect effect : cloned) {
-			effect.setDuration(effect.getDuration()-1);
-			if(effect.getDuration() == 0) {
-				c.getAppliedEffects().remove(effect);
-				effect.remove(c);
-			}
-		
-		}
-		for(Ability ability : c.getAbilities()) {
-			ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
-		}
-		
-		c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
-		
-		
+		}	
 	}
 	
 	public void prepareChampionTurns() {
-		
 		for(Champion c : this.firstPlayer.getTeam()) {
-			if(c.getCondition() != Condition.KNOCKEDOUT)
-					this.turnOrder.insert(c);
+			if(c.getCondition() != Condition.KNOCKEDOUT) {
+				@SuppressWarnings("unchecked")
+				ArrayList<Effect> cloned = (ArrayList<Effect>) c.getAppliedEffects().clone();
+				for(Effect effect : cloned) {
+					effect.setDuration(effect.getDuration()-1);
+					if(effect.getDuration() == 0) {
+						c.getAppliedEffects().remove(effect);
+						effect.remove(c);
+					}
+				}
+				
+				for(Ability ability : c.getAbilities()) {
+					ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
+				}
+				this.turnOrder.insert(c);
+			}
 		}
 		
 		for(Champion c : this.secondPlayer.getTeam()) {
-			if(c.getCondition() != Condition.KNOCKEDOUT)
-					this.turnOrder.insert(c);
+			if(c.getCondition() != Condition.KNOCKEDOUT) {
+				@SuppressWarnings("unchecked")
+				ArrayList<Effect> cloned = (ArrayList<Effect>) c.getAppliedEffects().clone();
+				for(Effect effect : cloned) {
+					effect.setDuration(effect.getDuration()-1);
+					if(effect.getDuration() == 0) {
+						c.getAppliedEffects().remove(effect);
+						effect.remove(c);
+					}
+				}
+				
+				for(Ability ability : c.getAbilities()) {
+					ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
+				}
+				this.turnOrder.insert(c);
+			}
 		}
+		
 		
 	}
 	
@@ -997,10 +990,10 @@ public class Game {
 					((Champion)d).setCurrentHP(0);
 					((Champion)d).setCondition(Condition.KNOCKEDOUT);
 					board[p.x][p.y] = null;
-					if (team1(((Champion)d))) 
-						getFirstPlayer().getTeam().remove(((Champion)d));
-					else if (team2(((Champion)d)))
-						getSecondPlayer().getTeam().remove(((Champion)d));
+//					if (team1(((Champion)d))) 
+//						getFirstPlayer().getTeam().remove(((Champion)d));
+//					else if (team2(((Champion)d)))
+//						getSecondPlayer().getTeam().remove(((Champion)d));
 					removeFromTurnOrder((Champion) d);
 				}
 			}

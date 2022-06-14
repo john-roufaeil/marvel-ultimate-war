@@ -90,16 +90,16 @@ public class View extends Application implements Initializable {
 	static HashMap<Champion, String> deadMap;
 	static ArrayList<Button> championsButtons = new ArrayList<>();
 	static ArrayList<Champion> champions;
-	static ArrayList<Champion> player1Champions = new ArrayList<>();
-	static ArrayList<Champion> player2Champions = new ArrayList<>();
+//	static ArrayList<Champion> player1Champions = new ArrayList<>();
+//	static ArrayList<Champion> player2Champions = new ArrayList<>();
 	static PriorityQueue q;
-//	static Button[][] boardButtons = new Button[5][5];
 	static Stage primaryStage;
 	static boolean twoPlayerMode;
 	static MediaPlayer song1Player;
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage1) throws Exception {
+		View.primaryStage = primaryStage1;
 		primaryStage.setTitle("Marvel - Ultimate War");
 		primaryStage.setFullScreen(true);
 		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -609,12 +609,12 @@ public class View extends Application implements Initializable {
 		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
 
 		// Assign players' champions team arrays for image views
-		for (Champion c : game.getFirstPlayer().getTeam()) {
-			player1Champions.add(c);
-		}
-		for (Champion c : game.getSecondPlayer().getTeam()) {
-			player2Champions.add(c);
-		}
+//		for (Champion c : game.getFirstPlayer().getTeam()) {
+//			player1Champions.add(c);
+//		}
+//		for (Champion c : game.getSecondPlayer().getTeam()) {
+//			player2Champions.add(c);
+//		}
 //		board = game.getBoard();
 		game.placeChampions();
 		game.prepareChampionTurns();
@@ -936,22 +936,13 @@ public class View extends Application implements Initializable {
 
 	// Update the Status of Players' Champions and Leader Ability
 	public static void updateStatusBar() {
-//		AnchorPane root = new AnchorPane();
-//
-//		Button b = new Button("Button ");
-//
-//		// place button in the top right corner
-//		AnchorPane.setRightAnchor(b, 0d); // distance 0 from right side of 
-//		AnchorPane.setTopAnchor(b, 0d); // distance 0 from top
-//
-//		root.getChildren().add(b);
 
 		gameStatus.getChildren().clear();
 		Label player1Name = new Label(game.getFirstPlayer().getName());
 		player1Name.setFont(new Font("Didot.", 16));
 		gameStatus.getChildren().add(player1Name);
 
-		for (Champion c : player1Champions) {
+		for (Champion c : game.getFirstPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
 			if (c.getCurrentHP() == 0)
 				image = new Image(deadMap.get(c));
@@ -982,7 +973,7 @@ public class View extends Application implements Initializable {
 		secondLeaderAbility.setFitWidth(80);
 		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
 
-		for (Champion c : player2Champions) {
+		for (Champion c : game.getSecondPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
 			if (c.getCurrentHP() == 0)
 				image = new Image(deadMap.get(c));
@@ -1239,18 +1230,33 @@ public class View extends Application implements Initializable {
 						if (ability instanceof HealingAbility) {
 							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
+							ivp.setFitHeight(100);
+							ivp.setFitWidth(100);
+							sp.getChildren().add(ivp);
+							PauseTransition pause = new PauseTransition(Duration.seconds(2));
+							pause.play();
+							ImageView ivp2 = ivp;
+							pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 						}
-						if (ability instanceof DamagingAbility) {
+						else if (ability instanceof DamagingAbility) {
 							Image minus = new Image("./application/media/animation/minus.jpeg");
 							ivp = new ImageView(minus);
+							ivp.setFitHeight(100);
+							ivp.setFitWidth(100);
+							sp.getChildren().add(ivp);
+							PauseTransition pause = new PauseTransition(Duration.seconds(2));
+							pause.play();
+							ImageView ivp2 = ivp;
+							pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 						}
-						ivp.setFitHeight(100);
-						ivp.setFitWidth(100);
-						sp.getChildren().add(ivp);
-						PauseTransition pause = new PauseTransition(Duration.seconds(2));
-						pause.play();
-						ImageView ivp2 = ivp;
-						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+						
+//						ivp.setFitHeight(100);
+//						ivp.setFitWidth(100);
+//						sp.getChildren().add(ivp);
+//						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+//						pause.play();
+//						ImageView ivp2 = ivp;
+//						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 					}
 				}
 
@@ -1276,18 +1282,32 @@ public class View extends Application implements Initializable {
 						if (ability instanceof HealingAbility) {
 							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
+							ivp.setFitHeight(100);
+							ivp.setFitWidth(100);
+							sp.getChildren().add(ivp);
+							PauseTransition pause = new PauseTransition(Duration.seconds(2));
+							pause.play();
+							ImageView ivp2 = ivp;
+							pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 						}
 						if (ability instanceof DamagingAbility) {
 							Image minus = new Image("./application/media/animation/minus.jpeg");
 							ivp = new ImageView(minus);
+							ivp.setFitHeight(100);
+							ivp.setFitWidth(100);
+							sp.getChildren().add(ivp);
+							PauseTransition pause = new PauseTransition(Duration.seconds(2));
+							pause.play();
+							ImageView ivp2 = ivp;
+							pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 						}
-						ivp.setFitHeight(100);
-						ivp.setFitWidth(100);
-						sp.getChildren().add(ivp);
-						PauseTransition pause = new PauseTransition(Duration.seconds(2));
-						pause.play();
-						ImageView ivp2 = ivp;
-						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+//						ivp.setFitHeight(100);
+//						ivp.setFitWidth(100);
+//						sp.getChildren().add(ivp);
+//						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+//						pause.play();
+//						ImageView ivp2 = ivp;
+//						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
 					}
 					
 					btn.setOnAction(e -> {
