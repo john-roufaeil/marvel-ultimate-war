@@ -39,7 +39,6 @@ import engine.PriorityQueue;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -59,8 +58,6 @@ import model.world.Cover;
 import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -81,11 +78,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class View extends Application implements Initializable {
 	static Game game;
-	static Player player1, player2;
 	static Scene videoPage, homePage, begin, gameview;
 	static GridPane boardView;
 	static HBox gameStatus, currentControls;
@@ -98,16 +93,9 @@ public class View extends Application implements Initializable {
 	static ArrayList<Champion> player1Champions = new ArrayList<>();
 	static ArrayList<Champion> player2Champions = new ArrayList<>();
 	static PriorityQueue q;
-	static PriorityQueue tmp;
-	static Object[][] board;
-	static Button[][] boardButtons = new Button[5][5];
+//	static Button[][] boardButtons = new Button[5][5];
 	static Stage primaryStage;
-	static boolean full = false;
-	static boolean punch = false;
 	static boolean twoPlayerMode;
-	static boolean picked;
-	static ImageView fire;
-	static TranslateTransition translateAttack;
 	static MediaPlayer song1Player;
 
 	@Override
@@ -233,11 +221,10 @@ public class View extends Application implements Initializable {
 		// Begin Game Button
 		Button startBtn = new Button("Begin Game!");
 		startBtn.setOnAction(e -> {
-			player1 = new Player(name1TextField.getText());
+			Player player1 = new Player(name1TextField.getText());
+			Player player2 = new Player("Computer");
 			if (twoPlayerMode)
 				player2 = new Player(name2TextField.getText());
-			else
-				player2 = new Player("Computer");
 			try {
 				game = new Game(player1, player2);
 				champions = Game.getAvailableChampions();
@@ -293,7 +280,7 @@ public class View extends Application implements Initializable {
 
 		// Chosen Champions Bar
 		// First Player Label and Selected Champions ImageViews
-		Label player1LabelScene2 = new Label(player1.getName());
+		Label player1LabelScene2 = new Label(game.getFirstPlayer().getName());
 		player1LabelScene2.setTextFill(Color.color(1, 1, 1));
 		player1LabelScene2.setFont(new Font("Didot.", 15));
 		Image notYetSelected = new Image("application/media/gameIcon.jpeg");
@@ -318,7 +305,7 @@ public class View extends Application implements Initializable {
 		ImageView chosen2_3 = new ImageView(notYetSelected);
 		chosen2_3.setFitWidth(70);
 		chosen2_3.setFitHeight(70);
-		Label player2LabelScene2 = new Label(player2.getName());
+		Label player2LabelScene2 = new Label(game.getSecondPlayer().getName());
 		player2LabelScene2.setTextFill(Color.color(1, 1, 1));
 		player2LabelScene2.setFont(new Font("Didot.", 15));
 		// Configuring Nodes
@@ -360,7 +347,7 @@ public class View extends Application implements Initializable {
 //			Background backGround = new Background(bImage);
 //			btn.setBackground(backGround);
 			btn.setOnAction((e) -> {
-				picked = false;
+				boolean picked = false;
 				show(c, root2, chosenChampions, ch, btn, primaryStage);
 				if (picked)
 					btn.setDisable(true);
@@ -427,21 +414,21 @@ public class View extends Application implements Initializable {
 		if (chosen)
 			choose.setDisable(true);
 		choose.setOnAction(e -> {
-			picked = true;
+//			boolean picked = true;
 			// Putting the Chosen Champion's Image in Status Bar
-			if (player1.getTeam().size() < 3) {
-				player1.getTeam().add(champion);
-				if (player1.getTeam().size() == 1) {
+			if (game.getFirstPlayer().getTeam().size() < 3) {
+				game.getFirstPlayer().getTeam().add(champion);
+				if (game.getFirstPlayer().getTeam().size() == 1) {
 					ImageView img = (ImageView) (chosenChampions.getChildren().get(1));
 					img.setImage(ch);
 				}
 
-				else if (player1.getTeam().size() == 2) {
+				else if (game.getFirstPlayer().getTeam().size() == 2) {
 					ImageView img = (ImageView) (chosenChampions.getChildren().get(2));
 					img.setImage(ch);
 				}
 
-				else if (player1.getTeam().size() == 3) {
+				else if (game.getFirstPlayer().getTeam().size() == 3) {
 					ImageView img = (ImageView) (chosenChampions.getChildren().get(3));
 					img.setImage(ch);
 
@@ -455,25 +442,25 @@ public class View extends Application implements Initializable {
 							ImageView iv = new ImageView(cch);
 							iv.setFitHeight(80);
 							iv.setFitWidth(80);
-							if (!player1.getTeam().contains(cc) && !player2.getTeam().contains(cc)) {
-								player2.getTeam().add(cc);
-								if (player2.getTeam().size() == 1) {
+							if (!game.getFirstPlayer().getTeam().contains(cc) && !game.getSecondPlayer().getTeam().contains(cc)) {
+								game.getSecondPlayer().getTeam().add(cc);
+								if (game.getSecondPlayer().getTeam().size() == 1) {
 									ImageView imgg = (ImageView) (chosenChampions.getChildren().get(5));
 									imgg.setImage(cch);
 								}
 
-								else if (player2.getTeam().size() == 2) {
+								else if (game.getSecondPlayer().getTeam().size() == 2) {
 									ImageView imgg = (ImageView) (chosenChampions.getChildren().get(6));
 									imgg.setImage(cch);
 								}
 
-								else if (player2.getTeam().size() == 3) {
+								else if (game.getSecondPlayer().getTeam().size() == 3) {
 									ImageView imgg = (ImageView) (chosenChampions.getChildren().get(7));
 									imgg.setImage(cch);
 								}
 
 							}
-						} while (player2.getTeam().size() < 3);
+						} while (game.getSecondPlayer().getTeam().size() < 3);
 
 					}
 				}
@@ -481,18 +468,18 @@ public class View extends Application implements Initializable {
 
 			else {
 				if (twoPlayerMode) {
-					player2.getTeam().add(champion);
-					if (player2.getTeam().size() == 1) {
+					game.getSecondPlayer().getTeam().add(champion);
+					if (game.getSecondPlayer().getTeam().size() == 1) {
 						ImageView img = (ImageView) (chosenChampions.getChildren().get(5));
 						img.setImage(ch);
 					}
 
-					else if (player2.getTeam().size() == 2) {
+					else if (game.getSecondPlayer().getTeam().size() == 2) {
 						ImageView img = (ImageView) (chosenChampions.getChildren().get(6));
 						img.setImage(ch);
 					}
 
-					else if (player2.getTeam().size() == 3) {
+					else if (game.getSecondPlayer().getTeam().size() == 3) {
 						ImageView img = (ImageView) (chosenChampions.getChildren().get(7));
 						img.setImage(ch);
 					}
@@ -506,15 +493,13 @@ public class View extends Application implements Initializable {
 					chosenMap.put(m.getKey(), true);
 				}
 			}
-
 			// Disable All Champions Buttons When Teams Full and Ask to Choose Leaders
-			if (player1.getTeam().size() + player2.getTeam().size() == 6) {
+			if (game.getFirstPlayer().getTeam().size() + game.getSecondPlayer().getTeam().size() == 6) {
 				root2.setBottom(null);
 				for (Button b : championsButtons) {
 					b.setDisable(true);
 				}
 
-				full = true;
 				details.getChildren().clear();
 
 				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
@@ -525,7 +510,7 @@ public class View extends Application implements Initializable {
 					Button button = new Button();
 					int a = i - 1;
 					button.setOnAction(event -> {
-						chooseLeader(player1, player1.getTeam().get(a), details, primaryStage);
+						chooseLeader(game.getFirstPlayer(), game.getFirstPlayer().getTeam().get(a), details, primaryStage);
 					});
 					button.setMaxHeight(80);
 					button.setMinHeight(80);
@@ -546,7 +531,7 @@ public class View extends Application implements Initializable {
 					Button button = new Button();
 					int a = i - 5;
 					button.setOnAction(event -> {
-						chooseLeader(player2, player2.getTeam().get(a), details, primaryStage);
+						chooseLeader(game.getSecondPlayer(), game.getSecondPlayer().getTeam().get(a), details, primaryStage);
 					});
 					button.setMaxHeight(80);
 					button.setMinHeight(80);
@@ -568,41 +553,41 @@ public class View extends Application implements Initializable {
 			}
 		});
 
-		if (player1.getTeam().size() == 3 && !twoPlayerMode)
+		if (game.getFirstPlayer().getTeam().size() == 3 && !twoPlayerMode)
 			choose.fire();
 
-		if (!full) {
-			details.getChildren().addAll(championNameAndType, championMaxHP, championMana, championActions,
-					championSpeed, championRange, championDamage, championAbilities, choose);
-		}
+		
+		details.getChildren().addAll(championNameAndType, championMaxHP, championMana, championActions,
+				championSpeed, championRange, championDamage, championAbilities, choose);
+		
 	}
 
 	// Set Leader and Disable Choosing Another Leader
 	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
 
-		if (player == player1) {
-			player1.setLeader(c);
+		if (player == game.getFirstPlayer()) {
+			game.getFirstPlayer().setLeader(c);
 			details.getChildren().get(1).setDisable(true);
 			details.getChildren().get(2).setDisable(true);
 			details.getChildren().get(3).setDisable(true);
 
 			if (!twoPlayerMode) {
-				int i = (int) (Math.random() * player2.getTeam().size());
-				player2.setLeader(player2.getTeam().get(i));
+				int i = (int) (Math.random() * game.getSecondPlayer().getTeam().size());
+				game.getSecondPlayer().setLeader(game.getSecondPlayer().getTeam().get(i));
 				details.getChildren().get(5).setDisable(true);
 				details.getChildren().get(6).setDisable(true);
 				details.getChildren().get(7).setDisable(true);
 			}
 		}
 
-		else if (player == player2) {
-			player2.setLeader(c);
+		else if (player == game.getSecondPlayer()) {
+			game.getSecondPlayer().setLeader(c);
 			details.getChildren().get(5).setDisable(true);
 			details.getChildren().get(6).setDisable(true);
 			details.getChildren().get(7).setDisable(true);
 		}
 
-		if (player1.getLeader() != null && player2.getLeader() != null) {
+		if (game.getFirstPlayer().getLeader() != null && game.getSecondPlayer().getLeader() != null) {
 			Button play = new Button("Play");
 			play.setOnAction(e -> {
 				try {
@@ -624,13 +609,13 @@ public class View extends Application implements Initializable {
 		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
 
 		// Assign players' champions team arrays for image views
-		for (Champion c : player1.getTeam()) {
+		for (Champion c : game.getFirstPlayer().getTeam()) {
 			player1Champions.add(c);
 		}
-		for (Champion c : player2.getTeam()) {
+		for (Champion c : game.getSecondPlayer().getTeam()) {
 			player2Champions.add(c);
 		}
-		board = game.getBoard();
+//		board = game.getBoard();
 		game.placeChampions();
 		game.prepareChampionTurns();
 
@@ -673,7 +658,7 @@ public class View extends Application implements Initializable {
 		updateCurrentInformation();
 		updateBoard();
 
-		if (!twoPlayerMode && player2.getTeam().contains(game.getCurrentChampion())) {
+		if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
 			computerAction();
 		}
 	}
@@ -681,7 +666,7 @@ public class View extends Application implements Initializable {
 	// Update the Turn Order Status
 	public static void prepareTurns() {
 		turnOrderStatus.getChildren().clear();
-		tmp = new PriorityQueue(q.size());
+		PriorityQueue tmp = new PriorityQueue(q.size());
 		Label turnLabel = new Label("Next in Turn: ");
 		turnLabel.setTextFill(Color.color(1, 1, 1));
 		turnLabel.setFont(new Font("Didot.", 15));
@@ -750,7 +735,7 @@ public class View extends Application implements Initializable {
 		Ability a3 = champion.getAbilities().get(2);
 
 		VBox temp = new VBox(5);
-		if (twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(game.getCurrentChampion())) {
+		if (twoPlayerMode || !twoPlayerMode && game.getFirstPlayer().getTeam().contains(game.getCurrentChampion())) {
 			Button a1Button = (Button) currentControls.getChildren().get(1);
 			Button a2Button = (Button) currentControls.getChildren().get(2);
 			Button a3Button = (Button) currentControls.getChildren().get(3);
@@ -883,7 +868,14 @@ public class View extends Application implements Initializable {
 			a3Button.setOnMouseExited(e -> {
 				temp.getChildren().clear();
 			});
-
+			
+			boolean punch = false;
+			for (Effect e : game.getCurrentChampion().getAppliedEffects()) {
+				if (e instanceof Disarm) {
+					punch = true;
+					break;
+				}
+			} 
 			if (punch && game.getCurrentChampion().getAbilities().size() > 3) {
 				Button a4Button = (Button) currentControls.getChildren().get(6);
 				Ability a4 = game.getCurrentChampion().getAbilities().get(3);
@@ -955,7 +947,7 @@ public class View extends Application implements Initializable {
 //		root.getChildren().add(b);
 
 		gameStatus.getChildren().clear();
-		Label player1Name = new Label(player1.getName());
+		Label player1Name = new Label(game.getFirstPlayer().getName());
 		player1Name.setFont(new Font("Didot.", 16));
 		gameStatus.getChildren().add(player1Name);
 
@@ -999,7 +991,7 @@ public class View extends Application implements Initializable {
 			iv.setFitWidth(80);
 			gameStatus.getChildren().add(iv);
 		}
-		Label player2Name = new Label(player2.getName());
+		Label player2Name = new Label(game.getSecondPlayer().getName());
 		player2Name.setFont(new Font("Didot.", 16));
 		player1Name.setTextFill(Color.color(1, 1, 1));
 		player2Name.setTextFill(Color.color(1, 1, 1));
@@ -1016,10 +1008,9 @@ public class View extends Application implements Initializable {
 				btn.setMinWidth(100);
 				btn.setMaxHeight(100);
 				btn.setMaxWidth(100);
-				boardButtons[j][4 - i] = btn;
 				
-				if (board[i][j] instanceof Cover) {
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
+				if (game.getBoard()[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)game.getBoard()[i][j]).getCurrentHP()));
 					Image img = new Image("./application/media/cover.jpeg");
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
@@ -1027,8 +1018,8 @@ public class View extends Application implements Initializable {
 					btn.setGraphic(iv);
 				}
 
-				else if (board[i][j] instanceof Champion) {
-					Champion c = (Champion) board[i][j];
+				else if (game.getBoard()[i][j] instanceof Champion) {
+					Champion c = (Champion) game.getBoard()[i][j];
 					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
@@ -1036,10 +1027,10 @@ public class View extends Application implements Initializable {
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
 					Champion current = game.getCurrentChampion();
-					if (c == current && player1.getTeam().contains(current)) {
+					if (c == current && game.getFirstPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #010098;");
 						isCurrent1 = true;
-					} else if (c == current && player2.getTeam().contains(current)) {
+					} else if (c == current && game.getSecondPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #9a0000; ");
 						isCurrent2 = true;
 					}
@@ -1062,7 +1053,7 @@ public class View extends Application implements Initializable {
 						currentHealth.setMinWidth(400);
 						currentHealth.setMinHeight(200);
 						Text teamText;
-						if (player1.getTeam().contains(c))
+						if (game.getFirstPlayer().getTeam().contains(c))
 							teamText = new Text("Belonging to first team");
 						else
 							teamText = new Text("Belonging to second team");
@@ -1080,7 +1071,7 @@ public class View extends Application implements Initializable {
 								+ c.getAttackRange() + ", " + "Attack Damage: " + c.getAttackDamage() + ".");
 						otherText.setTextAlignment(TextAlignment.CENTER);
 						Text leaderText = new Text("Champion is NOT a leader.");
-						if (player1.getLeader() == c || player2.getLeader() == c)
+						if (game.getFirstPlayer().getLeader() == c || game.getSecondPlayer().getLeader() == c)
 							leaderText = new Text("Champion is a leader");
 						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText,
 								leaderText, OK);
@@ -1113,17 +1104,16 @@ public class View extends Application implements Initializable {
 				btn.setMinWidth(100);
 				btn.setMaxHeight(100);
 				btn.setMaxWidth(100);
-				boardButtons[j][4 - i] = btn;
 				
-				if (board[i][j] instanceof Cover) {
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
+				if (game.getBoard()[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)game.getBoard()[i][j]).getCurrentHP()));
 					Image img = new Image("./application/media/cover.jpeg");
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
 					ImageView ivp = null;
-					if (board[i][j] == attackTarget) {
+					if (game.getBoard()[i][j] == attackTarget) {
 						Image pow = new Image("/application/media/animation/pow.jpeg");
 						ivp = new ImageView(pow);
 						ivp.setFitHeight(100);
@@ -1136,8 +1126,8 @@ public class View extends Application implements Initializable {
 					}
 				}
 
-				else if (board[i][j] instanceof Champion) {
-					Champion c = (Champion) board[i][j];
+				else if (game.getBoard()[i][j] instanceof Champion) {
+					Champion c = (Champion) game.getBoard()[i][j];
 					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
@@ -1145,10 +1135,10 @@ public class View extends Application implements Initializable {
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
 					Champion current = game.getCurrentChampion();
-					if (c == current && player1.getTeam().contains(current)) {
+					if (c == current && game.getFirstPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #010098;");
 						isCurrent1 = true;
-					} else if (c == current && player2.getTeam().contains(current)) {
+					} else if (c == current && game.getSecondPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #9a0000; ");
 						isCurrent2 = true;
 					}
@@ -1185,7 +1175,7 @@ public class View extends Application implements Initializable {
 						currentHealth.setMinWidth(400);
 						currentHealth.setMinHeight(200);
 						Text teamText;
-						if (player1.getTeam().contains(c))
+						if (game.getFirstPlayer().getTeam().contains(c))
 							teamText = new Text("Belonging to first team");
 						else
 							teamText = new Text("Belonging to second team");
@@ -1203,7 +1193,7 @@ public class View extends Application implements Initializable {
 								+ c.getAttackRange() + ", " + "Attack Damage: " + c.getAttackDamage() + ".");
 						otherText.setTextAlignment(TextAlignment.CENTER);
 						Text leaderText = new Text("Champion is NOT a leader.");
-						if (player1.getLeader() == c || player2.getLeader() == c)
+						if (game.getFirstPlayer().getLeader() == c || game.getSecondPlayer().getLeader() == c)
 							leaderText = new Text("Champion is a leader");
 						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText,
 								leaderText, OK);
@@ -1236,17 +1226,16 @@ public class View extends Application implements Initializable {
 				btn.setMinWidth(100);
 				btn.setMaxHeight(100);
 				btn.setMaxWidth(100);
-				boardButtons[j][4 - i] = btn;
 				
-				if (board[i][j] instanceof Cover) {
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
+				if (game.getBoard()[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)game.getBoard()[i][j]).getCurrentHP()));
 					Image img = new Image("./application/media/cover.jpeg");
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
 					ImageView ivp = null;
-					if (targets.contains(board[i][j])) {
+					if (targets.contains(game.getBoard()[i][j])) {
 						if (ability instanceof HealingAbility) {
 							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
@@ -1265,8 +1254,8 @@ public class View extends Application implements Initializable {
 					}
 				}
 
-				else if (board[i][j] instanceof Champion) {
-					Champion c = (Champion) board[i][j];
+				else if (game.getBoard()[i][j] instanceof Champion) {
+					Champion c = (Champion) game.getBoard()[i][j];
 					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
@@ -1274,16 +1263,16 @@ public class View extends Application implements Initializable {
 					iv.setFitWidth(90);
 					btn.setGraphic(iv);
 					Champion current = game.getCurrentChampion();
-					if (c == current && player1.getTeam().contains(current)) {
+					if (c == current && game.getFirstPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #010098;");
 						isCurrent1 = true;
-					} else if (c == current && player2.getTeam().contains(current)) {
+					} else if (c == current && game.getSecondPlayer().getTeam().contains(current)) {
 //						btn.setStyle("-fx-background-color: #9a0000; ");
 						isCurrent2 = true;
 					}
 					
 					ImageView ivp = null;
-					if (targets.contains(board[i][j])) {
+					if (targets.contains(game.getBoard()[i][j])) {
 						if (ability instanceof HealingAbility) {
 							Image plus = new Image("./application/media/animation/plus.jpeg");
 							ivp = new ImageView(plus);
@@ -1320,7 +1309,7 @@ public class View extends Application implements Initializable {
 						currentHealth.setMinWidth(400);
 						currentHealth.setMinHeight(200);
 						Text teamText;
-						if (player1.getTeam().contains(c))
+						if (game.getFirstPlayer().getTeam().contains(c))
 							teamText = new Text("Belonging to first team");
 						else
 							teamText = new Text("Belonging to second team");
@@ -1338,7 +1327,7 @@ public class View extends Application implements Initializable {
 								+ c.getAttackRange() + ", " + "Attack Damage: " + c.getAttackDamage() + ".");
 						otherText.setTextAlignment(TextAlignment.CENTER);
 						Text leaderText = new Text("Champion is NOT a leader.");
-						if (player1.getLeader() == c || player2.getLeader() == c)
+						if (game.getFirstPlayer().getLeader() == c || game.getSecondPlayer().getLeader() == c)
 							leaderText = new Text("Champion is a leader");
 						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText,
 								leaderText, OK);
@@ -1591,7 +1580,7 @@ public class View extends Application implements Initializable {
 		actions.add(btnEndTurn);
 		actions.add(btnLeaderAbility);
 		
-		punch = false;
+		boolean punch = false;
 		for (Effect e : current.getAppliedEffects()) {
 			if (e instanceof Disarm) {
 				punch = true;
@@ -1615,11 +1604,11 @@ public class View extends Application implements Initializable {
 		actions.add(btnMoveRight);
 		actions.add(btnMoveLeft);
 		
-		if (!(player1.getLeader() == current || player2.getLeader() == current)) {
+		if (!(game.getFirstPlayer().getLeader() == current || game.getSecondPlayer().getLeader() == current)) {
 			btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
 		}
 		
-		if (!(twoPlayerMode || !twoPlayerMode && player1.getTeam().contains(current))) {
+		if (!(twoPlayerMode || !twoPlayerMode && game.getFirstPlayer().getTeam().contains(current))) {
 			for (Button b : actions) {
 				b.setDisable(true);
 			}
@@ -1876,7 +1865,7 @@ public class View extends Application implements Initializable {
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1894,7 +1883,7 @@ public class View extends Application implements Initializable {
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1912,7 +1901,7 @@ public class View extends Application implements Initializable {
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1930,7 +1919,7 @@ public class View extends Application implements Initializable {
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1948,7 +1937,7 @@ public class View extends Application implements Initializable {
 			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1966,7 +1955,7 @@ public class View extends Application implements Initializable {
 			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -1984,7 +1973,7 @@ public class View extends Application implements Initializable {
 			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -2002,7 +1991,7 @@ public class View extends Application implements Initializable {
 			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -2023,7 +2012,7 @@ public class View extends Application implements Initializable {
 				updateBoard(targets, ability);
 				checkWinner();
 			} catch (Exception e1) {
-				if (!twoPlayerMode && player2.getTeam().contains(current)) {
+				if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 					e1.printStackTrace();
 				} else {
 					throwException(e1.getMessage());
@@ -2048,7 +2037,7 @@ public class View extends Application implements Initializable {
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
@@ -2066,7 +2055,7 @@ public class View extends Application implements Initializable {
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
@@ -2084,7 +2073,7 @@ public class View extends Application implements Initializable {
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
@@ -2102,7 +2091,7 @@ public class View extends Application implements Initializable {
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
@@ -2139,7 +2128,7 @@ public class View extends Application implements Initializable {
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
-					if (!twoPlayerMode && player2.getTeam().contains(current)) {
+					if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
 					} else {
 						throwException(e1.getMessage());
@@ -2165,7 +2154,7 @@ public class View extends Application implements Initializable {
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
-			if (!twoPlayerMode && player2.getTeam().contains(current)) {
+			if (!twoPlayerMode && game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
 			} else {
 				throwException(e1.getMessage());
@@ -2181,7 +2170,7 @@ public class View extends Application implements Initializable {
 		prepareTurns();
 		updateBoard();
 		checkWinner();
-		if ((!twoPlayerMode) && player2.getTeam().contains(game.getCurrentChampion())) {
+		if ((!twoPlayerMode) && game.getSecondPlayer().getTeam().contains(game.getCurrentChampion())) {
 			computerAction();
 		}
 	}
