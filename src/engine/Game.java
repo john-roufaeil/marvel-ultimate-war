@@ -926,6 +926,9 @@ public class Game {
 				for(Ability ability : c.getAbilities()) {
 					ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
 				}
+				
+				c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
+				
 				this.turnOrder.insert(c);
 			}
 		}
@@ -945,6 +948,9 @@ public class Game {
 				for(Ability ability : c.getAbilities()) {
 					ability.setCurrentCooldown(ability.getCurrentCooldown() - 1);
 				}
+				
+				c.setCurrentActionPoints(c.getMaxActionPointsPerTurn());
+				
 				this.turnOrder.insert(c);
 			}
 		}
