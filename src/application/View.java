@@ -5,11 +5,16 @@
  *  network mode
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
- *  change cover image depending on health
- *  add music
+ *  skip intro video with press on keyboard
+ *  add statement press to skip
+ *  
  *  add sound effects on buttons click (different actions -> different sounds)
- *  attack, cast ability, leader ability animation
+ *  leader ability animation
  *  add detailed instructions and help manual in good design
+ * 
+ *  try to manage resizing when changing scenes
+ *  
+ *  add more champions
  * 
  *  GOALS
  *  clean code
@@ -71,6 +76,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -81,15 +87,10 @@ import javafx.scene.paint.Color;
 
 public class View extends Application implements Initializable {
 	static Game game;
-	static Scene videoPage, homePage, begin, gameview;
-	static GridPane boardView;
-	static HBox gameStatus, currentControls;
-	static VBox turnOrderStatus, currentInformation;
+	static BorderPane root3;
 	static HashMap<Champion, Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
-	static ArrayList<Button> championsButtons = new ArrayList<>();
-	static ArrayList<Champion> champions;
 	static PriorityQueue q;
 	static Stage primaryStage;
 	static boolean twoPlayerMode;
@@ -117,7 +118,7 @@ public class View extends Application implements Initializable {
 		hi.getChildren().add(introMediaView);
 		BorderPane root0 = new BorderPane();
 		root0.setCenter(hi);
-		videoPage = new Scene(root0);
+		Scene videoPage = new Scene(root0);
 		
 		introMediaView.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
@@ -153,7 +154,7 @@ public class View extends Application implements Initializable {
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
 		root1.getChildren().add(backgroundIV);
-		homePage = new Scene(root1, 400, 400);
+		Scene homePage = new Scene(root1, 400, 400);
 
 		// Choose Player Mode
 		HBox chooseMode = new HBox(50);
@@ -225,7 +226,6 @@ public class View extends Application implements Initializable {
 				player2 = new Player(name2TextField.getText());
 			try {
 				View.game = new Game(player1, player2);
-				champions = Game.getAvailableChampions();
 				q = View.game.getTurnOrder();
 			} catch (IOException e1) {
 				throwException(e1.getMessage());
@@ -265,7 +265,7 @@ public class View extends Application implements Initializable {
 		// Scene Organisation
 		BorderPane root2 = new BorderPane();
 		root2.getChildren().add(backgroundIV);
-		begin = new Scene(root2);
+		Scene begin = new Scene(root2);
 		primaryStage.setScene(begin);
 		primaryStage.setFullScreen(true);
 		HBox chosenChampions = new HBox();
@@ -328,7 +328,7 @@ public class View extends Application implements Initializable {
 		int b = 0;
 		champsgrid.setHgap(5);
 		champsgrid.setVgap(5);
-		for (Champion c : champions) {
+		for (Champion c : Game.getAvailableChampions()) {
 			chosenMap.put(c, false);
 			Image ch = new Image(aliveMap.get(c));
 			ImageView iv = new ImageView(ch);
@@ -358,7 +358,6 @@ public class View extends Application implements Initializable {
 				b++;
 			}
 
-			championsButtons.add(btn);
 		}
 
 		// Configuring Nodes
@@ -433,8 +432,8 @@ public class View extends Application implements Initializable {
 					if (!twoPlayerMode) {
 
 						do {
-							int i = (int) (Math.random() * champions.size());
-							Champion cc = champions.get(i);
+							int i = (int) (Math.random() * Game.getAvailableChampions().size());
+							Champion cc = Game.getAvailableChampions().get(i);
 
 							Image cch = new Image(aliveMap.get(cc));
 							ImageView iv = new ImageView(cch);
@@ -494,9 +493,6 @@ public class View extends Application implements Initializable {
 			// Disable All Champions Buttons When Teams Full and Ask to Choose Leaders
 			if (View.game.getFirstPlayer().getTeam().size() + View.game.getSecondPlayer().getTeam().size() == 6) {
 				root2.setBottom(null);
-				for (Button b : championsButtons) {
-					b.setDisable(true);
-				}
 
 				details.getChildren().clear();
 
@@ -611,18 +607,18 @@ public class View extends Application implements Initializable {
 		View.game.prepareChampionTurns();
 
 		// Scene organisation
-		BorderPane root3 = new BorderPane();
+		root3 = new BorderPane();
 		root3.getChildren().add(backgroundBoardIV);
-		gameview = new Scene(root3);
+		Scene gameview = new Scene(root3);
 		keyMoved();
 		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
 
-		gameStatus = new HBox(10);
-		turnOrderStatus = new VBox(15);
-		currentControls = new HBox(30);
-		boardView = new GridPane();
-		currentInformation = new VBox(5);
+		HBox gameStatus = new HBox(10);
+		VBox turnOrderStatus = new VBox(15);
+		HBox currentControls = new HBox(30);
+		GridPane boardView = new GridPane();
+		VBox currentInformation = new VBox(5);
 		root3.setTop(gameStatus);
 		root3.setRight(turnOrderStatus);
 		root3.setBottom(currentControls);
@@ -656,19 +652,19 @@ public class View extends Application implements Initializable {
 
 	// Update the Turn Order Status
 	public static void prepareTurns() {
-		turnOrderStatus.getChildren().clear();
+		((Pane) root3.getRight()).getChildren().clear();
 		PriorityQueue tmp = new PriorityQueue(q.size());
 		Label turnLabel = new Label("Next in Turn: ");
 		turnLabel.setTextFill(Color.color(1, 1, 1));
 		turnLabel.setFont(new Font("Didot.", 15));
-		turnOrderStatus.getChildren().add(turnLabel);
+		((Pane) root3.getRight()).getChildren().add(turnLabel);
 		while (!q.isEmpty()) {
 			Image img = new Image(aliveMap.get((Champion) q.peekMin()));
 			ImageView iv = new ImageView(img);
 			iv.setFitHeight(60);
 			iv.setFitWidth(60);
 
-			turnOrderStatus.getChildren().add(iv);
+			((Pane) root3.getRight()).getChildren().add(iv);
 			tmp.insert((Champion) q.remove());
 		}
 		while (!tmp.isEmpty()) {
@@ -678,7 +674,7 @@ public class View extends Application implements Initializable {
 
 	// Update Current Champion's Information
 	public static void updateCurrentInformation() {
-		currentInformation.getChildren().clear();
+		((Pane) root3.getLeft()).getChildren().clear();
 		// Get Current Champion
 		Champion champion = View.game.getCurrentChampion();
 
@@ -727,9 +723,9 @@ public class View extends Application implements Initializable {
 
 		VBox temp = new VBox(5);
 		if (twoPlayerMode || !twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())) {
-			Button a1Button = (Button) currentControls.getChildren().get(1);
-			Button a2Button = (Button) currentControls.getChildren().get(2);
-			Button a3Button = (Button) currentControls.getChildren().get(3);
+			Button a1Button = (Button) ((Pane) root3.getBottom()).getChildren().get(1);
+			Button a2Button = (Button) ((Pane) root3.getBottom()).getChildren().get(2);
+			Button a3Button = (Button) ((Pane) root3.getBottom()).getChildren().get(3);
 
 			// First Ability's Attributes
 			a1Button.setOnMouseEntered(e -> {
@@ -868,7 +864,7 @@ public class View extends Application implements Initializable {
 				}
 			} 
 			if (punch && View.game.getCurrentChampion().getAbilities().size() > 3) {
-				Button a4Button = (Button) currentControls.getChildren().get(6);
+				Button a4Button = (Button) ((Pane) root3.getBottom()).getChildren().get(6);
 				Ability a4 = View.game.getCurrentChampion().getAbilities().get(3);
 				a4Button.setOnMouseEntered(e -> {
 					Label a4Name = new Label("Fourth Ability: " + a4.getName());
@@ -915,10 +911,10 @@ public class View extends Application implements Initializable {
 		}
 
 		// Configuring Nodec
-		currentInformation.getChildren().addAll(championName, championType, championMaxHP, championMana,
+		((Pane) root3.getLeft()).getChildren().addAll(championName, championType, championMaxHP, championMana,
 				championActions, championSpeed, championRange, championDamage, championAppliedEffects,
 				championCondition, region1, temp);
-		for (Node n : currentInformation.getChildren()) {
+		for (Node n : ((Pane) root3.getLeft()).getChildren()) {
 			if (n instanceof Label)
 				((Label) n).setTextFill(Color.color(1, 1, 1));
 		}
@@ -928,10 +924,10 @@ public class View extends Application implements Initializable {
 	// Update the Status of Players' Champions and Leader Ability
 	public static void updateStatusBar() {
 
-		gameStatus.getChildren().clear();
+		((Pane) root3.getTop()).getChildren().clear();
 		Label player1Name = new Label(View.game.getFirstPlayer().getName());
 		player1Name.setFont(new Font("Didot.", 16));
-		gameStatus.getChildren().add(player1Name);
+		((Pane) root3.getTop()).getChildren().add(player1Name);
 
 		for (Champion c : View.game.getFirstPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
@@ -940,7 +936,7 @@ public class View extends Application implements Initializable {
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
 			iv.setFitWidth(80);
-			gameStatus.getChildren().add(iv);
+			((Pane) root3.getTop()).getChildren().add(iv);
 		}
 
 		Image LeaderAbilityNotUsed = new Image("./application/media/pow.jpeg");
@@ -962,7 +958,7 @@ public class View extends Application implements Initializable {
 		firstLeaderAbility.setFitWidth(80);
 		secondLeaderAbility.setFitHeight(80);
 		secondLeaderAbility.setFitWidth(80);
-		gameStatus.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
+		((Pane) root3.getTop()).getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
 
 		for (Champion c : View.game.getSecondPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
@@ -971,13 +967,13 @@ public class View extends Application implements Initializable {
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
 			iv.setFitWidth(80);
-			gameStatus.getChildren().add(iv);
+			((Pane) root3.getTop()).getChildren().add(iv);
 		}
 		Label player2Name = new Label(View.game.getSecondPlayer().getName());
 		player2Name.setFont(new Font("Didot.", 16));
 		player1Name.setTextFill(Color.color(1, 1, 1));
 		player2Name.setTextFill(Color.color(1, 1, 1));
-		gameStatus.getChildren().add(player2Name);
+		((Pane) root3.getTop()).getChildren().add(player2Name);
 	}
 
 	public static void updateBoard() {
@@ -1076,7 +1072,7 @@ public class View extends Application implements Initializable {
 				} else if (isCurrent2) {
 					btn.setStyle("-fx-border-color: #ddd ; -fx-background-color: #9a0000");
 				}
-				boardView.add(btn, j, 4 - i);
+				((GridPane) root3.getCenter()).add(btn, j, 4 - i);
 			}
 		}
 	}
@@ -1205,7 +1201,7 @@ public class View extends Application implements Initializable {
 				} else if (isCurrent2) {
 					btn.setStyle("-fx-border-color: #ddd ; -fx-background-color: #9a0000");
 				}
-				boardView.add(sp, j, 4 - i);
+				((GridPane) root3.getCenter()).add(sp, j, 4 - i);
 			}
 		}
 	}
@@ -1375,7 +1371,7 @@ public class View extends Application implements Initializable {
 				} else if (isCurrent2) {
 					btn.setStyle("-fx-border-color: #ddd ; -fx-background-color: #9a0000");
 				}
-				boardView.add(sp, j, 4 - i);
+				((GridPane) root3.getCenter()).add(sp, j, 4 - i);
 			}
 		}
 	}
@@ -1399,7 +1395,7 @@ public class View extends Application implements Initializable {
 
 	// Show controls only if player's turn
 	public static void showControls() {
-		currentControls.getChildren().clear();
+		((Pane) root3.getBottom()).getChildren().clear();
 		Champion current = View.game.getCurrentChampion();
 		ArrayList<Button> actions = new ArrayList<>();
 		
@@ -1605,7 +1601,7 @@ public class View extends Application implements Initializable {
 		box8.setAlignment(Pos.CENTER);
 		moveOptions.setLeft(box8);
 
-		currentControls.getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
+		((Pane) root3.getBottom()).getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
 		actions.add(btnAbility1);
 		actions.add(btnAbility2);
 		actions.add(btnAbility3);
@@ -1620,17 +1616,17 @@ public class View extends Application implements Initializable {
 			}
 		}
 		if (punch) {
-			currentControls.getChildren().add(btnPunch);
+			((Pane) root3.getBottom()).getChildren().add(btnPunch);
 			actions.add(btnPunch);
 		} else {
-			currentControls.getChildren().add(attackOptions);
+			((Pane) root3.getBottom()).getChildren().add(attackOptions);
 			actions.add(btnAttackUp);
 			actions.add(btnAttackDown);
 			actions.add(btnAttackRight);
 			actions.add(btnAttackLeft);
 		}
 
-		currentControls.getChildren().add(moveOptions);
+		((Pane) root3.getBottom()).getChildren().add(moveOptions);
 		actions.add(btnMoveUp);
 		actions.add(btnMoveDown);
 		actions.add(btnMoveRight);
@@ -2218,7 +2214,7 @@ public class View extends Application implements Initializable {
 	public static void checkWinner() {
 		Player winner = View.game.checkGameOver();
 		if (winner != null) {
-			for (Node n : currentControls.getChildren()) {
+			for (Node n : ((Pane) root3.getBottom()).getChildren()) {
 				if (n instanceof Button) {
 					((Button) n).setDisable(true);
 				}
@@ -2245,43 +2241,43 @@ public class View extends Application implements Initializable {
 	}
 
 	public static void keyMoved() {
-		gameview.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.NUMPAD8) {
+		root3.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.W) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					moveUp();
 			}
-			if (e.getCode() == KeyCode.NUMPAD2) {
+			if (e.getCode() == KeyCode.S) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					moveDown();
 			}
-			if (e.getCode() == KeyCode.NUMPAD6) {
+			if (e.getCode() == KeyCode.D) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					moveRight();
 			}
-			if (e.getCode() == KeyCode.NUMPAD4) {
+			if (e.getCode() == KeyCode.A) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					moveLeft();
 			}
-			if (e.getCode() == KeyCode.W) {
+			if (e.getCode() == KeyCode.NUMPAD8) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					attackUp();
 			}
-			if (e.getCode() == KeyCode.S) {
+			if (e.getCode() == KeyCode.NUMPAD2) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					attackDown();
 			}
-			if (e.getCode() == KeyCode.D) {
+			if (e.getCode() == KeyCode.NUMPAD6) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					attackRight();
 			}
-			if (e.getCode() == KeyCode.A) {
+			if (e.getCode() == KeyCode.NUMPAD4) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
 					attackLeft();
