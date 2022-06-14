@@ -252,7 +252,7 @@ public class View extends Application implements Initializable {
 		// Map Champions with their Images
 		aliveMap = new HashMap<Champion, String>();
 		deadMap = new HashMap<Champion, String>();
-		for (int i = 1; i <= 15; i++) {
+		for (int i = 1; i <= 18; i++) {
 			aliveMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + ".jpeg");
 			deadMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + "d.jpeg");
 		}
@@ -348,7 +348,7 @@ public class View extends Application implements Initializable {
 
 			champsgrid.add(btn, a, b);
 			a++;
-			if (a == 5) {
+			if (a == 6) {
 				a = 0;
 				b++;
 			}

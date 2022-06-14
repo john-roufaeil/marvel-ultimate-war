@@ -43,3 +43,12 @@ CC,Symbiosis,90,1,3,SINGLETARGET,2,Root,2
 DMG,Laser Sting,100,2,2,TEAMTARGET,3,400,
 HEL,QuANTaMANia,140,2,2,TEAMTARGET,3,150,
 CC,Pym Particle Upsize,150,2,3,TEAMTARGET,3,PowerUp,2
+DMG,I’ll fly the plane,100,8,3,TEAMTARGET,3,200,
+HEL,You don’t know me,120,0,2,SELFTARGET,2,250,
+DMG,I’m coming to end it,150,2,4,SINGLETARGET,4,400,
+DMG,That’s not up to you,120,1,3,SINGLETARGET,4,250,
+CC,Eyes on the road,150,2,4,SURROUND,3,SpeedUp,2
+HEL,Are we still friends?,180,8,2,TEAMTARGET,2,200,
+DMG,You shouldn’t be here,140,3,3,SINGLETARGET,3,300,
+DMG,I’ve got a job to do,130,2,4,SURROUND,4,250,
+CC,I’ll do my best,100,0,2,SELFTARGET,2,PowerUp,2
