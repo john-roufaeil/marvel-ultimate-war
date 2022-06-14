@@ -1110,6 +1110,10 @@ public class View extends Application implements Initializable {
 							Image plus = new Image("./application/animations/plus.jpeg");
 							ivp = new ImageView(plus);
 						}
+						if (ability instanceof DamagingAbility) {
+							Image minus = new Image("./application/animations/minus.jpeg");
+							ivp = new ImageView(minus);
+						}
 						ivp.setFitHeight(100);
 						ivp.setFitWidth(100);
 						sp.getChildren().add(ivp);
@@ -1142,6 +1146,10 @@ public class View extends Application implements Initializable {
 						if (ability instanceof HealingAbility) {
 							Image plus = new Image("./application/animations/plus.jpeg");
 							ivp = new ImageView(plus);
+						}
+						if (ability instanceof DamagingAbility) {
+							Image minus = new Image("./application/animations/minus.jpeg");
+							ivp = new ImageView(minus);
 						}
 						ivp.setFitHeight(100);
 						ivp.setFitWidth(100);
@@ -1936,12 +1944,12 @@ public class View extends Application implements Initializable {
 			up.setOnAction(ee -> {
 				chooseDirection.close();
 				try {
-					game.castAbility(ability, Direction.UP);
+					ArrayList<Damageable> targets = game.castAbility(ability, Direction.UP);
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 //					prepareTurns();
-					updateBoard();
+					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1955,12 +1963,12 @@ public class View extends Application implements Initializable {
 			down.setOnAction(ee -> {
 				chooseDirection.close();
 				try {
-					game.castAbility(ability, Direction.DOWN);
+					ArrayList<Damageable> targets = game.castAbility(ability, Direction.DOWN);
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 //					prepareTurns();
-					updateBoard();
+					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1974,12 +1982,12 @@ public class View extends Application implements Initializable {
 			right.setOnAction(ee -> {
 				chooseDirection.close();
 				try {
-					game.castAbility(ability, Direction.RIGHT);
+					ArrayList<Damageable> targets = game.castAbility(ability, Direction.RIGHT);
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 //					prepareTurns();
-					updateBoard();
+					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1993,12 +2001,12 @@ public class View extends Application implements Initializable {
 			left.setOnAction(ee -> {
 				chooseDirection.close();
 				try {
-					game.castAbility(ability, Direction.LEFT);
+					ArrayList<Damageable> targets = game.castAbility(ability, Direction.LEFT);
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 //					prepareTurns();
-					updateBoard();
+					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -2030,12 +2038,13 @@ public class View extends Application implements Initializable {
 			confirm.setOnAction(ee -> {
 				chooseCell.close();
 				try {
-					game.castAbility(ability, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+					ArrayList<Damageable> targets = game.castAbility(ability, Integer.parseInt(xField.getText()), 
+							Integer.parseInt(yField.getText()));
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
 //					prepareTurns();
-					updateBoard();
+					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && player2.getTeam().contains(current)) {

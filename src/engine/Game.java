@@ -636,7 +636,7 @@ public class Game {
 	}
 	 
 	@SuppressWarnings("unchecked")
-	public void castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException {
+	public ArrayList<Damageable> castAbility(Ability a, Direction d) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException {
 		Champion current = getCurrentChampion();
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		ArrayList<Effect> appliedEffects = current.getAppliedEffects();
@@ -721,10 +721,11 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
+		return targets;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void castAbility(Ability a, int x, int y) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException {
+	public ArrayList<Damageable> castAbility(Ability a, int x, int y) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException {
 		Champion current = getCurrentChampion();
 		Damageable target = null;
 		ArrayList<Effect> appliedEffects = current.getAppliedEffects();
@@ -763,7 +764,7 @@ public class Game {
 						((Champion) target).getAppliedEffects().remove(e);
 						e.remove((Champion)target); 
 						current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
-						return;
+						break;
 					}	
 				}
 			
@@ -797,6 +798,7 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
+		return targets;
 	}
 	
 	public void  useLeaderAbility() throws LeaderAbilityAlreadyUsedException, LeaderNotCurrentException {
