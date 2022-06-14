@@ -989,7 +989,10 @@ public class View extends Application implements Initializable {
 				
 				if (View.game.getBoard()[i][j] instanceof Cover) {
 					Cover cover = (Cover)(View.game.getBoard()[i][j]);
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP()));
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP() 
+							+ "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - cover.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - cover.getLocation().getY()))));
 					Image img = new Image("./application/media/glass1.jpeg");
 					if (cover.getCurrentHP() < 600 && cover.getCurrentHP() >= 300) {
 						img = new Image("./application/media/glass2.jpeg");
@@ -1005,7 +1008,9 @@ public class View extends Application implements Initializable {
 
 				else if (View.game.getBoard()[i][j] instanceof Champion) {
 					Champion c = (Champion) View.game.getBoard()[i][j];
-					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP() + "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - c.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - c.getLocation().getY()))));	
 					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
@@ -1092,7 +1097,10 @@ public class View extends Application implements Initializable {
 				
 				if (View.game.getBoard()[i][j] instanceof Cover) {
 					Cover cover = (Cover)(View.game.getBoard()[i][j]);
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP()));
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP() 
+							+ "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - cover.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - cover.getLocation().getY()))));
 					Image img = new Image("./application/media/glass1.jpeg");
 					if (cover.getCurrentHP() < 600 && cover.getCurrentHP() >= 300) {
 						img = new Image("./application/media/glass2.jpeg");
@@ -1120,8 +1128,9 @@ public class View extends Application implements Initializable {
 
 				else if (View.game.getBoard()[i][j] instanceof Champion) {
 					Champion c = (Champion) View.game.getBoard()[i][j];
-					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
-					Image img = new Image(aliveMap.get(c));
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP() + "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - c.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - c.getLocation().getY()))));					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
@@ -1221,7 +1230,10 @@ public class View extends Application implements Initializable {
 				
 				if (View.game.getBoard()[i][j] instanceof Cover) {
 					Cover cover = (Cover)(View.game.getBoard()[i][j]);
-					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP()));
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)View.game.getBoard()[i][j]).getCurrentHP() 
+							+ "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - cover.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - cover.getLocation().getY()))));
 					Image img = new Image("./application/media/glass1.jpeg");
 					if (cover.getCurrentHP() < 600 && cover.getCurrentHP() >= 300) {
 						img = new Image("./application/media/glass2.jpeg");
@@ -1270,8 +1282,9 @@ public class View extends Application implements Initializable {
 
 				else if (View.game.getBoard()[i][j] instanceof Champion) {
 					Champion c = (Champion) View.game.getBoard()[i][j];
-					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
-					Image img = new Image(aliveMap.get(c));
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP() + "\nDistance: " + (int)
+							(Math.abs(View.game.getCurrentChampion().getLocation().x - c.getLocation().getX()) + 
+							Math.abs(View.game.getCurrentChampion().getLocation().y - c.getLocation().getY()))));					Image img = new Image(aliveMap.get(c));
 					ImageView iv = new ImageView(img);
 					iv.setFitHeight(90);
 					iv.setFitWidth(90);
