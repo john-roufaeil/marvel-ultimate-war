@@ -341,7 +341,7 @@ public class Game {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void attack(Direction d) throws ChampionDisarmedException, NotEnoughResourcesException, InvalidTargetException  {
+	public Damageable attack(Direction d) throws ChampionDisarmedException, NotEnoughResourcesException, InvalidTargetException  {
 		Champion current = getCurrentChampion();
 		Damageable target = null;
 		ArrayList<Effect> appliedEffects = current.getAppliedEffects();
@@ -442,7 +442,7 @@ public class Game {
 					dodge = (int)(Math.random() * 2);
 			if (dodge == 1) {
 				 current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
-				return;
+				return null;
 			}
 			
 			// check if attacked champion has Shield Effect
@@ -451,7 +451,7 @@ public class Game {
 					appliedEffectsOnAttacked.remove(e);
 					e.remove(spot);
 					current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
-					return;
+					return null;
 				}
 			
 			spot.setCurrentHP(spot.getCurrentHP() - damage);
@@ -479,6 +479,7 @@ public class Game {
 		targets.add(target);
 		killDead(targets);
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - 2);
+		return target;
 	}
 	
 	@SuppressWarnings("unchecked")

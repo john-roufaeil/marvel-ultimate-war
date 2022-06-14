@@ -1083,6 +1083,129 @@ public class View extends Application implements Initializable {
 		}
 	}
 	
+	public static void updateBoard(Damageable attackTarget) {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				StackPane sp = new StackPane();
+				boolean isCurrent1 = false;
+				boolean isCurrent2 = false;
+				Button btn = new Button();
+				sp.getChildren().add(btn);
+				btn.setMinHeight(100);
+				btn.setMinWidth(100);
+				btn.setMaxHeight(100);
+				btn.setMaxWidth(100);
+				boardButtons[j][4 - i] = btn;
+				
+				if (board[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
+					Image img = new Image("./application/media/cover.jpeg");
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					ImageView ivp = null;
+					if (board[i][j] == attackTarget) {
+						Image pow = new Image("/application/animations/pow.jpeg");
+						ivp = new ImageView(pow);
+						ivp.setFitHeight(100);
+						ivp.setFitWidth(100);
+						sp.getChildren().add(ivp);
+						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+						pause.play();
+						ImageView ivp2 = ivp;
+						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+					}
+				}
+
+				else if (board[i][j] instanceof Champion) {
+					Champion c = (Champion) board[i][j];
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
+					Image img = new Image(aliveMap.get(c));
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					Champion current = game.getCurrentChampion();
+					if (c == current && player1.getTeam().contains(current)) {
+//						btn.setStyle("-fx-background-color: #010098;");
+						isCurrent1 = true;
+					} else if (c == current && player2.getTeam().contains(current)) {
+//						btn.setStyle("-fx-background-color: #9a0000; ");
+						isCurrent2 = true;
+					}
+					
+					ImageView ivp = null;
+					if (c == attackTarget) {
+						Image pow = new Image("/application/media/animations/pow.jpeg");
+						ivp = new ImageView(pow);
+						ivp.setFitHeight(100);
+						ivp.setFitWidth(100);
+						sp.getChildren().add(ivp);
+						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+						pause.play();
+						ImageView ivp2 = ivp;
+						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+					}
+					
+					btn.setOnAction(e -> {
+						Stage currentHealth = new Stage();
+						String type = "";
+						if (c instanceof Hero)
+							type = "Hero";
+						else if (c instanceof AntiHero)
+							type = "AntiHero";
+						else
+							type = "Villain";
+						currentHealth.setTitle(c.getName() + " (" + type + ")");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction(ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
+						Text teamText;
+						if (player1.getTeam().contains(c))
+							teamText = new Text("Belonging to first team");
+						else
+							teamText = new Text("Belonging to second team");
+						Text healthText = new Text("Champion's health: " + c.getCurrentHP() + "/" + c.getMaxHP());
+						Text conditionText = new Text("Champion's condition: " + c.getCondition());
+						String effects = "";
+						for (Effect effect : c.getAppliedEffects()) {
+							effects += effect.getName() + "(" + effect.getDuration() + "), ";
+						}
+						if (effects.length() >= 2)
+							effects = effects.substring(0, effects.length() - 2);
+						Text effectsText = new Text("Effects on Champion: " + effects);
+						Text otherText = new Text("Mana: " + c.getMana() + ", " + "Speed: " + c.getSpeed() + ", \n"
+								+ "Max Actions per Turn: " + c.getMaxActionPointsPerTurn() + ", \n" + "Attack Range: "
+								+ c.getAttackRange() + ", " + "Attack Damage: " + c.getAttackDamage() + ".");
+						otherText.setTextAlignment(TextAlignment.CENTER);
+						Text leaderText = new Text("Champion is NOT a leader.");
+						if (player1.getLeader() == c || player2.getLeader() == c)
+							leaderText = new Text("Champion is a leader");
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText,
+								leaderText, OK);
+						window.setPadding(new Insets(10, 10, 10, 10));
+						currentHealth.show();
+					});
+				}
+
+				if (!isCurrent1 && !isCurrent2)
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #ccccff");
+				else if (isCurrent1) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #010098");
+				} else if (isCurrent2) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #9a0000");
+				}
+				boardView.add(sp, j, 4 - i);
+			}
+		}
+	}
+	
 	public static void updateBoard(ArrayList<Damageable> targets, Ability ability) {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -1732,7 +1855,6 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1751,7 +1873,6 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1770,7 +1891,6 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1789,7 +1909,6 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1803,23 +1922,12 @@ public class View extends Application implements Initializable {
 
 	public static void attackUp() {
 		Champion current = game.getCurrentChampion();
-		Image img = new Image("./application/animations/fire.jpeg");
-		fire = new ImageView(img);
-		fire.setX(0);
-		fire.setY(0);
-		fire.setFitWidth(30);
-		fire.setFitHeight(30);
-		translateAttack = new TranslateTransition(Duration.seconds(0.7), fire);
-		translateAttack.setNode(fire);
-		translateAttack.setByX(200);
 		try {
-			game.attack(Direction.UP);
-			translateAttack.play();
+			Damageable attackTarget = game.attack(Direction.UP);
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
-			updateBoard();
+			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1833,20 +1941,11 @@ public class View extends Application implements Initializable {
 	public static void attackDown() {
 		Champion current = game.getCurrentChampion();
 		try {
-			game.attack(Direction.DOWN);
-			Image img = new Image("./application/animations/fire.jpeg");
-			ImageView fireView = new ImageView(img);
-			fireView.setFitWidth(30);
-			fireView.setFitHeight(30);
-			translateAttack = new TranslateTransition();
-			translateAttack.setNode(fireView);
-			translateAttack.setByY(200);
-			translateAttack.play();
+			Damageable attackTarget = game.attack(Direction.DOWN);
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
-			updateBoard();
+			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1860,21 +1959,11 @@ public class View extends Application implements Initializable {
 	public static void attackRight() {
 		Champion current = game.getCurrentChampion();
 		try {
-			game.attack(Direction.RIGHT);
-
-			Image img = new Image("./application/animations/fire.jpeg");
-			ImageView fireView = new ImageView(img);
-			fireView.setFitWidth(30);
-			fireView.setFitHeight(30);
-			translateAttack = new TranslateTransition();
-			translateAttack.setNode(fireView);
-			translateAttack.setByY(200);
-			translateAttack.play();
+			Damageable attackTarget = game.attack(Direction.RIGHT);
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
-			updateBoard();
+			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1888,20 +1977,11 @@ public class View extends Application implements Initializable {
 	public static void attackLeft() {
 		Champion current = game.getCurrentChampion();
 		try {
-			game.attack(Direction.LEFT);
-			Image img = new Image("./application/animations/fire.jpeg");
-			ImageView fireView = new ImageView(img);
-			fireView.setFitWidth(30);
-			fireView.setFitHeight(30);
-			translateAttack = new TranslateTransition();
-			translateAttack.setNode(fireView);
-//			translateAttack.setByY(200);
-			translateAttack.play();
+			Damageable attackTarget = game.attack(Direction.LEFT);
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
-			updateBoard();
+			updateBoard(attackTarget);
 			checkWinner();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && player2.getTeam().contains(current)) {
@@ -1922,7 +2002,6 @@ public class View extends Application implements Initializable {
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
-//				prepareTurns();
 				updateBoard(targets, ability);
 				checkWinner();
 			} catch (Exception e1) {
@@ -1948,7 +2027,6 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-//					prepareTurns();
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
@@ -1967,7 +2045,6 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-//					prepareTurns();
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
@@ -1986,7 +2063,6 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-//					prepareTurns();
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
@@ -2005,7 +2081,6 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-//					prepareTurns();
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
@@ -2043,7 +2118,6 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-//					prepareTurns();
 					updateBoard(targets, ability);
 					checkWinner();
 				} catch (Exception e1) {
@@ -2070,7 +2144,6 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
