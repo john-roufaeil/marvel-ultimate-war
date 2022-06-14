@@ -482,7 +482,7 @@ public class Game {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void castAbility(Ability a) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException  {
+	public ArrayList<Damageable> castAbility(Ability a) throws NotEnoughResourcesException, InvalidTargetException, AbilityUseException  {
 		Champion current = getCurrentChampion();
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		ArrayList<Effect> appliedEffects = current.getAppliedEffects();
@@ -632,6 +632,7 @@ public class Game {
 		current.setCurrentActionPoints(current.getCurrentActionPoints() - a.getRequiredActionPoints());
 		current.setMana(current.getMana() - a.getManaCost());
 		a.setCurrentCooldown(a.getBaseCooldown());
+		return targets;
 	}
 	 
 	@SuppressWarnings("unchecked")

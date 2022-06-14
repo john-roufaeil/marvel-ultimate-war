@@ -56,6 +56,7 @@ import model.effects.Effect;
 import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Cover;
+import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
 import javafx.scene.Cursor;
@@ -74,6 +75,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -1080,6 +1082,133 @@ public class View extends Application implements Initializable {
 			}
 		}
 	}
+	
+	public static void updateBoard(ArrayList<Damageable> targets, Ability ability) {
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				StackPane sp = new StackPane();
+				boolean isCurrent1 = false;
+				boolean isCurrent2 = false;
+				Button btn = new Button();
+				sp.getChildren().add(btn);
+				btn.setMinHeight(100);
+				btn.setMinWidth(100);
+				btn.setMaxHeight(100);
+				btn.setMaxWidth(100);
+				boardButtons[j][4 - i] = btn;
+				
+				if (board[i][j] instanceof Cover) {
+					btn.setTooltip(new Tooltip("Cover's health: " + ((Cover)board[i][j]).getCurrentHP()));
+					Image img = new Image("./application/media/cover.jpeg");
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					ImageView ivp = null;
+					if (targets.contains(board[i][j])) {
+						if (ability instanceof HealingAbility) {
+							Image plus = new Image("./application/animations/plus.jpeg");
+							ivp = new ImageView(plus);
+						}
+						ivp.setFitHeight(100);
+						ivp.setFitWidth(100);
+						sp.getChildren().add(ivp);
+						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+						pause.play();
+						ImageView ivp2 = ivp;
+						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+					}
+				}
+
+				else if (board[i][j] instanceof Champion) {
+					Champion c = (Champion) board[i][j];
+					btn.setTooltip(new Tooltip("HP: " + c.getCurrentHP() + "/" + c.getMaxHP()));
+					Image img = new Image(aliveMap.get(c));
+					ImageView iv = new ImageView(img);
+					iv.setFitHeight(90);
+					iv.setFitWidth(90);
+					btn.setGraphic(iv);
+					Champion current = game.getCurrentChampion();
+					if (c == current && player1.getTeam().contains(current)) {
+//						btn.setStyle("-fx-background-color: #010098;");
+						isCurrent1 = true;
+					} else if (c == current && player2.getTeam().contains(current)) {
+//						btn.setStyle("-fx-background-color: #9a0000; ");
+						isCurrent2 = true;
+					}
+					
+					ImageView ivp = null;
+					if (targets.contains(board[i][j])) {
+						if (ability instanceof HealingAbility) {
+							Image plus = new Image("./application/animations/plus.jpeg");
+							ivp = new ImageView(plus);
+						}
+						ivp.setFitHeight(100);
+						ivp.setFitWidth(100);
+						sp.getChildren().add(ivp);
+						PauseTransition pause = new PauseTransition(Duration.seconds(2));
+						pause.play();
+						ImageView ivp2 = ivp;
+						pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+					}
+					
+					btn.setOnAction(e -> {
+						Stage currentHealth = new Stage();
+						String type = "";
+						if (c instanceof Hero)
+							type = "Hero";
+						else if (c instanceof AntiHero)
+							type = "AntiHero";
+						else
+							type = "Villain";
+						currentHealth.setTitle(c.getName() + " (" + type + ")");
+						VBox window = new VBox(10);
+						window.setAlignment(Pos.CENTER);
+						Scene scene = new Scene(window);
+						Button OK = new Button("OK");
+						OK.setOnAction(ee -> currentHealth.close());
+						currentHealth.setScene(scene);
+						currentHealth.setMinWidth(400);
+						currentHealth.setMinHeight(200);
+						Text teamText;
+						if (player1.getTeam().contains(c))
+							teamText = new Text("Belonging to first team");
+						else
+							teamText = new Text("Belonging to second team");
+						Text healthText = new Text("Champion's health: " + c.getCurrentHP() + "/" + c.getMaxHP());
+						Text conditionText = new Text("Champion's condition: " + c.getCondition());
+						String effects = "";
+						for (Effect effect : c.getAppliedEffects()) {
+							effects += effect.getName() + "(" + effect.getDuration() + "), ";
+						}
+						if (effects.length() >= 2)
+							effects = effects.substring(0, effects.length() - 2);
+						Text effectsText = new Text("Effects on Champion: " + effects);
+						Text otherText = new Text("Mana: " + c.getMana() + ", " + "Speed: " + c.getSpeed() + ", \n"
+								+ "Max Actions per Turn: " + c.getMaxActionPointsPerTurn() + ", \n" + "Attack Range: "
+								+ c.getAttackRange() + ", " + "Attack Damage: " + c.getAttackDamage() + ".");
+						otherText.setTextAlignment(TextAlignment.CENTER);
+						Text leaderText = new Text("Champion is NOT a leader.");
+						if (player1.getLeader() == c || player2.getLeader() == c)
+							leaderText = new Text("Champion is a leader");
+						window.getChildren().addAll(teamText, healthText, conditionText, effectsText, otherText,
+								leaderText, OK);
+						window.setPadding(new Insets(10, 10, 10, 10));
+						currentHealth.show();
+					});
+				}
+
+				if (!isCurrent1 && !isCurrent2)
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #ccccff");
+				else if (isCurrent1) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #010098");
+				} else if (isCurrent2) {
+					btn.setStyle("-fx-border-color: #313135 ; -fx-background-color: #9a0000");
+				}
+				boardView.add(sp, j, 4 - i);
+			}
+		}
+	}
 
 	public static void throwException(String msg) {
 		Stage exception = new Stage();
@@ -1781,12 +1910,12 @@ public class View extends Application implements Initializable {
 		AreaOfEffect area = ability.getCastArea();
 		if (area == AreaOfEffect.SELFTARGET || area == AreaOfEffect.TEAMTARGET || area == AreaOfEffect.SURROUND) {
 			try {
-				game.castAbility(ability);
+				ArrayList<Damageable> targets = game.castAbility(ability);
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
 //				prepareTurns();
-				updateBoard();
+				updateBoard(targets, ability);
 				checkWinner();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && player2.getTeam().contains(current)) {
