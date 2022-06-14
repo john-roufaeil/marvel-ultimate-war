@@ -1595,7 +1595,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1614,7 +1614,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1633,7 +1633,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1652,7 +1652,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (NotEnoughResourcesException | UnallowedMovementException e1) {
@@ -1681,7 +1681,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
@@ -1708,7 +1708,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
@@ -1736,7 +1736,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
@@ -1763,7 +1763,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
@@ -1785,7 +1785,7 @@ public class View extends Application implements Initializable {
 				showControls();
 				updateCurrentInformation();
 				updateStatusBar();
-				prepareTurns();
+//				prepareTurns();
 				updateBoard();
 				checkWinner();
 			} catch (Exception e1) {
@@ -1811,7 +1811,7 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-					prepareTurns();
+//					prepareTurns();
 					updateBoard();
 					checkWinner();
 				} catch (Exception e1) {
@@ -1830,7 +1830,7 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-					prepareTurns();
+//					prepareTurns();
 					updateBoard();
 					checkWinner();
 				} catch (Exception e1) {
@@ -1849,7 +1849,7 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-					prepareTurns();
+//					prepareTurns();
 					updateBoard();
 					checkWinner();
 				} catch (Exception e1) {
@@ -1868,7 +1868,7 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-					prepareTurns();
+//					prepareTurns();
 					updateBoard();
 					checkWinner();
 				} catch (Exception e1) {
@@ -1905,7 +1905,7 @@ public class View extends Application implements Initializable {
 					showControls();
 					updateCurrentInformation();
 					updateStatusBar();
-					prepareTurns();
+//					prepareTurns();
 					updateBoard();
 					checkWinner();
 				} catch (Exception e1) {
@@ -1932,7 +1932,7 @@ public class View extends Application implements Initializable {
 			showControls();
 			updateCurrentInformation();
 			updateStatusBar();
-			prepareTurns();
+//			prepareTurns();
 			updateBoard();
 			checkWinner();
 		} catch (Exception e1) {
