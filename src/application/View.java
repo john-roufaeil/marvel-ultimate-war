@@ -1,8 +1,6 @@
 /*
  * TODO
  * 
- *  AI-mode
- *  network mode
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
  *  skip intro video with press on keyboard
@@ -114,22 +112,33 @@ public class View extends Application implements Initializable {
 		introMediaView.fitHeightProperty().bind(primaryStage.heightProperty());
 		introMediaView.fitWidthProperty().bind(primaryStage.widthProperty());
 		introMediaView.setVisible(true);
-		HBox hi = new HBox();
-		hi.getChildren().add(introMediaView);
+//		HBox hi = new HBox();
+//		hi.getChildren().add(introMediaView);
 		BorderPane root0 = new BorderPane();
-		root0.setCenter(hi);
-		Scene videoPage = new Scene(root0);
+		StackPane stack = new StackPane();
+		stack.getChildren().add(introMediaView);
+		stack.getChildren().add(root0);
+		Scene videoPage = new Scene(stack);
+		Label skipLabel = new Label("Click anywhere to skip.");
+		skipLabel.setPadding(new Insets(30,30,30,30));
+		skipLabel.setTextFill(Color.color(1, 1, 1));
+		skipLabel.setFont(new Font("Didot.", 25));
+		HBox skipBox = new HBox();
+		skipBox.setAlignment(Pos.BOTTOM_CENTER);
+		skipBox.getChildren().add(skipLabel);
+		root0.setBottom(skipBox);
 		
-		introMediaView.setOnMouseClicked(e -> {
+		videoPage.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
-//			song1Player.play();
 			checkPlayingMode(primaryStage);
 		});
 		
-		introMediaPlayer.setOnEndOfMedia( () -> {
-//			song1Player.play();
-			checkPlayingMode(primaryStage);
-		});
+//		videoPage.setOnKeyPressed(e -> {
+//			introMediaPlayer.stop();
+//			checkPlayingMode(primaryStage);
+//		});
+		
+		introMediaPlayer.setOnEndOfMedia( () -> { checkPlayingMode(primaryStage); });
 		
 		primaryStage.setScene(videoPage);
 		primaryStage.show();
