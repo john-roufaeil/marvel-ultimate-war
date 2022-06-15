@@ -3,9 +3,6 @@
  * 
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
- *  skip intro video with press on keyboard
- *  add statement press to skip
- *  
  *  add sound effects on buttons click (different actions -> different sounds)
  *  leader ability animation
  *  add detailed instructions and help manual in good design
@@ -13,12 +10,6 @@
  *  try to manage resizing when changing scenes
  *  
  *  add more champions
- * 
- *  GOALS
- *  clean code
- *  fantastic GUI
- *  network mode
- *  ai mode
  * 
  */
 
@@ -61,6 +52,7 @@ import model.world.Cover;
 import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
+import model.world.Villain;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -175,13 +167,14 @@ public class View extends Application implements Initializable {
 		chooseMode.setPadding(new Insets(10, 10, 70, 10));
 		chooseMode.setAlignment(Pos.CENTER);
 
-		Button onePlayer = new Button("1 Player");
+		Button onePlayer = new Button("1 Player\nUnder Development");
+		onePlayer.setDisable(true);
+		onePlayer.setTextAlignment(TextAlignment.CENTER);
 		onePlayer.setMinHeight(90);
 		onePlayer.setMinWidth(230);
 		onePlayer.setOnAction(e -> {
 			twoPlayerMode = false;
 			enterNames(primaryStage, root1);
-//			scene1(primaryStage);
 		});
 
 		Button twoPlayers = new Button("2 Players");
@@ -190,7 +183,6 @@ public class View extends Application implements Initializable {
 		twoPlayers.setOnAction(e -> {
 			twoPlayerMode = true;
 			enterNames(primaryStage, root1);
-//			scene1(primaryStage);
 		});
 
 		chooseMode.getChildren().addAll(onePlayer, twoPlayers);
@@ -266,7 +258,7 @@ public class View extends Application implements Initializable {
 		// Map Champions with their Images
 		aliveMap = new HashMap<Champion, String>();
 		deadMap = new HashMap<Champion, String>();
-		for (int i = 1; i <= 18; i++) {
+		for (int i = 1; i <= 24; i++) {
 			aliveMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + ".jpeg");
 			deadMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + "d.jpeg");
 		}
@@ -342,12 +334,12 @@ public class View extends Application implements Initializable {
 			Image ch = new Image(aliveMap.get(c));
 			ImageView iv = new ImageView(ch);
 			Button btn = new Button();
-			iv.setFitHeight(100);
-			iv.setFitWidth(100);
-			btn.setMinHeight(100);
-			btn.setMaxHeight(100);
-			btn.setMinWidth(100);
-			btn.setMaxWidth(100);
+			iv.setFitHeight(85);
+			iv.setFitWidth(85);
+			btn.setMinHeight(85);
+			btn.setMaxHeight(85);
+			btn.setMinWidth(85);
+			btn.setMaxWidth(85);
 			btn.setGraphic(iv);
 
 //			BackgroundImage bImage = new BackgroundImage(ch, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(btn.getWidth(), btn.getHeight(), true, true, true, false));
@@ -362,7 +354,7 @@ public class View extends Application implements Initializable {
 
 			champsgrid.add(btn, a, b);
 			a++;
-			if (a == 6) {
+			if (a == 12) {
 				a = 0;
 				b++;
 			}
@@ -735,6 +727,7 @@ public class View extends Application implements Initializable {
 			Button a1Button = (Button) ((Pane) root3.getBottom()).getChildren().get(1);
 			Button a2Button = (Button) ((Pane) root3.getBottom()).getChildren().get(2);
 			Button a3Button = (Button) ((Pane) root3.getBottom()).getChildren().get(3);
+			Button leaderButton = (Button) ((Pane) root3.getBottom()).getChildren().get(5);
 
 			// First Ability's Attributes
 			a1Button.setOnMouseEntered(e -> {
@@ -813,7 +806,7 @@ public class View extends Application implements Initializable {
 						((Label) n).setTextFill(Color.color(1, 1, 1));
 				}
 			});
-
+						
 			// Third Ability's Attributes
 			a3Button.setOnMouseEntered(e -> {
 				Label a3Name = new Label("Third Ability: " + a3.getName());
@@ -853,6 +846,36 @@ public class View extends Application implements Initializable {
 				}
 			});
 
+			// Leader Ability's Attributes
+			leaderButton.setOnMouseEntered(e -> {
+				Champion current = View.game.getCurrentChampion();
+				Label leaderAttributes = new Label();
+				if (current != View.game.getFirstPlayer().getLeader() && 
+						current != View.game.getSecondPlayer().getLeader())
+					leaderAttributes.setText("Current champion is not a leader, \n"
+							+ "cannot use leader ability!");
+				else if (current == View.game.getFirstPlayer().getLeader() && View.game.isFirstLeaderAbilityUsed()
+						|| current == View.game.getSecondPlayer().getLeader() && View.game.isSecondLeaderAbilityUsed())
+					leaderAttributes.setText("The leader already used their leader ability, \n"
+							+ "cannot use it more than once!");
+				
+				else if (current instanceof Hero) 
+					leaderAttributes.setText("Removes all negative effects\n from their team and adds"
+							+ "\nan Embrace effect to them which \nlasts for 2 rounds.");
+				
+				else if (current instanceof AntiHero) 
+					leaderAttributes.setText("Stuns all non-leader champions for 2 rounds.");
+				
+				else if (current instanceof Villain) 
+					leaderAttributes.setText("Instantly kills all enemy champions with \nhealth points less "
+							+ "than 30% \nof their maximum health points.");
+				
+				leaderAttributes.setTextFill(Color.color(1, 1, 1));
+				leaderAttributes.setFont(new Font("Didot.", 15));
+				temp.getChildren().add(leaderAttributes);
+				
+			});
+			
 			a1Button.setOnMouseExited(e -> {
 				temp.getChildren().clear();
 			});
@@ -862,6 +885,10 @@ public class View extends Application implements Initializable {
 			});
 
 			a3Button.setOnMouseExited(e -> {
+				temp.getChildren().clear();
+			});
+			
+			leaderButton.setOnMouseExited(e -> {
 				temp.getChildren().clear();
 			});
 			
@@ -1507,11 +1534,6 @@ public class View extends Application implements Initializable {
 
 		Button btnAttackUp = new Button();
 		btnAttackUp.setStyle("-fx-background-radius: 5em;");
-//			ImageView iv1 = new ImageView(new Image("/application/media/attackUp.jpeg"));
-//			iv1.setFitHeight(30);
-//			iv1.setFitWidth(30);
-//			iv1.setStyle("-fx-background-radius: 5em;");
-//			btnAttackUp.setGraphic(iv1);
 		btnAttackUp.setOnAction(e -> attackUp());
 		btnAttackUp.setMinHeight(30);
 		btnAttackUp.setMaxHeight(30);
@@ -1569,12 +1591,12 @@ public class View extends Application implements Initializable {
 
 		Button btnMoveUp = new Button();
 //			btnMoveUp.setStyle("-fx-background-radius: 5em;");
-		ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
-		iv1.setFitHeight(30);
-		iv1.setFitWidth(30);
+//		ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
+//		iv1.setFitHeight(30);
+//		iv1.setFitWidth(30);
 //			circle.setFill(iv1);
 //			iv1.setClip();
-		btnMoveUp.setGraphic(iv1);
+//		btnMoveUp.setGraphic(iv1);
 		btnMoveUp.setStyle("-fx-background-radius: 5em;");
 		btnMoveUp.setOnAction(e -> moveUp());
 		btnMoveUp.setMinHeight(30);
