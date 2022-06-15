@@ -24,6 +24,7 @@ public class Disarm extends Effect {
 	}
 	
 	public void remove(Champion c) {	
+		@SuppressWarnings("unchecked")
 		ArrayList<Ability> clonedAbilities = (ArrayList<Ability>) c.getAbilities().clone();
 		for(Ability a : clonedAbilities) {
 			if(a.getName().equals("Punch")) {

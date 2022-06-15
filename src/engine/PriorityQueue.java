@@ -2,6 +2,7 @@ package engine;
 
 import model.world.Champion;
 
+@SuppressWarnings("rawtypes")
 public class PriorityQueue {
 
 	private Comparable[] elements;
@@ -14,6 +15,7 @@ public class PriorityQueue {
 		nItems = 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void insert(Comparable item) {
 
 		int i;

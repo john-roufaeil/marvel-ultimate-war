@@ -14,6 +14,7 @@ public class Hero extends Champion {
 	//Removes all negative effects from the player’s entire team and adds an Embrace effect to them which lasts for 2 turns
 	public void useLeaderAbility(ArrayList<Champion> targets) {
 		for (Champion c : targets) {
+			@SuppressWarnings("unchecked")
 			ArrayList<Effect> clonedEffects = (ArrayList<Effect>) c.getAppliedEffects().clone();
 			ArrayList<Effect> effects = c.getAppliedEffects();
 			for (Effect e : clonedEffects) {

@@ -60,8 +60,8 @@ public class Game {
 		
 		board = new Object[BOARDWIDTH][BOARDHEIGHT];
 		turnOrder = new PriorityQueue(6);
-		loadAbilities("Abilities.csv");
-		loadChampions("Champions.csv");
+		loadAbilities("./src/engine/Abilities.csv");
+		loadChampions("./src/engine/Champions.csv");
 		placeChampions();
 		placeCovers();
 		prepareChampionTurns();

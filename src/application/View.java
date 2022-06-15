@@ -104,7 +104,7 @@ public class View extends Application implements Initializable {
 		Image icon = new Image("./application/media/gameIcon.jpeg");
 		primaryStage.getIcons().add(icon);
 		
-		File mediaFile = new File( "intro.mp4");
+		File mediaFile = new File("./src/application/media/intro.mp4");
 	    Media media = new Media(mediaFile.toURI().toString());
 		MediaPlayer introMediaPlayer = new MediaPlayer(media);
 		introMediaPlayer.setAutoPlay(true);
@@ -147,7 +147,7 @@ public class View extends Application implements Initializable {
 	}
 
 	public static void checkPlayingMode(Stage primaryStage) {
-		Media song1 = new Media(new File("song1.wav").toURI().toString());
+		Media song1 = new Media(new File("./src/application/media/song1.wav").toURI().toString());
 		song1Player = new MediaPlayer(song1);
 		song1Player.setOnEndOfMedia(new Runnable() {
 		      public void run() {
