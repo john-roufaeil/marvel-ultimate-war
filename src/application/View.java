@@ -1,16 +1,23 @@
 /*
  * TODO
+ *  
+ *  try to manage resizing when changing scenes
+ *  
+ *  add sound effects on buttons click (different actions -> different sounds)
+ *  
+ *  add detailed instructions and help manual in good design
+ * 
+ *  update buttons, effects animation, 1 last cover
+ * 
+ *  update README
+ *  
+ *  make video
+ *  
+ *  write LinkedIn post
  * 
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
- *  add sound effects on buttons click (different actions -> different sounds)
- *  leader ability animation
- *  add detailed instructions and help manual in good design
- * 
- *  try to manage resizing when changing scenes
- *  
- *  add more champions
- * 
+ *  make sure there are no warnings or errors in the whole project
  */
 
 package application;
@@ -57,6 +64,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -74,6 +82,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class View extends Application implements Initializable {
 	static Game game;
@@ -250,7 +259,7 @@ public class View extends Application implements Initializable {
 
 	// Choose Champions
 	public static void scene2(Stage primaryStage) {
-		Image background = new Image("application/media/backgrounds/chooseView.jpeg");
+		Image background = new Image("application/media/backgrounds/avengers2.jpg");
 		ImageView backgroundIV = new ImageView(background);
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
@@ -371,12 +380,12 @@ public class View extends Application implements Initializable {
 	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn,
 			Stage primaryStage) {
 		// Organisation
-		VBox details = new VBox(15);
-
+		StackPane stack = new StackPane();
+		VBox details = new VBox(15);	
 		// Configuring Nodes
 		details.setPadding(new Insets(10, 10, 10, 10));
 		details.setAlignment(Pos.CENTER);
-		root2.setCenter(details);
+		root2.setCenter(stack);
 
 		// Information Labels about Pressed Champion
 		String type = "";
@@ -389,30 +398,21 @@ public class View extends Application implements Initializable {
 //    	Label championType = new Label("Type: " + type);
 //    	championType.setFont(new Font("Impact",18));
 		Label championNameAndType = new Label(champion.getName().toUpperCase() + " (" + type + ")");
-		championNameAndType.setFont(new Font("Impact", 18));
 		Label championMaxHP = new Label("Maximum HP: " + champion.getMaxHP() + "");
-		championMaxHP.setFont(new Font("Impact", 18));
 		Label championMana = new Label("Mana: " + champion.getMana() + "");
-		championMana.setFont(new Font("Impact", 18));
 		Label championActions = new Label(
 				"Maximum Actions Points per Turn: " + champion.getMaxActionPointsPerTurn() + "");
-		championActions.setFont(new Font("Impact", 18));
 		Label championSpeed = new Label("Speed: " + champion.getSpeed() + "");
-		championSpeed.setFont(new Font("Impact", 18));
 		Label championRange = new Label("Attack Range: " + champion.getAttackRange() + "");
-		championRange.setFont(new Font("Impact", 18));
 		Label championDamage = new Label("Attack Damage: " + champion.getAttackDamage() + "");
-		championDamage.setFont(new Font("Impact", 18));
 		Label championAbilities = new Label("Abilities: " + champion.getAbilities().get(0).getName() + ", "
 				+ champion.getAbilities().get(1).getName() + ", " + champion.getAbilities().get(2).getName() + ".");
-		championAbilities.setFont(new Font("Impact", 18));
 		// Choose Button
 		Button choose = new Button("Pick");
 		boolean chosen = chosenMap.get(champion);
 		if (chosen)
 			choose.setDisable(true);
 		choose.setOnAction(e -> {
-//			boolean picked = true;
 			// Putting the Chosen Champion's Image in Status Bar
 			if (View.game.getFirstPlayer().getTeam().size() < 3) {
 				View.game.getFirstPlayer().getTeam().add(champion);
@@ -499,6 +499,7 @@ public class View extends Application implements Initializable {
 
 				Label chooseLeaderLabel1 = new Label("Choose a leader for the first team");
 				chooseLeaderLabel1.setFont(new Font("Didot.", 14));
+				chooseLeaderLabel1.setTextFill(Color.color(1, 1, 1));
 				details.getChildren().add(chooseLeaderLabel1);
 
 				for (int i = 1; i <= 3; i++) {
@@ -520,6 +521,7 @@ public class View extends Application implements Initializable {
 
 				Label chooseLeaderLabel2 = new Label("Choose a leader for the second team");
 				chooseLeaderLabel2.setFont(new Font("Didot.", 14));
+				chooseLeaderLabel2.setTextFill(Color.color(1, 1, 1));
 				details.getChildren().add(chooseLeaderLabel2);
 
 				for (int i = 5; i <= 7; i++) {
@@ -550,11 +552,26 @@ public class View extends Application implements Initializable {
 
 		if (View.game.getFirstPlayer().getTeam().size() == 3 && !twoPlayerMode)
 			choose.fire();
-
+		
 		
 		details.getChildren().addAll(championNameAndType, championMaxHP, championMana, championActions,
 				championSpeed, championRange, championDamage, championAbilities, choose);
+
+		Rectangle shade = new Rectangle();
+		shade.setFill(Color.BLACK);
+		shade.setOpacity(0.3);
+		shade.setArcWidth(30.0); 
+	    shade.setArcHeight(30.0);  
+		shade.setWidth(800);
+		shade.setHeight(350);
+		stack.getChildren().addAll(shade, details);
 		
+		for (Node n : details.getChildren()) {
+			if (n instanceof Label) {
+				((Labeled) n).setFont(new Font("Impact", 18));
+				((Labeled) n).setTextFill(Color.color(1, 1, 1));
+			}
+		}
 	}
 
 	// Set Leader and Disable Choosing Another Leader
