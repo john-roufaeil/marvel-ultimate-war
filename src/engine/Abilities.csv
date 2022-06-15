@@ -68,5 +68,5 @@ HEL,Tech is my game,200,8,4,TEAMTARGET,4,300,
 DMG,What are those?,180,3,3,DIRECTIONAL,3,200,
 CC,Did he freeze?,150,3,2,SURROUND,3,Root,2
 DMG,I accept your challenge,120,1,2,SINGLETARGET,2,150,
-CC,Consider it paid,150,3,3,SURROUND,3,Shock,2
-CC,I give you my word,140,2,2,DIRECTIONAL,2,Shield,2
+CC,Wakanda Forever!,150,3,3,SURROUND,3,Shock,2
+CC,Guns. So primitive.,140,2,2,DIRECTIONAL,2,Shield,2

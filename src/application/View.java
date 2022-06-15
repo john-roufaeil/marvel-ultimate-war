@@ -3,12 +3,14 @@
  *  
  *  try to manage resizing when changing scenes
  *  
+ *  manage choosing scene
+ *  
  *  add sound effects on buttons click (different actions -> different sounds)
  *  
  *  add detailed instructions and help manual in good design
  * 
  *  update buttons, effects animation, 1 last cover
- * 
+ * -------------------------------------------------------------------
  *  update README
  *  
  *  make video
@@ -90,10 +92,12 @@ public class View extends Application implements Initializable {
 	static HashMap<Champion, Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
 	static HashMap<Champion, String> deadMap;
+	static HashMap<Champion, String> soundMap;
 	static PriorityQueue q;
 	static Stage primaryStage;
 	static boolean twoPlayerMode;
 	static MediaPlayer song1Player;
+	static MediaPlayer soundPlayer;
 
 	@Override
 	public void start(Stage primaryStage1) throws Exception {
@@ -107,14 +111,12 @@ public class View extends Application implements Initializable {
 		File mediaFile = new File("./src/application/media/intro.mp4");
 	    Media media = new Media(mediaFile.toURI().toString());
 		MediaPlayer introMediaPlayer = new MediaPlayer(media);
-		introMediaPlayer.setAutoPlay(true);
 		MediaView introMediaView = new MediaView(introMediaPlayer);
+		introMediaPlayer.setAutoPlay(true);
 		introMediaView.setMediaPlayer(introMediaPlayer);
 		introMediaView.fitHeightProperty().bind(primaryStage.heightProperty());
 		introMediaView.fitWidthProperty().bind(primaryStage.widthProperty());
 		introMediaView.setVisible(true);
-//		HBox hi = new HBox();
-//		hi.getChildren().add(introMediaView);
 		BorderPane root0 = new BorderPane();
 		StackPane stack = new StackPane();
 		stack.getChildren().add(introMediaView);
@@ -131,22 +133,22 @@ public class View extends Application implements Initializable {
 		
 		videoPage.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
-			checkPlayingMode(primaryStage);
+			checkPlayingMode();
 		});
 		
 //		videoPage.setOnKeyPressed(e -> {
 //			introMediaPlayer.stop();
-//			checkPlayingMode(primaryStage);
+//			checkPlayingMode();
 //		});
 		
-		introMediaPlayer.setOnEndOfMedia( () -> { checkPlayingMode(primaryStage); });
+		introMediaPlayer.setOnEndOfMedia( () -> { checkPlayingMode(); });
 		
 		primaryStage.setScene(videoPage);
 		primaryStage.show();
 		
 	}
 
-	public static void checkPlayingMode(Stage primaryStage) {
+	public static void checkPlayingMode() {
 		Media song1 = new Media(new File("./src/application/media/song1.wav").toURI().toString());
 		song1Player = new MediaPlayer(song1);
 		song1Player.setOnEndOfMedia(new Runnable() {
@@ -183,7 +185,7 @@ public class View extends Application implements Initializable {
 		onePlayer.setMinWidth(230);
 		onePlayer.setOnAction(e -> {
 			twoPlayerMode = false;
-			enterNames(primaryStage, root1);
+			enterNames(root1);
 		});
 
 		Button twoPlayers = new Button("2 Players");
@@ -191,7 +193,7 @@ public class View extends Application implements Initializable {
 		twoPlayers.setMinWidth(230);
 		twoPlayers.setOnAction(e -> {
 			twoPlayerMode = true;
-			enterNames(primaryStage, root1);
+			enterNames(root1);
 		});
 
 		chooseMode.getChildren().addAll(onePlayer, twoPlayers);
@@ -201,7 +203,7 @@ public class View extends Application implements Initializable {
 		primaryStage.setFullScreen(true);
 	}
 
-	public static void enterNames(Stage primaryStage, BorderPane root1) {
+	public static void enterNames(BorderPane root1) {
 		VBox enterNamesVBox = new VBox(15);
 		enterNamesVBox.setPadding(new Insets(10, 10, 70, 10));
 		root1.setBottom(enterNamesVBox);
@@ -241,7 +243,7 @@ public class View extends Application implements Initializable {
 				throwException(e1.getMessage());
 				;
 			}
-			scene2(primaryStage);
+			scene2();
 		});
 		// Configuring Nodes
 		HBox buttonHBox = new HBox();
@@ -258,16 +260,18 @@ public class View extends Application implements Initializable {
 	}
 
 	// Choose Champions
-	public static void scene2(Stage primaryStage) {
-		Image background = new Image("application/media/backgrounds/avengers2.jpg");
+	public static void scene2() {
+		Image background = new Image("application/media/backgrounds/avengers4.jpg");
 		ImageView backgroundIV = new ImageView(background);
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
 
 		// Map Champions with their Images
+		soundMap = new HashMap<Champion, String>();
 		aliveMap = new HashMap<Champion, String>();
 		deadMap = new HashMap<Champion, String>();
 		for (int i = 1; i <= 24; i++) {
+			soundMap.put(Game.getAvailableChampions().get(i - 1), "./src/application/media/" + i + ".wav");
 			aliveMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + ".jpeg");
 			deadMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + "d.jpeg");
 		}
@@ -356,7 +360,7 @@ public class View extends Application implements Initializable {
 //			btn.setBackground(backGround);
 			btn.setOnAction((e) -> {
 				boolean picked = false;
-				show(c, root2, chosenChampions, ch, btn, primaryStage);
+				show(c, root2, chosenChampions, ch, btn);
 				if (picked)
 					btn.setDisable(true);
 			});
@@ -377,8 +381,7 @@ public class View extends Application implements Initializable {
 	}
 
 	// Show Pressed Champion's Details
-	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn,
-			Stage primaryStage) {
+	public static void show(Champion champion, BorderPane root2, HBox chosenChampions, Image ch, Button btn) {
 		// Organisation
 		StackPane stack = new StackPane();
 		VBox details = new VBox(15);	
@@ -413,6 +416,15 @@ public class View extends Application implements Initializable {
 		if (chosen)
 			choose.setDisable(true);
 		choose.setOnAction(e -> {
+			// Playing the champion's sound
+			song1Player.pause();
+			Media sound = new Media(new File(soundMap.get(champion)).toURI().toString());
+			soundPlayer = new MediaPlayer(sound);
+			soundPlayer.setVolume(5.0);
+			soundPlayer.play();
+			soundPlayer.setOnEndOfMedia(() -> song1Player.play());
+			
+			
 			// Putting the Chosen Champion's Image in Status Bar
 			if (View.game.getFirstPlayer().getTeam().size() < 3) {
 				View.game.getFirstPlayer().getTeam().add(champion);
@@ -506,7 +518,7 @@ public class View extends Application implements Initializable {
 					Button button = new Button();
 					int a = i - 1;
 					button.setOnAction(event -> {
-						chooseLeader(View.game.getFirstPlayer(), View.game.getFirstPlayer().getTeam().get(a), details, primaryStage);
+						chooseLeader(View.game.getFirstPlayer(), View.game.getFirstPlayer().getTeam().get(a), details);
 					});
 					button.setMaxHeight(80);
 					button.setMinHeight(80);
@@ -528,7 +540,7 @@ public class View extends Application implements Initializable {
 					Button button = new Button();
 					int a = i - 5;
 					button.setOnAction(event -> {
-						chooseLeader(View.game.getSecondPlayer(), View.game.getSecondPlayer().getTeam().get(a), details, primaryStage);
+						chooseLeader(View.game.getSecondPlayer(), View.game.getSecondPlayer().getTeam().get(a), details);
 					});
 					button.setMaxHeight(80);
 					button.setMinHeight(80);
@@ -559,7 +571,7 @@ public class View extends Application implements Initializable {
 
 		Rectangle shade = new Rectangle();
 		shade.setFill(Color.BLACK);
-		shade.setOpacity(0.3);
+		shade.setOpacity(0.6);
 		shade.setArcWidth(30.0); 
 	    shade.setArcHeight(30.0);  
 		shade.setWidth(800);
@@ -575,7 +587,7 @@ public class View extends Application implements Initializable {
 	}
 
 	// Set Leader and Disable Choosing Another Leader
-	public static void chooseLeader(Player player, Champion c, VBox details, Stage primaryStage) {
+	public static void chooseLeader(Player player, Champion c, VBox details) {
 
 		if (player == View.game.getFirstPlayer()) {
 			View.game.getFirstPlayer().setLeader(c);
@@ -603,7 +615,7 @@ public class View extends Application implements Initializable {
 			Button play = new Button("Play");
 			play.setOnAction(e -> {
 				try {
-					scene3(primaryStage);
+					scene3();
 				} catch (IOException e1) {
 				}
 			});
@@ -612,9 +624,7 @@ public class View extends Application implements Initializable {
 	}
 
 	// Open Board Game View
-	public static void scene3(Stage primaryStage) throws IOException {
-//		int random = (int) (Math.random() * 2 + 1);
-//		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-" + random + ".jpeg");
+	public static void scene3() throws IOException {
 		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
 		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
 		backgroundBoardIV.fitHeightProperty().bind(primaryStage.heightProperty());
