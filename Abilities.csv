@@ -52,3 +52,21 @@ HEL,Are we still friends?,180,8,2,TEAMTARGET,2,200,
 DMG,You shouldn’t be here,140,3,3,SINGLETARGET,3,300,
 DMG,I’ve got a job to do,130,2,4,SURROUND,4,250,
 CC,I’ll do my best,100,0,2,SELFTARGET,2,PowerUp,2
+DMG,Fine. I'll Do It Myself,200,8,4,TEAMTARGET,4,350,
+CC,I am Inevitable,130,0,3,SELFTARGET,3,Shield,2
+HEL,You Should Have Gone For The Head,150,0,3,SELFTARGET,3,300,
+DMG,This will hurt,120,1,3,SINGLETARGET,2,250,
+HEL,I am an Avenger,150,0,3,SELFTARGET,3,300,
+DMG,You took everything from me,170,2,2,SURROUND,3,150,
+DMG,I am King of Wakanda,200,8,5,TEAMTARGET,4,400,
+HEL,We can still heal you,120,8,3,SINGLETARGET,3,200,
+CC,I don't care,150,3,2,TEAMTARGET,2,Disarm,2
+CC,I Never Said 'Pilot'...,130,0,2,SELFTARGET,3,SpeedUp,2
+CC,Moon Stuff,150,3,2,TEAMTARGET,2,Silence,2
+DMG,On your left!,150,4,3,DIRECTIONAL,3,200,
+HEL,Tech is my game,200,8,4,TEAMTARGET,4,300,
+DMG,What are those?,180,3,3,DIRECTIONAL,3,200,
+CC,Did he freeze?,150,3,2,SURROUND,3,Root,2
+DMG,I accept your challenge,120,1,2,SINGLETARGET,2,150,
+CC,Consider it paid,150,3,3,SURROUND,3,Shock,2
+CC,I give you my word,140,2,2,DIRECTIONAL,2,Shield,2
