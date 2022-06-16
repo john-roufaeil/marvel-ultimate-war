@@ -1,17 +1,12 @@
 /*
  * TODO
  * 
- * 	style buttons and move with keyboard arrows
- * 
- *  add select and deselect champions and leaders
- * 
- *  edit: scarlet witch voice, hawkeye, 
+ *  
+ *  on leader ability use, all board glows (red for villain, blue for hero, green for antihero)
  *  
  *  add detailed instructions and help manual in good design
  * 
- *  update buttons, effects animation, 1 last cover
- *  
- *  add deselect champion and leader
+ *  update buttons keyboard move
  * -------------------------------------------------------------------
  *  update README
  *  
@@ -24,12 +19,23 @@
  *  make sure there are no warnings or errors in the whole project
  *  
  * -----------------------------------------
- *  
+ *  add select and deselect champions and leaders
  *  separate each view in a separate class
+ *  surround not functioning well in crowd control abilitiies
  */
 
 package application;
 
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -48,10 +54,7 @@ import engine.PriorityQueue;
 import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
-import javafx.application.Application;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.abilities.Ability;
@@ -70,14 +73,10 @@ import model.world.Hero;
 import model.world.Villain;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
@@ -107,67 +106,6 @@ public class View extends Application implements Initializable {
 	static boolean twoPlayerMode;
 	static MediaPlayer songPlayer;
 	static MediaPlayer soundPlayer;
-
-	
-//	public void intro(Stage primaryStage)
-//	{
-//		 String path = "resources/INTROO.mp4";  
-//		 
-//		    Pane root = new Pane();
-//			root.setPrefSize(800, 600);
-//	         //Instantiating Media class  
-//	        Media media = new Media(new File(path).toURI().toString());  
-//	          
-//	        //Instantiating MediaPlayer class   
-//	        MediaPlayer  mediaPlayer = new MediaPlayer(media);  
-//	          
-//	        //Instantiating MediaView class   
-//	        MediaView mediaView = new MediaView(mediaPlayer);  
-//	        
-//	          
-//	        //by setting this property to true, the Video will be played   
-//	        mediaPlayer.setAutoPlay(true);  
-//
-//
-//
-//            
-//            // make the video conform to the size of the stage now...
-//            mediaView.setMediaPlayer(mediaPlayer);
-//	  	    primaryStage.setFullScreen(true);
-//	  	    
-//	  	    
-////            mediaView.fitWidthProperty().bind(primaryStage.heightProperty());
-////            mediaView.fitHeightProperty().bind(primaryStage.heightProperty());
-////            mediaView.setVisible(true);
-//            DoubleProperty mvw = mediaView.fitWidthProperty();
-//            DoubleProperty mvh = mediaView.fitHeightProperty();
-//            mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-//            mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-//            mediaView.setPreserveRatio(true);
-//            
-//	        
-//	        
-//
-//			root.getChildren().add(mediaView);
-//
-//	        scene = new Scene(root);  
-//	        primaryStage.setScene(scene);  
-//	        primaryStage.setTitle("Playing video");  
-//	  	    primaryStage.setFullScreen(true);
-//	  	    
-//	  	    
-////	  	  MenuItem Skip = new MenuItem("Skip");
-////			
-////	  	    Skip.setTranslateX(100); 
-////			Skip.setTranslateY(800); 
-////			root.getChildren().addAll(Skip);
-////
-////		  	Skip.setOnMouseClicked(event -> createContent(primaryStage));
-//
-////	        mediaPlayer.setOnEndOfMedia(() -> createContent(primaryStage));
-//	        primaryStage.show();  
-//
-//	}
 	
 	@Override
 	public void start(Stage primaryStage1) throws Exception {
@@ -191,7 +129,6 @@ public class View extends Application implements Initializable {
 		StackPane stack = new StackPane();
 		stack.getChildren().add(introMediaView);
 		stack.getChildren().add(root0);
-//		Scene videoPage = new Scene(stack);
 		Label skipLabel = new Label("Click anywhere to skip.");
 		skipLabel.setPadding(new Insets(30,30,30,30));
 		skipLabel.setTextFill(Color.color(1, 1, 1));
@@ -205,11 +142,6 @@ public class View extends Application implements Initializable {
 			introMediaPlayer.stop();
 			checkPlayingMode();
 		});
-		
-//		videoPage.setOnKeyPressed(e -> {
-//			introMediaPlayer.stop();
-//			checkPlayingMode();
-//		});
 		
 		introMediaPlayer.setOnEndOfMedia( () -> { checkPlayingMode(); });
 		Scene scene = new Scene(stack);
@@ -491,12 +423,12 @@ public class View extends Application implements Initializable {
 			choose.setDisable(true);
 		choose.setOnAction(e -> {
 			// Playing the champion's sound
-			songPlayer.pause();
+//			songPlayer.pause();
 			Media sound = new Media(new File(soundMap.get(champion)).toURI().toString());
 			soundPlayer = new MediaPlayer(sound);
-			soundPlayer.setVolume(1.0);
+			soundPlayer.setVolume(0.5);
 			soundPlayer.play();
-			soundPlayer.setOnEndOfMedia(() -> songPlayer.play());
+//			soundPlayer.setOnEndOfMedia(() -> songPlayer.play());
 			
 			
 			// Putting the Chosen Champion's Image in Status Bar
@@ -770,6 +702,7 @@ public class View extends Application implements Initializable {
 		muteBox.getChildren().add(muteIV);
 		Image help = new Image("./application/media/buttons/help.png");
 		ImageView helpIV = new ImageView(help);
+		helpIV.setCursor(Cursor.HAND);
 		helpIV.setFitHeight(50);
 		helpIV.setFitWidth(50);
 		helpIV.setOnMouseClicked(e -> manualButton());
@@ -1044,7 +977,7 @@ public class View extends Application implements Initializable {
 				}
 			} 
 			if (punch && View.game.getCurrentChampion().getAbilities().size() > 3) {
-				Button a4Button = (Button) ((Pane) root3.getBottom()).getChildren().get(6);
+				Button a4Button = (Button) ((Pane) root3.getBottom()).getChildren().get(5);
 				Ability a4 = View.game.getCurrentChampion().getAbilities().get(3);
 				a4Button.setOnMouseEntered(e -> {
 					Label a4Name = new Label("Fourth Ability: " + a4.getName());
@@ -1206,6 +1139,8 @@ public class View extends Application implements Initializable {
 						isCurrent2 = true;
 					}
 					btn.setOnAction(e -> {
+						putGlowAnimation(btn ,Color.BLUE);
+						putFadeAnimation(btn);
 						Stage currentHealth = new Stage();
 						String type = "";
 						if (c instanceof Hero)
@@ -1495,6 +1430,30 @@ public class View extends Application implements Initializable {
 						if (ability instanceof DamagingAbility) {
 							Image minus = new Image("./application/media/animation/minus.jpeg");
 							ivp = new ImageView(minus);
+							ivp.setFitHeight(100);
+							ivp.setFitWidth(100);
+							sp.getChildren().add(ivp);
+							PauseTransition pause = new PauseTransition(Duration.seconds(2));
+							pause.play();
+							ImageView ivp2 = ivp;
+							pause.setOnFinished(e -> sp.getChildren().remove(ivp2));
+						}
+						if (ability instanceof CrowdControlAbility) {
+							Image abilityImage = new Image("./application/media/animation/minus.jpeg");
+							switch(((CrowdControlAbility) ability).getEffect().getName()) {
+							case "Disarm": abilityImage = new Image("./application/media/animation/disarm.png"); break;
+							case "Dodge": abilityImage = new Image("./application/media/animation/dodge.png"); break;
+							case "Embrace": abilityImage = new Image("./application/media/animation/embrace.png"); break;
+							case "PowerUp": abilityImage = new Image("./application/media/animation/powerUp.png"); break;
+							case "Root": abilityImage = new Image("./application/media/animation/root.png"); break;
+							case "Shield": abilityImage = new Image("./application/media/animation/shield.png"); break;
+							case "Shock": abilityImage = new Image("./application/media/animation/shock.png"); break;
+							case "Silence": abilityImage = new Image("./application/media/animation/silence.png"); break;
+							case "SpeedUp": abilityImage = new Image("./application/media/animation/speedUp.png"); break;
+							case "Stun": abilityImage = new Image("./application/media/animation/stun.png"); break;
+							}
+							
+							ivp = new ImageView(abilityImage);
 							ivp.setFitHeight(100);
 							ivp.setFitWidth(100);
 							sp.getChildren().add(ivp);
@@ -2555,6 +2514,49 @@ public class View extends Application implements Initializable {
 		}
 
 	}
+	
+	public static void putFadeAnimation(Button b)
+	{
+		 FadeTransition trans2 = new FadeTransition();
+	        trans2.setDuration(Duration.seconds(1));
+			trans2.setFromValue(1.0f);
+			trans2.setToValue(0.4f);
+			trans2.setAutoReverse(true);
+			trans2.setCycleCount(Animation.INDEFINITE);
+			trans2.setNode(b);
+			trans2.play();;
+	}
+	 public static void putGlowAnimation(Button b , Color c){
+		 int depth = 70; //Setting the uniform variable for the glow width and height
+	        
+	        DropShadow borderGlow= new DropShadow();
+	        borderGlow.setOffsetY(0f);
+	        borderGlow.setOffsetX(0f);
+	        borderGlow.setColor(c); 
+	        borderGlow.setWidth(depth);
+	        borderGlow.setHeight(depth);
+	         
+	        b.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
+	 }
+	 
+	 public static void putGlowAnimationForMainMenu(Button b , Color c){
+		    int depth = 70; //Setting the uniform variable for the glow width and height
+	        DropShadow borderGlow= new DropShadow();
+	        borderGlow.setOffsetY(0f);
+	        borderGlow.setOffsetX(0f);
+	        borderGlow.setColor(c); 
+	        borderGlow.setWidth(depth);
+	        borderGlow.setHeight(depth); 
+	        b.setEffect(null);
+	        
+	        b.setOnMouseEntered( f ->{ 
+	        b.setEffect(borderGlow);
+		});
+		b.setOnMouseExited( h -> {
+		 b.setEffect(null);
+		});
+	 }
+	
 
 	public static void keyMoved() {
 		root3.setOnKeyPressed(e -> {
