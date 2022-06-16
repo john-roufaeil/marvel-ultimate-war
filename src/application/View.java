@@ -1,10 +1,6 @@
 /*
  * TODO
  *  
- *  try to manage resizing when changing scenes
- *  
- *  separate each view in a separate class
- *  
  *  add detailed instructions and help manual in good design
  * 
  *  update buttons, effects animation, 1 last cover
@@ -18,6 +14,10 @@
  *  be creative with pop-ups and make sure they pop in the center of screen
  *  
  *  make sure there are no warnings or errors in the whole project
+ *  
+ * -----------------------------------------
+ *  
+ *  separate each view in a separate class
  */
 
 package application;
