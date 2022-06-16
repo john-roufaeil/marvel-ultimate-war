@@ -1,9 +1,17 @@
 /*
  * TODO
+ * 
+ *  edit: scarlet witch voice,
+ *  
+ *  add button click smooth audio
+ *  
+ *  improve current champion and ability
  *  
  *  add detailed instructions and help manual in good design
  * 
  *  update buttons, effects animation, 1 last cover
+ *  
+ *  add deselect champion and leader
  * -------------------------------------------------------------------
  *  update README
  *  
@@ -41,6 +49,8 @@ import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -60,6 +70,7 @@ import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -98,6 +109,67 @@ public class View extends Application implements Initializable {
 	static MediaPlayer song1Player;
 	static MediaPlayer soundPlayer;
 
+	
+//	public void intro(Stage primaryStage)
+//	{
+//		 String path = "resources/INTROO.mp4";  
+//		 
+//		    Pane root = new Pane();
+//			root.setPrefSize(800, 600);
+//	         //Instantiating Media class  
+//	        Media media = new Media(new File(path).toURI().toString());  
+//	          
+//	        //Instantiating MediaPlayer class   
+//	        MediaPlayer  mediaPlayer = new MediaPlayer(media);  
+//	          
+//	        //Instantiating MediaView class   
+//	        MediaView mediaView = new MediaView(mediaPlayer);  
+//	        
+//	          
+//	        //by setting this property to true, the Video will be played   
+//	        mediaPlayer.setAutoPlay(true);  
+//
+//
+//
+//            
+//            // make the video conform to the size of the stage now...
+//            mediaView.setMediaPlayer(mediaPlayer);
+//	  	    primaryStage.setFullScreen(true);
+//	  	    
+//	  	    
+////            mediaView.fitWidthProperty().bind(primaryStage.heightProperty());
+////            mediaView.fitHeightProperty().bind(primaryStage.heightProperty());
+////            mediaView.setVisible(true);
+//            DoubleProperty mvw = mediaView.fitWidthProperty();
+//            DoubleProperty mvh = mediaView.fitHeightProperty();
+//            mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+//            mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+//            mediaView.setPreserveRatio(true);
+//            
+//	        
+//	        
+//
+//			root.getChildren().add(mediaView);
+//
+//	        scene = new Scene(root);  
+//	        primaryStage.setScene(scene);  
+//	        primaryStage.setTitle("Playing video");  
+//	  	    primaryStage.setFullScreen(true);
+//	  	    
+//	  	    
+////	  	  MenuItem Skip = new MenuItem("Skip");
+////			
+////	  	    Skip.setTranslateX(100); 
+////			Skip.setTranslateY(800); 
+////			root.getChildren().addAll(Skip);
+////
+////		  	Skip.setOnMouseClicked(event -> createContent(primaryStage));
+//
+////	        mediaPlayer.setOnEndOfMedia(() -> createContent(primaryStage));
+//	        primaryStage.show();  
+//
+//	}
+	
 	@Override
 	public void start(Stage primaryStage1) throws Exception {
 		View.primaryStage = primaryStage1;
@@ -627,7 +699,9 @@ public class View extends Application implements Initializable {
 
 	// Open Board Game View
 	public static void scene3() throws IOException {
-		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
+		Image backgroundBoard = new Image("application/media/backgrounds/bck2.png");
+
+//		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
 		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
 		backgroundBoardIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundBoardIV.fitWidthProperty().bind(primaryStage.widthProperty());
@@ -1531,6 +1605,10 @@ public class View extends Application implements Initializable {
 		btnAbility3.setMinWidth(70);
 		btnAbility3.setMaxWidth(70);
 
+		
+		
+		
+		
 		Button btnEndTurn = new Button("END TURN");
 		btnEndTurn.setStyle("-fx-background-radius: 1em; -fx-background-color: #AD343E; -fx-text-fill: #fff");
 		btnEndTurn.setOnAction(e -> endTurn());
@@ -1561,55 +1639,100 @@ public class View extends Application implements Initializable {
 		r.setMinWidth(30);
 		r.setMaxWidth(30);
 		attackOptions.setCenter(r);
-
-		Button btnAttackUp = new Button();
-		btnAttackUp.setStyle("-fx-background-radius: 5em;");
-		btnAttackUp.setOnAction(e -> attackUp());
-		btnAttackUp.setMinHeight(30);
-		btnAttackUp.setMaxHeight(30);
-		btnAttackUp.setMinWidth(30);
-		btnAttackUp.setMaxWidth(30);
+		
+		Image attackUpImage = new Image("./application/media/buttons/attackUP.png");
+		ImageView attackUpIV = new ImageView(attackUpImage);
+		attackUpIV.setOnMouseClicked(e -> attackUp());
+		attackUpIV.setCursor(Cursor.HAND);
+		attackUpIV.setFitHeight(30);
+		attackUpIV.setFitWidth(30);
 		HBox box1 = new HBox();
-		box1.getChildren().add(btnAttackUp);
+		box1.getChildren().add(attackUpIV);
 		box1.setAlignment(Pos.CENTER);
 		attackOptions.setTop(box1);
-
-		Button btnAttackDown = new Button();
-		btnAttackDown.setStyle("-fx-background-radius: 5em;");
-		btnAttackDown.setOnAction(e -> attackDown());
-		btnAttackDown.setMinHeight(30);
-		btnAttackDown.setMaxHeight(30);
-		btnAttackDown.setMinWidth(30);
-		btnAttackDown.setMaxWidth(30);
-		attackOptions.setBottom(btnAttackDown);
+		
+		Image attackDownImage = new Image("./application/media/buttons/attackDOWN.png");
+		ImageView attackDownIV = new ImageView(attackDownImage);
+		attackDownIV.setOnMouseClicked(e -> attackDown());
+		attackDownIV.setCursor(Cursor.HAND);
+		attackDownIV.setFitHeight(30);
+		attackDownIV.setFitWidth(30);
 		HBox box2 = new HBox();
-		box2.getChildren().add(btnAttackDown);
+		box2.getChildren().add(attackDownIV);
 		box2.setAlignment(Pos.CENTER);
 		attackOptions.setBottom(box2);
 		
-		Button btnAttackRight = new Button();
-		btnAttackRight.setStyle("-fx-background-radius: 5em;");
-		btnAttackRight.setOnAction(e -> attackRight());
-		btnAttackRight.setMinHeight(30);
-		btnAttackRight.setMaxHeight(30);
-		btnAttackRight.setMinWidth(30);
-		btnAttackRight.setMaxWidth(30);
+		Image attackRightImage = new Image("./application/media/buttons/attackRIGHT.png");
+		ImageView attackRightIV = new ImageView(attackRightImage);
+		attackRightIV.setOnMouseClicked(e -> attackRight());
+		attackRightIV.setCursor(Cursor.HAND);
+		attackRightIV.setFitHeight(30);
+		attackRightIV.setFitWidth(30);
 		HBox box3 = new HBox();
-		box3.getChildren().add(btnAttackRight);
+		box3.getChildren().add(attackRightIV);
 		box3.setAlignment(Pos.CENTER);
 		attackOptions.setRight(box3);
 		
-		Button btnAttackLeft = new Button();
-		btnAttackLeft.setStyle("-fx-background-radius: 5em;");
-		btnAttackLeft.setOnAction(e -> attackLeft());
-		btnAttackLeft.setMinHeight(30);
-		btnAttackLeft.setMaxHeight(30);
-		btnAttackLeft.setMinWidth(30);
-		btnAttackLeft.setMaxWidth(30);
+		Image attackLeftImage = new Image("./application/media/buttons/attackLEFT.png");
+		ImageView attackLeftIV = new ImageView(attackLeftImage);
+		attackLeftIV.setOnMouseClicked(e -> attackLeft());
+		attackLeftIV.setCursor(Cursor.HAND);
+		attackLeftIV.setFitHeight(30);
+		attackLeftIV.setFitWidth(30);
 		HBox box4 = new HBox();
-		box4.getChildren().add(btnAttackLeft);
+		box4.getChildren().add(attackLeftIV);
 		box4.setAlignment(Pos.CENTER);
 		attackOptions.setLeft(box4);
+		
+		
+//		Button btnAttackUp = new Button();
+//		btnAttackUp.setStyle("-fx-background-radius: 5em;");
+//		btnAttackUp.setOnAction(e -> attackUp());
+//		btnAttackUp.setMinHeight(30);
+//		btnAttackUp.setMaxHeight(30);
+//		btnAttackUp.setMinWidth(30);
+//		btnAttackUp.setMaxWidth(30);
+//		HBox box1 = new HBox();
+//		box1.getChildren().add(btnAttackUp);
+//		box1.setAlignment(Pos.CENTER);
+//		attackOptions.setTop(box1);
+//
+//		Button btnAttackDown = new Button();
+//		btnAttackDown.setStyle("-fx-background-radius: 5em;");
+//		btnAttackDown.setOnAction(e -> attackDown());
+//		btnAttackDown.setMinHeight(30);
+//		btnAttackDown.setMaxHeight(30);
+//		btnAttackDown.setMinWidth(30);
+//		btnAttackDown.setMaxWidth(30);
+//		attackOptions.setBottom(btnAttackDown);
+//		HBox box2 = new HBox();
+//		box2.getChildren().add(btnAttackDown);
+//		box2.setAlignment(Pos.CENTER);
+//		attackOptions.setBottom(box2);
+//		
+//		Button btnAttackRight = new Button();
+//		btnAttackRight.setStyle("-fx-background-radius: 5em;");
+//		btnAttackRight.setOnAction(e -> attackRight());
+//		btnAttackRight.setMinHeight(30);
+//		btnAttackRight.setMaxHeight(30);
+//		btnAttackRight.setMinWidth(30);
+//		btnAttackRight.setMaxWidth(30);
+//		HBox box3 = new HBox();
+//		box3.getChildren().add(btnAttackRight);
+//		box3.setAlignment(Pos.CENTER);
+//		attackOptions.setRight(box3);
+//		
+//		Button btnAttackLeft = new Button();
+//		btnAttackLeft.setStyle("-fx-background-radius: 5em;");
+//		btnAttackLeft.setOnAction(e -> attackLeft());
+//		btnAttackLeft.setMinHeight(30);
+//		btnAttackLeft.setMaxHeight(30);
+//		btnAttackLeft.setMinWidth(30);
+//		btnAttackLeft.setMaxWidth(30);
+//		HBox box4 = new HBox();
+//		box4.getChildren().add(btnAttackLeft);
+//		box4.setAlignment(Pos.CENTER);
+//		attackOptions.setLeft(box4);
 		
 		BorderPane moveOptions = new BorderPane();
 		Region r1 = new Region();
@@ -1619,7 +1742,52 @@ public class View extends Application implements Initializable {
 		r1.setMaxWidth(30);
 		moveOptions.setCenter(r1);
 
-		Button btnMoveUp = new Button();
+
+		Image moveUpImage = new Image("./application/media/buttons/UP.png");
+		ImageView moveUpIV = new ImageView(moveUpImage);
+		moveUpIV.setOnMouseClicked(e -> moveUp());
+		moveUpIV.setCursor(Cursor.HAND);
+		moveUpIV.setFitHeight(30);
+		moveUpIV.setFitWidth(30);
+		HBox box5 = new HBox();
+		box5.getChildren().add(moveUpIV);
+		box5.setAlignment(Pos.CENTER);
+		moveOptions.setTop(box5);
+		
+		Image moveDownImage = new Image("./application/media/buttons/DOWN.png");
+		ImageView moveDownIV = new ImageView(moveDownImage);
+		moveDownIV.setOnMouseClicked(e -> moveDown());
+		moveDownIV.setCursor(Cursor.HAND);
+		moveDownIV.setFitHeight(30);
+		moveDownIV.setFitWidth(30);
+		HBox box6 = new HBox();
+		box6.getChildren().add(moveDownIV);
+		box6.setAlignment(Pos.CENTER);
+		moveOptions.setBottom(box6);
+		
+		Image moveRightImage = new Image("./application/media/buttons/RIGHT.png");
+		ImageView moveRightIV = new ImageView(moveRightImage);
+		moveRightIV.setOnMouseClicked(e -> moveRight());
+		moveRightIV.setCursor(Cursor.HAND);
+		moveRightIV.setFitHeight(30);
+		moveRightIV.setFitWidth(30);
+		HBox box7 = new HBox();
+		box7.getChildren().add(moveRightIV);
+		box7.setAlignment(Pos.CENTER);
+		moveOptions.setRight(box7);
+		
+		Image moveLeftImage = new Image("./application/media/buttons/LEFT.png");
+		ImageView moveLeftIV = new ImageView(moveLeftImage);
+		moveLeftIV.setOnMouseClicked(e -> moveUp());
+		moveLeftIV.setCursor(Cursor.HAND);
+		moveLeftIV.setFitHeight(30);
+		moveLeftIV.setFitWidth(30);
+		HBox box8 = new HBox();
+		box8.getChildren().add(moveLeftIV);
+		box8.setAlignment(Pos.CENTER);
+		moveOptions.setLeft(box8);
+		
+//		Button btnMoveUp = new Button();
 //			btnMoveUp.setStyle("-fx-background-radius: 5em;");
 //		ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
 //		iv1.setFitHeight(30);
@@ -1627,53 +1795,53 @@ public class View extends Application implements Initializable {
 //			circle.setFill(iv1);
 //			iv1.setClip();
 //		btnMoveUp.setGraphic(iv1);
-		btnMoveUp.setStyle("-fx-background-radius: 5em;");
-		btnMoveUp.setOnAction(e -> moveUp());
-		btnMoveUp.setMinHeight(30);
-		btnMoveUp.setMaxHeight(30);
-		btnMoveUp.setMinWidth(30);
-		btnMoveUp.setMaxWidth(30);
-		moveOptions.setTop(btnMoveUp);
-		HBox box5 = new HBox();
-		box5.getChildren().add(btnMoveUp);
-		box5.setAlignment(Pos.CENTER);
-		moveOptions.setTop(box5);
+//		btnMoveUp.setStyle("-fx-background-radius: 5em;");
+//		btnMoveUp.setOnAction(e -> moveUp());
+//		btnMoveUp.setMinHeight(30);
+//		btnMoveUp.setMaxHeight(30);
+//		btnMoveUp.setMinWidth(30);
+//		btnMoveUp.setMaxWidth(30);
+//		moveOptions.setTop(btnMoveUp);
+//		HBox box5 = new HBox();
+//		box5.getChildren().add(btnMoveUp);
+//		box5.setAlignment(Pos.CENTER);
+//		moveOptions.setTop(box5);
 
-		Button btnMoveDown = new Button();
-		btnMoveDown.setStyle("-fx-background-radius: 5em;");
-		btnMoveDown.setOnAction(e -> moveDown());
-		btnMoveDown.setMinHeight(30);
-		btnMoveDown.setMaxHeight(30);
-		btnMoveDown.setMinWidth(30);
-		btnMoveDown.setMaxWidth(30);
-		HBox box6 = new HBox();
-		box6.getChildren().add(btnMoveDown);
-		box6.setAlignment(Pos.CENTER);
-		moveOptions.setBottom(box6);
-
-		Button btnMoveRight = new Button();
-		btnMoveRight.setStyle("-fx-background-radius: 5em;");
-		btnMoveRight.setOnAction(e -> moveRight());
-		btnMoveRight.setMinHeight(30);
-		btnMoveRight.setMaxHeight(30);
-		btnMoveRight.setMinWidth(30);
-		btnMoveRight.setMaxWidth(30);
-		HBox box7 = new HBox();
-		box7.getChildren().add(btnMoveRight);
-		box7.setAlignment(Pos.CENTER);
-		moveOptions.setRight(box7);
-
-		Button btnMoveLeft = new Button();
-		btnMoveLeft.setStyle("-fx-background-radius: 5em;");
-		btnMoveLeft.setOnAction(e -> moveLeft());
-		btnMoveLeft.setMinHeight(30);
-		btnMoveLeft.setMaxHeight(30);
-		btnMoveLeft.setMinWidth(30);
-		btnMoveLeft.setMaxWidth(30);
-		HBox box8 = new HBox();
-		box8.getChildren().add(btnMoveLeft);
-		box8.setAlignment(Pos.CENTER);
-		moveOptions.setLeft(box8);
+//		Button btnMoveDown = new Button();
+//		btnMoveDown.setStyle("-fx-background-radius: 5em;");
+//		btnMoveDown.setOnAction(e -> moveDown());
+//		btnMoveDown.setMinHeight(30);
+//		btnMoveDown.setMaxHeight(30);
+//		btnMoveDown.setMinWidth(30);
+//		btnMoveDown.setMaxWidth(30);
+//		HBox box6 = new HBox();
+//		box6.getChildren().add(btnMoveDown);
+//		box6.setAlignment(Pos.CENTER);
+//		moveOptions.setBottom(box6);
+//
+//		Button btnMoveRight = new Button();
+//		btnMoveRight.setStyle("-fx-background-radius: 5em;");
+//		btnMoveRight.setOnAction(e -> moveRight());
+//		btnMoveRight.setMinHeight(30);
+//		btnMoveRight.setMaxHeight(30);
+//		btnMoveRight.setMinWidth(30);
+//		btnMoveRight.setMaxWidth(30);
+//		HBox box7 = new HBox();
+//		box7.getChildren().add(btnMoveRight);
+//		box7.setAlignment(Pos.CENTER);
+//		moveOptions.setRight(box7);
+//
+//		Button btnMoveLeft = new Button();
+//		btnMoveLeft.setStyle("-fx-background-radius: 5em;");
+//		btnMoveLeft.setOnAction(e -> moveLeft());
+//		btnMoveLeft.setMinHeight(30);
+//		btnMoveLeft.setMaxHeight(30);
+//		btnMoveLeft.setMinWidth(30);
+//		btnMoveLeft.setMaxWidth(30);
+//		HBox box8 = new HBox();
+//		box8.getChildren().add(btnMoveLeft);
+//		box8.setAlignment(Pos.CENTER);
+//		moveOptions.setLeft(box8);
 
 		((Pane) root3.getBottom()).getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
 		actions.add(btnAbility1);
@@ -1694,17 +1862,17 @@ public class View extends Application implements Initializable {
 			actions.add(btnPunch);
 		} else {
 			((Pane) root3.getBottom()).getChildren().add(attackOptions);
-			actions.add(btnAttackUp);
-			actions.add(btnAttackDown);
-			actions.add(btnAttackRight);
-			actions.add(btnAttackLeft);
+//			actions.add(btnAttackUp);
+//			actions.add(btnAttackDown);
+//			actions.add(btnAttackRight);
+//			actions.add(btnAttackLeft);
 		}
 
 		((Pane) root3.getBottom()).getChildren().add(moveOptions);
-		actions.add(btnMoveUp);
-		actions.add(btnMoveDown);
-		actions.add(btnMoveRight);
-		actions.add(btnMoveLeft);
+//		actions.add(btnMoveUp);
+//		actions.add(btnMoveDown);
+//		actions.add(btnMoveRight);
+//		actions.add(btnMoveLeft);
 		
 		if (!(View.game.getFirstPlayer().getLeader() == current || View.game.getSecondPlayer().getLeader() == current)) {
 			btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
