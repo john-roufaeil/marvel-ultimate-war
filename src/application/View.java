@@ -1,8 +1,6 @@
 /*
  * TODO
  * 
- *  add mute and help 
- * 
  * 	style buttons and move with keyboard arrows
  * 
  *  add select and deselect champions and leaders
@@ -51,8 +49,6 @@ import exceptions.NotEnoughResourcesException;
 import exceptions.UnallowedMovementException;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -74,7 +70,6 @@ import model.world.Hero;
 import model.world.Villain;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -110,7 +105,7 @@ public class View extends Application implements Initializable {
 	static PriorityQueue q;
 	static Stage primaryStage;
 	static boolean twoPlayerMode;
-	static MediaPlayer song1Player;
+	static MediaPlayer songPlayer;
 	static MediaPlayer soundPlayer;
 
 	
@@ -225,15 +220,15 @@ public class View extends Application implements Initializable {
 	}
 
 	public static void checkPlayingMode() {
-		Media song1 = new Media(new File("./src/application/media/song1.wav").toURI().toString());
-		song1Player = new MediaPlayer(song1);
-		song1Player.setOnEndOfMedia(new Runnable() {
+		Media song = new Media(new File("./src/application/media/song.wav").toURI().toString());
+		songPlayer = new MediaPlayer(song);
+		songPlayer.setOnEndOfMedia(new Runnable() {
 		      public void run() {
-		        song1Player.seek(Duration.ZERO);
+		        songPlayer.seek(Duration.ZERO);
 		      }
 		});
-		song1Player.setAutoPlay(true);
-		song1Player.play();
+		songPlayer.setAutoPlay(true);
+		songPlayer.play();
 		
 		// Scene Organisation
 		BorderPane root1 = new BorderPane();
@@ -348,9 +343,9 @@ public class View extends Application implements Initializable {
 		aliveMap = new HashMap<Champion, String>();
 		deadMap = new HashMap<Champion, String>();
 		for (int i = 1; i <= 24; i++) {
-			soundMap.put(Game.getAvailableChampions().get(i - 1), "./src/application/media/" + i + ".wav");
-			aliveMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + ".jpeg");
-			deadMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/" + i + "d.jpeg");
+			soundMap.put(Game.getAvailableChampions().get(i - 1), "./src/application/media/champions/" + i + ".wav");
+			aliveMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/champions/" + i + ".jpeg");
+			deadMap.put(Game.getAvailableChampions().get(i - 1), "./application/media/champions/" + i + "d.jpeg");
 		}
 
 		// Scene Organisation
@@ -495,12 +490,12 @@ public class View extends Application implements Initializable {
 			choose.setDisable(true);
 		choose.setOnAction(e -> {
 			// Playing the champion's sound
-			song1Player.pause();
+			songPlayer.pause();
 			Media sound = new Media(new File(soundMap.get(champion)).toURI().toString());
 			soundPlayer = new MediaPlayer(sound);
 			soundPlayer.setVolume(5.0);
 			soundPlayer.play();
-			soundPlayer.setOnEndOfMedia(() -> song1Player.play());
+			soundPlayer.setOnEndOfMedia(() -> songPlayer.play());
 			
 			
 			// Putting the Chosen Champion's Image in Status Bar
@@ -764,11 +759,11 @@ public class View extends Application implements Initializable {
 		muteIV.setFitHeight(50);
 		muteIV.setFitWidth(50);
 		muteIV.setOnMouseClicked(e -> {
-			if(song1Player.isMute()) {
-				song1Player.setMute(false);
+			if(songPlayer.isMute()) {
+				songPlayer.setMute(false);
 			}
 			else {
-				song1Player.setMute(true);
+				songPlayer.setMute(true);
 			}
 		});
 		muteBox.getChildren().add(muteIV);
@@ -1823,7 +1818,7 @@ public class View extends Application implements Initializable {
 		
 		Image moveLeftImage = new Image("./application/media/buttons/LEFT.png");
 		ImageView moveLeftIV = new ImageView(moveLeftImage);
-		moveLeftIV.setOnMouseClicked(e -> moveUp());
+		moveLeftIV.setOnMouseClicked(e -> moveLeft());
 		moveLeftIV.setCursor(Cursor.HAND);
 		moveLeftIV.setFitHeight(30);
 		moveLeftIV.setFitWidth(30);
