@@ -1,15 +1,13 @@
 /*
  * TODO
  * 
- * 	style buttons
+ *  add mute and help 
+ * 
+ * 	style buttons and move with keyboard arrows
  * 
  *  add select and deselect champions and leaders
  * 
- *  edit: scarlet witch voice,
- *  
- *  add button click smooth audio
- *  
- *  improve current champion and ability
+ *  edit: scarlet witch voice, hawkeye, 
  *  
  *  add detailed instructions and help manual in good design
  * 
@@ -76,6 +74,7 @@ import model.world.Hero;
 import model.world.Villain;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -724,7 +723,10 @@ public class View extends Application implements Initializable {
 //		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
 
-		HBox gameStatus = new HBox(10);
+		BorderPane gameStatus = new BorderPane();
+		HBox statsBar = new HBox(10);
+		HBox muteBox = new HBox();
+		HBox helpBox = new HBox();
 		VBox turnOrderStatus = new VBox(15);
 		HBox currentControls = new HBox(30);
 		GridPane boardView = new GridPane();
@@ -734,9 +736,12 @@ public class View extends Application implements Initializable {
 		root3.setBottom(currentControls);
 		root3.setLeft(currentInformation);
 		root3.setCenter(boardView);
+		gameStatus.setCenter(statsBar);
+		gameStatus.setLeft(muteBox);
+		gameStatus.setRight(helpBox);
 
 		gameStatus.setPadding(new Insets(10, 10, 10, 10));
-		gameStatus.setAlignment(Pos.CENTER);
+		statsBar.setAlignment(Pos.CENTER);
 		turnOrderStatus.setPadding(new Insets(15, 15, 15, 15));
 		turnOrderStatus.setAlignment(Pos.TOP_RIGHT);
 		turnOrderStatus.setMaxWidth(400);
@@ -749,6 +754,31 @@ public class View extends Application implements Initializable {
 		currentInformation.setAlignment(Pos.TOP_LEFT);
 		currentInformation.setPadding(new Insets(10, 10, 10, 30));
 
+		muteBox.setPadding(new Insets(10,10,10,10));
+		helpBox.setPadding(new Insets(10,10,10,10));
+		muteBox.setAlignment(Pos.TOP_LEFT);
+		helpBox.setAlignment(Pos.TOP_RIGHT);
+		Image mute = new Image("./application/media/buttons/mute.png");
+		ImageView muteIV = new ImageView(mute);
+		muteIV.setCursor(Cursor.HAND);
+		muteIV.setFitHeight(50);
+		muteIV.setFitWidth(50);
+		muteIV.setOnMouseClicked(e -> {
+			if(song1Player.isMute()) {
+				song1Player.setMute(false);
+			}
+			else {
+				song1Player.setMute(true);
+			}
+		});
+		muteBox.getChildren().add(muteIV);
+		Image help = new Image("./application/media/buttons/help.png");
+		ImageView helpIV = new ImageView(help);
+		helpIV.setFitHeight(50);
+		helpIV.setFitWidth(50);
+		helpIV.setOnMouseClicked(e -> manualButton());
+		helpBox.getChildren().add(helpIV);
+		
 		showControls();
 		updateStatusBar();
 		prepareTurns();
@@ -842,10 +872,10 @@ public class View extends Application implements Initializable {
 
 		VBox temp = new VBox(5);
 		if (twoPlayerMode || !twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())) {
-			Button a1Button = (Button) ((Pane) root3.getBottom()).getChildren().get(1);
-			Button a2Button = (Button) ((Pane) root3.getBottom()).getChildren().get(2);
-			Button a3Button = (Button) ((Pane) root3.getBottom()).getChildren().get(3);
-			Button leaderButton = (Button) ((Pane) root3.getBottom()).getChildren().get(5);
+			Button a1Button = (Button) ((Pane) root3.getBottom()).getChildren().get(0);
+			Button a2Button = (Button) ((Pane) root3.getBottom()).getChildren().get(1);
+			Button a3Button = (Button) ((Pane) root3.getBottom()).getChildren().get(2);
+			Button leaderButton = (Button) ((Pane) root3.getBottom()).getChildren().get(4);
 
 			// First Ability's Attributes
 			a1Button.setOnMouseEntered(e -> {
@@ -1077,11 +1107,12 @@ public class View extends Application implements Initializable {
 
 	// Update the Status of Players' Champions and Leader Ability
 	public static void updateStatusBar() {
-
-		((Pane) root3.getTop()).getChildren().clear();
+		BorderPane gameStatus = ((BorderPane) root3.getTop());
+		HBox statsBar = (HBox) gameStatus.getCenter();
+		statsBar.getChildren().clear();
 		Label player1Name = new Label(View.game.getFirstPlayer().getName());
 		player1Name.setFont(new Font("Didot.", 16));
-		((Pane) root3.getTop()).getChildren().add(player1Name);
+		statsBar.getChildren().add(player1Name);
 
 		for (Champion c : View.game.getFirstPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
@@ -1090,7 +1121,7 @@ public class View extends Application implements Initializable {
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
 			iv.setFitWidth(80);
-			((Pane) root3.getTop()).getChildren().add(iv);
+			statsBar.getChildren().add(iv);
 		}
 
 		Image LeaderAbilityNotUsed = new Image("./application/media/pow.jpeg");
@@ -1112,7 +1143,7 @@ public class View extends Application implements Initializable {
 		firstLeaderAbility.setFitWidth(80);
 		secondLeaderAbility.setFitHeight(80);
 		secondLeaderAbility.setFitWidth(80);
-		((Pane) root3.getTop()).getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
+		statsBar.getChildren().addAll(firstLeaderAbility, r, secondLeaderAbility);
 
 		for (Champion c : View.game.getSecondPlayer().getTeam()) {
 			Image image = new Image(aliveMap.get(c));
@@ -1121,13 +1152,13 @@ public class View extends Application implements Initializable {
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(80);
 			iv.setFitWidth(80);
-			((Pane) root3.getTop()).getChildren().add(iv);
+			statsBar.getChildren().add(iv);
 		}
 		Label player2Name = new Label(View.game.getSecondPlayer().getName());
 		player2Name.setFont(new Font("Didot.", 16));
 		player1Name.setTextFill(Color.color(1, 1, 1));
 		player2Name.setTextFill(Color.color(1, 1, 1));
-		((Pane) root3.getTop()).getChildren().add(player2Name);
+		statsBar.getChildren().add(player2Name);
 	}
 
 	public static void updateBoard() {
@@ -1566,13 +1597,13 @@ public class View extends Application implements Initializable {
 		Champion current = View.game.getCurrentChampion();
 		ArrayList<Button> actions = new ArrayList<>();
 		
-		Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
-		HBox actionsLeftBox = new HBox();
-		actionsLeftBox.getChildren().add(actionsLeft);
-		actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
-		actionsLeft.setTextAlignment(TextAlignment.LEFT);
-		actionsLeft.setTextFill(Color.color(1, 1, 1));
-		actionsLeft.setFont(new Font("Didot.", 16));
+//		Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
+//		HBox actionsLeftBox = new HBox();
+//		actionsLeftBox.getChildren().add(actionsLeft);
+//		actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
+//		actionsLeft.setTextAlignment(TextAlignment.LEFT);
+//		actionsLeft.setTextFill(Color.color(1, 1, 1));
+//		actionsLeft.setFont(new Font("Didot.", 16));
 		
 		Button btnAbility1 = new Button("First\nAbility");
 		if (current.getAbilities().get(0) instanceof HealingAbility) {
@@ -1857,7 +1888,7 @@ public class View extends Application implements Initializable {
 //		box8.setAlignment(Pos.CENTER);
 //		moveOptions.setLeft(box8);
 
-		((Pane) root3.getBottom()).getChildren().addAll(actionsLeftBox, btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
+		((Pane) root3.getBottom()).getChildren().addAll(btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
 		actions.add(btnAbility1);
 		actions.add(btnAbility2);
 		actions.add(btnAbility3);
