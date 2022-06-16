@@ -2505,10 +2505,17 @@ public class View extends Application implements Initializable {
 				}
 			}
 			Stage gameOver = new Stage();
+			Image winnerImage = new Image("./application/media/backgrounds/winner.png");
+			ImageView winnerIV = new ImageView(winnerImage);
+			winnerIV.fitHeightProperty().bind(gameOver.heightProperty());
+			winnerIV.fitWidthProperty().bind(gameOver.widthProperty());
+			BorderPane winnerPane = new BorderPane();
+			winnerPane.getChildren().add(winnerIV);
 			gameOver.setTitle("Game Over");
 			VBox window = new VBox(10);
+			winnerPane.setCenter(window);
 			window.setAlignment(Pos.CENTER);
-			Scene scene = new Scene(window);
+			Scene scene = new Scene(winnerPane);
 			Button exitGame = new Button("Exit Game");
 			exitGame.setOnAction(k -> {
 				gameOver.close();
