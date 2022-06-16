@@ -5,8 +5,6 @@
  *  
  *  separate each view in a separate class
  *  
- *  add sound effects on buttons click (different actions -> different sounds)
- *  
  *  add detailed instructions and help manual in good design
  * 
  *  update buttons, effects animation, 1 last cover
@@ -88,6 +86,7 @@ import javafx.scene.shape.Rectangle;
 
 public class View extends Application implements Initializable {
 	static Game game;
+	static Scene scene;
 	static BorderPane root3;
 	static HashMap<Champion, Boolean> chosenMap;
 	static HashMap<Champion, String> aliveMap;
@@ -121,7 +120,7 @@ public class View extends Application implements Initializable {
 		StackPane stack = new StackPane();
 		stack.getChildren().add(introMediaView);
 		stack.getChildren().add(root0);
-		Scene videoPage = new Scene(stack);
+//		Scene videoPage = new Scene(stack);
 		Label skipLabel = new Label("Click anywhere to skip.");
 		skipLabel.setPadding(new Insets(30,30,30,30));
 		skipLabel.setTextFill(Color.color(1, 1, 1));
@@ -131,7 +130,7 @@ public class View extends Application implements Initializable {
 		skipBox.getChildren().add(skipLabel);
 		root0.setBottom(skipBox);
 		
-		videoPage.setOnMouseClicked(e -> {
+		stack.setOnMouseClicked(e -> {
 			introMediaPlayer.stop();
 			checkPlayingMode();
 		});
@@ -142,8 +141,9 @@ public class View extends Application implements Initializable {
 //		});
 		
 		introMediaPlayer.setOnEndOfMedia( () -> { checkPlayingMode(); });
-		
-		primaryStage.setScene(videoPage);
+		Scene scene = new Scene(stack);
+		View.scene = scene;
+		primaryStage.setScene(scene);
 		primaryStage.show();
 		
 	}
@@ -166,7 +166,7 @@ public class View extends Application implements Initializable {
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
 		root1.getChildren().add(backgroundIV);
-		Scene homePage = new Scene(root1, 400, 400);
+//		Scene homePage = new Scene(root1, 400, 400);
 
 		// Choose Player Mode
 		HBox chooseMode = new HBox(50);
@@ -199,7 +199,8 @@ public class View extends Application implements Initializable {
 		chooseMode.getChildren().addAll(onePlayer, twoPlayers);
 		root1.setBottom(chooseMode);
 		root1.setTop(welcomeBox);
-		primaryStage.setScene(homePage);
+		scene.setRoot(root1);
+//		primaryStage.setScene(homePage);
 		primaryStage.setFullScreen(true);
 	}
 
@@ -279,8 +280,9 @@ public class View extends Application implements Initializable {
 		// Scene Organisation
 		BorderPane root2 = new BorderPane();
 		root2.getChildren().add(backgroundIV);
-		Scene begin = new Scene(root2);
-		primaryStage.setScene(begin);
+		scene.setRoot(root2);
+//		Scene begin = new Scene(root2);
+//		primaryStage.setScene(begin);
 		primaryStage.setFullScreen(true);
 		HBox chosenChampions = new HBox();
 		VBox detailsVBox = new VBox();
@@ -637,9 +639,10 @@ public class View extends Application implements Initializable {
 		// Scene organisation
 		root3 = new BorderPane();
 		root3.getChildren().add(backgroundBoardIV);
-		Scene gameview = new Scene(root3);
+		scene.setRoot(root3);
+//		Scene gameview = new Scene(root3);
 		keyMoved();
-		primaryStage.setScene(gameview);
+//		primaryStage.setScene(gameview);
 		primaryStage.setFullScreen(true);
 
 		HBox gameStatus = new HBox(10);
