@@ -5,8 +5,6 @@
  *  
  *  separate each view in a separate class
  *  
- *  manage choosing scene
- *  
  *  add sound effects on buttons click (different actions -> different sounds)
  *  
  *  add detailed instructions and help manual in good design
@@ -2037,6 +2035,9 @@ public class View extends Application implements Initializable {
 			updateStatusBar();
 			updateBoard(attackTarget);
 			checkWinner();
+			Media attackMedia = new Media(new File("./src/application/media/animation/attack.wav").toURI().toString());
+			MediaPlayer attackMediaPlayer = new MediaPlayer(attackMedia);
+			attackMediaPlayer.play();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
@@ -2055,6 +2056,9 @@ public class View extends Application implements Initializable {
 			updateStatusBar();
 			updateBoard(attackTarget);
 			checkWinner();
+			Media attackMedia = new Media(new File("./src/application/media/animation/attack.wav").toURI().toString());
+			MediaPlayer attackMediaPlayer = new MediaPlayer(attackMedia);
+			attackMediaPlayer.play();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
@@ -2073,6 +2077,9 @@ public class View extends Application implements Initializable {
 			updateStatusBar();
 			updateBoard(attackTarget);
 			checkWinner();
+			Media attackMedia = new Media(new File("./src/application/media/animation/attack.wav").toURI().toString());
+			MediaPlayer attackMediaPlayer = new MediaPlayer(attackMedia);
+			attackMediaPlayer.play();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
@@ -2091,6 +2098,9 @@ public class View extends Application implements Initializable {
 			updateStatusBar();
 			updateBoard(attackTarget);
 			checkWinner();
+			Media attackMedia = new Media(new File("./src/application/media/animation/attack.wav").toURI().toString());
+			MediaPlayer attackMediaPlayer = new MediaPlayer(attackMedia);
+			attackMediaPlayer.play();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
@@ -2112,6 +2122,9 @@ public class View extends Application implements Initializable {
 				updateStatusBar();
 				updateBoard(targets, ability);
 				checkWinner();
+				Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+				MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+				castAbilityMediaPlayer.play();
 			} catch (Exception e1) {
 				if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 					e1.printStackTrace();
@@ -2255,6 +2268,9 @@ public class View extends Application implements Initializable {
 			updateStatusBar();
 			updateBoard();
 			checkWinner();
+			Media leaderMedia = new Media(new File("./src/application/media/animation/leader.wav").toURI().toString());
+			MediaPlayer leaderMediaPlayer = new MediaPlayer(leaderMedia);
+			leaderMediaPlayer.play();
 		} catch (Exception e1) {
 			if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 				e1.printStackTrace();
