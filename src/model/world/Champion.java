@@ -11,6 +11,7 @@ public abstract class Champion implements Comparable<Object>, Damageable {
 	private String name;
 	private int maxHP;
 	private int currentHP;
+	private int maxMana;
 	private int mana;
 	private int maxActionPointsPerTurn;
 	private int currentActionPoints;
@@ -25,6 +26,7 @@ public abstract class Champion implements Comparable<Object>, Damageable {
 	public Champion(String name, int maxHP, int mana, int actions, int speed, int attackRange, int attackDamage) {
 		this.name = name;
 		this.maxHP = maxHP;
+		this.maxMana = mana;
 		this.mana = mana;
 		this.currentHP = this.maxHP;
 		this.maxActionPointsPerTurn = actions;
@@ -137,6 +139,10 @@ public abstract class Champion implements Comparable<Object>, Damageable {
 
 	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
+	}
+
+	public int getMaxMana() {
+		return maxMana;
 	}
 
 	public int compareTo(Object o) {

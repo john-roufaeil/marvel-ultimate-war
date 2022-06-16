@@ -1,6 +1,10 @@
 /*
  * TODO
  * 
+ * 	style buttons
+ * 
+ *  add select and deselect champions and leaders
+ * 
  *  edit: scarlet witch voice,
  *  
  *  add button click smooth audio
@@ -76,6 +80,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -334,7 +339,7 @@ public class View extends Application implements Initializable {
 
 	// Choose Champions
 	public static void scene2() {
-		Image background = new Image("application/media/backgrounds/avengers4.jpg");
+		Image background = new Image("application/media/backgrounds/avengers-background.jpg");
 		ImageView backgroundIV = new ImageView(background);
 		backgroundIV.fitHeightProperty().bind(primaryStage.heightProperty());
 		backgroundIV.fitWidthProperty().bind(primaryStage.widthProperty());
@@ -699,7 +704,7 @@ public class View extends Application implements Initializable {
 
 	// Open Board Game View
 	public static void scene3() throws IOException {
-		Image backgroundBoard = new Image("application/media/backgrounds/bck2.png");
+		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-background.png");
 
 //		Image backgroundBoard = new Image("application/media/backgrounds/gameplay-1.jpeg");
 		ImageView backgroundBoardIV = new ImageView(backgroundBoard);
@@ -782,7 +787,9 @@ public class View extends Application implements Initializable {
 		((Pane) root3.getLeft()).getChildren().clear();
 		// Get Current Champion
 		Champion champion = View.game.getCurrentChampion();
-
+		
+		
+		
 		// Get Attributes of Current Champion
 		String type = "";
 		if (champion instanceof AntiHero)
@@ -798,17 +805,24 @@ public class View extends Application implements Initializable {
 		if (championEffects.length() >= 2)
 			championEffects = championEffects.substring(0, championEffects.length() - 2) + ".";
 		Label championName = new Label(champion.getName().toUpperCase());
-		championName.setFont(new Font("Didot.", 15));
+		championName.setStyle("-fx-font-weight: bold");
+		championName.setTextAlignment(TextAlignment.CENTER);
+		championName.setFont(new Font("Didot.", 20));
 		championName.setTextFill(Color.color(1, 1, 1));
 		Label championType = new Label("Type: " + type);
 		championType.setFont(new Font("Didot.", 15));
-		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
-		championMaxHP.setFont(new Font("Didot.", 15));
-		Label championMana = new Label("Mana: " + champion.getMana() + "");
-		championMana.setFont(new Font("Didot.", 15));
-		Label championActions = new Label(
-				"Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
-		championActions.setFont(new Font("Didot.", 15));
+		Pane championHP = progressBarWithText("HP", champion.getCurrentHP(), champion.getMaxHP(), "#E71D36");
+		Pane championActionPoints = progressBarWithText("Actions Left", champion.getCurrentActionPoints(), 
+				champion.getMaxActionPointsPerTurn(), "#FF9F1C");
+		
+		Pane championMana = progressBarWithText("Mana", champion.getMana(), champion.getMaxMana(), "#2EC4B6");
+//		Label championMaxHP = new Label("HP: " + champion.getCurrentHP() + "/" + champion.getMaxHP());
+//		championMaxHP.setFont(new Font("Didot.", 15));
+//		Label championMana = new Label("Mana: " + champion.getMana() + "");
+//		championMana.setFont(new Font("Didot.", 15));
+//		Label championActions = new Label(
+//				"Actions Points: " + champion.getCurrentActionPoints() + "/" + champion.getMaxActionPointsPerTurn());
+//		championActions.setFont(new Font("Didot.", 15));
 		Label championSpeed = new Label("Speed: " + champion.getSpeed() + "");
 		championSpeed.setFont(new Font("Didot.", 15));
 		Label championRange = new Label("Attack Range: " + champion.getAttackRange() + "");
@@ -1051,8 +1065,8 @@ public class View extends Application implements Initializable {
 		}
 
 		// Configuring Nodec
-		((Pane) root3.getLeft()).getChildren().addAll(championName, championType, championMaxHP, championMana,
-				championActions, championSpeed, championRange, championDamage, championAppliedEffects,
+		((Pane) root3.getLeft()).getChildren().addAll(championName, championHP, championActionPoints, championMana,
+				 championType, championSpeed, championRange, championDamage, championAppliedEffects,
 				championCondition, region1, temp);
 		for (Node n : ((Pane) root3.getLeft()).getChildren()) {
 			if (n instanceof Label)
@@ -2596,6 +2610,24 @@ public class View extends Application implements Initializable {
 		});
 	}
 
+	public static Pane progressBarWithText(String labelText, int current, int max, String color) {
+        Label label = new Label(labelText + ": " + current + "/" + max);
+        label.setStyle("-fx-text-fill: #011627;");
+		label.setFont(new Font("Didot.", 15));
+        
+        ProgressBar progressBar = new ProgressBar(current * 1.0 / max);
+        progressBar.setStyle("-fx-accent: " + color +"; -fx-background-insets: 0; "
+        		+ "-fx-min-width: 200px; -fx-min-height: 30px; "
+        		+ "-fx-text-box-border: #011627; -fx-control-inner-background: #FDFFFC;"
+        		+ "-fx-border-radius: 5;");
+        
+        Pane stackPane = new StackPane(progressBar, label);
+        StackPane.setAlignment(label, Pos.CENTER_LEFT);
+        label.setPadding(new Insets(0, 0, 0, 50));
+        StackPane.setAlignment(progressBar, Pos.CENTER_LEFT);
+        return stackPane;
+    }
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
