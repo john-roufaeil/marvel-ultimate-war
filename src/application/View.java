@@ -2525,6 +2525,7 @@ public class View extends Application implements Initializable {
 			gameOver.setMinWidth(400);
 			gameOver.setMinHeight(200);
 			Text msgText = new Text("Congratulations! " + winner.getName() + " is the WINNER");
+			msgText.setFill(Color.color(1, 1, 1));
 			window.getChildren().addAll(msgText, exitGame);
 			window.setPadding(new Insets(10, 10, 10, 10));
 			gameOver.show();
