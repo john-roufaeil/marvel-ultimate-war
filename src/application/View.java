@@ -3,6 +3,8 @@
  *  
  *  try to manage resizing when changing scenes
  *  
+ *  separate each view in a separate class
+ *  
  *  manage choosing scene
  *  
  *  add sound effects on buttons click (different actions -> different sounds)
@@ -588,7 +590,7 @@ public class View extends Application implements Initializable {
 
 	// Set Leader and Disable Choosing Another Leader
 	public static void chooseLeader(Player player, Champion c, VBox details) {
-
+		
 		if (player == View.game.getFirstPlayer()) {
 			View.game.getFirstPlayer().setLeader(c);
 			details.getChildren().get(1).setDisable(true);
