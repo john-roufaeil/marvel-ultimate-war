@@ -2150,6 +2150,9 @@ public class View extends Application implements Initializable {
 					updateStatusBar();
 					updateBoard(targets, ability);
 					checkWinner();
+					Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+					MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+					castAbilityMediaPlayer.play();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
@@ -2168,6 +2171,9 @@ public class View extends Application implements Initializable {
 					updateStatusBar();
 					updateBoard(targets, ability);
 					checkWinner();
+					Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+					MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+					castAbilityMediaPlayer.play();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
@@ -2186,6 +2192,9 @@ public class View extends Application implements Initializable {
 					updateStatusBar();
 					updateBoard(targets, ability);
 					checkWinner();
+					Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+					MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+					castAbilityMediaPlayer.play();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
@@ -2204,6 +2213,9 @@ public class View extends Application implements Initializable {
 					updateStatusBar();
 					updateBoard(targets, ability);
 					checkWinner();
+					Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+					MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+					castAbilityMediaPlayer.play();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
@@ -2242,6 +2254,9 @@ public class View extends Application implements Initializable {
 					updateStatusBar();
 					updateBoard(targets, ability);
 					checkWinner();
+					Media castAbilityMedia = new Media(new File("./src/application/media/animation/castAbility.wav").toURI().toString());
+					MediaPlayer castAbilityMediaPlayer = new MediaPlayer(castAbilityMedia);
+					castAbilityMediaPlayer.play();
 				} catch (Exception e1) {
 					if (!twoPlayerMode && View.game.getSecondPlayer().getTeam().contains(current)) {
 						e1.printStackTrace();
