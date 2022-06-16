@@ -4,8 +4,7 @@
  *  
  *  on leader ability use, all board glows (red for villain, blue for hero, green for antihero)
  *  
- *  add detailed instructions and help manual in good design
- * 
+/ * 
  *  update buttons keyboard move
  * -------------------------------------------------------------------
  *  update README
@@ -705,7 +704,7 @@ public class View extends Application implements Initializable {
 		helpIV.setCursor(Cursor.HAND);
 		helpIV.setFitHeight(50);
 		helpIV.setFitWidth(50);
-		helpIV.setOnMouseClicked(e -> manualButton());
+		helpIV.setOnMouseClicked(e -> showHelp());
 		helpBox.getChildren().add(helpIV);
 		
 		showControls();
@@ -1885,6 +1884,49 @@ public class View extends Application implements Initializable {
 		}
 	}
 
+	public static void showHelp() {
+		Stage helpStage = new Stage();
+		helpStage.setTitle("Game Manual");
+		helpStage.setMinWidth(500);
+		helpStage.setMinHeight(300);
+		BorderPane helpRoot = new BorderPane();
+		Scene helpScene = new Scene(helpRoot, 750, 450);
+		Image backgroundImage = new Image("./application/media/backgrounds/helpBackground.png");
+		ImageView background = new ImageView(backgroundImage);
+		background.fitHeightProperty().bind(helpStage.heightProperty());
+		background.fitWidthProperty().bind(helpStage.widthProperty());
+		helpRoot.getChildren().add(background);
+		helpStage.setScene(helpScene);
+		
+		VBox navigation = new VBox(10);
+		VBox content = new VBox(5);
+		helpRoot.setLeft(navigation);
+		helpRoot.setCenter(content);
+		
+		Button game = new Button("Game");
+		Button champions = new Button("Champions");
+		Button covers = new Button("Covers");
+		Button abilities = new Button("Abilities");
+		Button effects = new Button("Effects");
+		Button tactics = new Button("Tactics");
+		Button invalid = new Button("Invalid\nActions");
+		navigation.getChildren().addAll(game, champions, covers, abilities, effects, tactics, invalid);
+		navigation.setPadding(new Insets(10,10,10,10));
+		navigation.setAlignment(Pos.CENTER);
+		navigation.setMaxWidth(220);
+		navigation.setMinWidth(220);
+		
+		for (Node n : navigation.getChildren()) {
+			((Button)n).setStyle("-fx-font: 16px \"Serif\"; -fx-padding: 10; -fx-background-color: #011627;"
+					+ "-fx-text-fill: #FDFFFC; -fx-alignment: CENTER; -fx-background-radius: 20;");
+			((Button)n).setMinWidth(200);
+			((Button)n).setMaxWidth(200);
+		}
+		
+		
+		helpStage.show();
+	}
+	
 	public static void manualButton() {
 		Stage manualStage = new Stage();
 		manualStage.setTitle("Game Manual");
@@ -2526,7 +2568,8 @@ public class View extends Application implements Initializable {
 			trans2.setNode(b);
 			trans2.play();;
 	}
-	 public static void putGlowAnimation(Button b , Color c){
+
+	public static void putGlowAnimation(Button b , Color c){
 		 int depth = 70; //Setting the uniform variable for the glow width and height
 	        
 	        DropShadow borderGlow= new DropShadow();
@@ -2539,7 +2582,7 @@ public class View extends Application implements Initializable {
 	        b.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
 	 }
 	 
-	 public static void putGlowAnimationForMainMenu(Button b , Color c){
+	public static void putGlowAnimationForMainMenu(Button b , Color c){
 		    int depth = 70; //Setting the uniform variable for the glow width and height
 	        DropShadow borderGlow= new DropShadow();
 	        borderGlow.setOffsetY(0f);
@@ -2557,7 +2600,6 @@ public class View extends Application implements Initializable {
 		});
 	 }
 	
-
 	public static void keyMoved() {
 		root3.setOnKeyPressed(e -> {
 			if (e.getCode() == KeyCode.W) {
@@ -2628,7 +2670,7 @@ public class View extends Application implements Initializable {
 			if (e.getCode() == KeyCode.H) {
 				if (twoPlayerMode
 						|| (!twoPlayerMode && View.game.getFirstPlayer().getTeam().contains(View.game.getCurrentChampion())))
-					manualButton();
+					showHelp();
 			}
 			if (e.getCode() == KeyCode.E) {
 				if (twoPlayerMode
