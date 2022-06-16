@@ -228,6 +228,7 @@ public class View extends Application implements Initializable {
 		      }
 		});
 		songPlayer.setAutoPlay(true);
+		songPlayer.setVolume(0.75);
 		songPlayer.play();
 		
 		// Scene Organisation
@@ -493,7 +494,7 @@ public class View extends Application implements Initializable {
 			songPlayer.pause();
 			Media sound = new Media(new File(soundMap.get(champion)).toURI().toString());
 			soundPlayer = new MediaPlayer(sound);
-			soundPlayer.setVolume(5.0);
+			soundPlayer.setVolume(1.0);
 			soundPlayer.play();
 			soundPlayer.setOnEndOfMedia(() -> songPlayer.play());
 			
