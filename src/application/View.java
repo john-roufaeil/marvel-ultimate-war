@@ -36,6 +36,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
@@ -287,13 +288,19 @@ public class View extends Application implements Initializable {
 //		Scene begin = new Scene(root2);
 //		primaryStage.setScene(begin);
 		primaryStage.setFullScreen(true);
+		BorderPane top = new BorderPane();
 		HBox chosenChampions = new HBox();
+		HBox muteBox = new HBox();
+		HBox helpBox = new HBox();
 		VBox detailsVBox = new VBox();
 		GridPane champsgrid = new GridPane();
 
-		root2.setTop(chosenChampions);
+		root2.setTop(top);
 		root2.setCenter(detailsVBox);
 		root2.setBottom(champsgrid);
+		top.setCenter(chosenChampions);
+		top.setLeft(muteBox);
+		top.setRight(helpBox);
 
 		// Chosen Champions Bar
 		// First Player Label and Selected Champions ImageViews
@@ -332,9 +339,38 @@ public class View extends Application implements Initializable {
 		chosenChampions.setSpacing(10);
 		chosenChampions.setPadding(new Insets(15, 15, 15, 15));
 
+		
+		muteBox.setPadding(new Insets(10,10,10,10));
+		helpBox.setPadding(new Insets(10,10,10,10));
+		muteBox.setAlignment(Pos.TOP_LEFT);
+		helpBox.setAlignment(Pos.TOP_RIGHT);
+		Image mute = new Image("./application/media/buttons/mute.png");
+		ImageView muteIV = new ImageView(mute);
+		muteIV.setCursor(Cursor.HAND);
+		muteIV.setFitHeight(50);
+		muteIV.setFitWidth(50);
+		muteIV.setOnMouseClicked(e -> {
+			if(songPlayer.isMute()) {
+				songPlayer.setMute(false);
+			}
+			else {
+				songPlayer.setMute(true);
+			}
+		});
+		muteBox.getChildren().add(muteIV);
+		Image help = new Image("./application/media/buttons/help.png");
+		ImageView helpIV = new ImageView(help);
+		helpIV.setCursor(Cursor.HAND);
+		helpIV.setFitHeight(50);
+		helpIV.setFitWidth(50);
+		helpIV.setOnMouseClicked(e -> showHelp());
+		helpBox.getChildren().add(helpIV);
+		
+		
 		// Show Details Box
 		// Click to show details Message
 		Label clickMsg = new Label("Click on a champion to show details.");
+		clickMsg.setStyle("-fx-font-weight: bold; -fx-text-fill: #fff;");
 		// Configuring Nodes
 		detailsVBox.getChildren().add(clickMsg);
 		detailsVBox.setPadding(new Insets(10, 10, 10, 10));
@@ -1138,8 +1174,8 @@ public class View extends Application implements Initializable {
 						isCurrent2 = true;
 					}
 					btn.setOnAction(e -> {
-						putGlowAnimation(btn ,Color.BLUE);
-						putFadeAnimation(btn);
+//						putGlowAnimation(btn ,Color.BLUE);
+//						putFadeAnimation(btn);
 						Stage currentHealth = new Stage();
 						String type = "";
 						if (c instanceof Hero)
@@ -1550,15 +1586,7 @@ public class View extends Application implements Initializable {
 		((Pane) root3.getBottom()).getChildren().clear();
 		Champion current = View.game.getCurrentChampion();
 		ArrayList<Button> actions = new ArrayList<>();
-		
-//		Label actionsLeft = new Label("ACTIONS\nLEFT: " + current.getCurrentActionPoints());
-//		HBox actionsLeftBox = new HBox();
-//		actionsLeftBox.getChildren().add(actionsLeft);
-//		actionsLeftBox.setAlignment(Pos.CENTER_LEFT);
-//		actionsLeft.setTextAlignment(TextAlignment.LEFT);
-//		actionsLeft.setTextFill(Color.color(1, 1, 1));
-//		actionsLeft.setFont(new Font("Didot.", 16));
-		
+
 		Button btnAbility1 = new Button("First\nAbility");
 		if (current.getAbilities().get(0) instanceof HealingAbility) {
 			btnAbility1.setStyle("-fx-background-radius: 5em; -fx-background-color: #246603; -fx-text-fill: #fff");
@@ -1683,56 +1711,6 @@ public class View extends Application implements Initializable {
 		box4.setAlignment(Pos.CENTER);
 		attackOptions.setLeft(box4);
 		
-		
-//		Button btnAttackUp = new Button();
-//		btnAttackUp.setStyle("-fx-background-radius: 5em;");
-//		btnAttackUp.setOnAction(e -> attackUp());
-//		btnAttackUp.setMinHeight(30);
-//		btnAttackUp.setMaxHeight(30);
-//		btnAttackUp.setMinWidth(30);
-//		btnAttackUp.setMaxWidth(30);
-//		HBox box1 = new HBox();
-//		box1.getChildren().add(btnAttackUp);
-//		box1.setAlignment(Pos.CENTER);
-//		attackOptions.setTop(box1);
-//
-//		Button btnAttackDown = new Button();
-//		btnAttackDown.setStyle("-fx-background-radius: 5em;");
-//		btnAttackDown.setOnAction(e -> attackDown());
-//		btnAttackDown.setMinHeight(30);
-//		btnAttackDown.setMaxHeight(30);
-//		btnAttackDown.setMinWidth(30);
-//		btnAttackDown.setMaxWidth(30);
-//		attackOptions.setBottom(btnAttackDown);
-//		HBox box2 = new HBox();
-//		box2.getChildren().add(btnAttackDown);
-//		box2.setAlignment(Pos.CENTER);
-//		attackOptions.setBottom(box2);
-//		
-//		Button btnAttackRight = new Button();
-//		btnAttackRight.setStyle("-fx-background-radius: 5em;");
-//		btnAttackRight.setOnAction(e -> attackRight());
-//		btnAttackRight.setMinHeight(30);
-//		btnAttackRight.setMaxHeight(30);
-//		btnAttackRight.setMinWidth(30);
-//		btnAttackRight.setMaxWidth(30);
-//		HBox box3 = new HBox();
-//		box3.getChildren().add(btnAttackRight);
-//		box3.setAlignment(Pos.CENTER);
-//		attackOptions.setRight(box3);
-//		
-//		Button btnAttackLeft = new Button();
-//		btnAttackLeft.setStyle("-fx-background-radius: 5em;");
-//		btnAttackLeft.setOnAction(e -> attackLeft());
-//		btnAttackLeft.setMinHeight(30);
-//		btnAttackLeft.setMaxHeight(30);
-//		btnAttackLeft.setMinWidth(30);
-//		btnAttackLeft.setMaxWidth(30);
-//		HBox box4 = new HBox();
-//		box4.getChildren().add(btnAttackLeft);
-//		box4.setAlignment(Pos.CENTER);
-//		attackOptions.setLeft(box4);
-		
 		BorderPane moveOptions = new BorderPane();
 		Region r1 = new Region();
 		r1.setMinHeight(30);
@@ -1785,62 +1763,6 @@ public class View extends Application implements Initializable {
 		box8.getChildren().add(moveLeftIV);
 		box8.setAlignment(Pos.CENTER);
 		moveOptions.setLeft(box8);
-		
-//		Button btnMoveUp = new Button();
-//			btnMoveUp.setStyle("-fx-background-radius: 5em;");
-//		ImageView iv1 = new ImageView(new Image("/application/media/moveUp.jpeg"));
-//		iv1.setFitHeight(30);
-//		iv1.setFitWidth(30);
-//			circle.setFill(iv1);
-//			iv1.setClip();
-//		btnMoveUp.setGraphic(iv1);
-//		btnMoveUp.setStyle("-fx-background-radius: 5em;");
-//		btnMoveUp.setOnAction(e -> moveUp());
-//		btnMoveUp.setMinHeight(30);
-//		btnMoveUp.setMaxHeight(30);
-//		btnMoveUp.setMinWidth(30);
-//		btnMoveUp.setMaxWidth(30);
-//		moveOptions.setTop(btnMoveUp);
-//		HBox box5 = new HBox();
-//		box5.getChildren().add(btnMoveUp);
-//		box5.setAlignment(Pos.CENTER);
-//		moveOptions.setTop(box5);
-
-//		Button btnMoveDown = new Button();
-//		btnMoveDown.setStyle("-fx-background-radius: 5em;");
-//		btnMoveDown.setOnAction(e -> moveDown());
-//		btnMoveDown.setMinHeight(30);
-//		btnMoveDown.setMaxHeight(30);
-//		btnMoveDown.setMinWidth(30);
-//		btnMoveDown.setMaxWidth(30);
-//		HBox box6 = new HBox();
-//		box6.getChildren().add(btnMoveDown);
-//		box6.setAlignment(Pos.CENTER);
-//		moveOptions.setBottom(box6);
-//
-//		Button btnMoveRight = new Button();
-//		btnMoveRight.setStyle("-fx-background-radius: 5em;");
-//		btnMoveRight.setOnAction(e -> moveRight());
-//		btnMoveRight.setMinHeight(30);
-//		btnMoveRight.setMaxHeight(30);
-//		btnMoveRight.setMinWidth(30);
-//		btnMoveRight.setMaxWidth(30);
-//		HBox box7 = new HBox();
-//		box7.getChildren().add(btnMoveRight);
-//		box7.setAlignment(Pos.CENTER);
-//		moveOptions.setRight(box7);
-//
-//		Button btnMoveLeft = new Button();
-//		btnMoveLeft.setStyle("-fx-background-radius: 5em;");
-//		btnMoveLeft.setOnAction(e -> moveLeft());
-//		btnMoveLeft.setMinHeight(30);
-//		btnMoveLeft.setMaxHeight(30);
-//		btnMoveLeft.setMinWidth(30);
-//		btnMoveLeft.setMaxWidth(30);
-//		HBox box8 = new HBox();
-//		box8.getChildren().add(btnMoveLeft);
-//		box8.setAlignment(Pos.CENTER);
-//		moveOptions.setLeft(box8);
 
 		((Pane) root3.getBottom()).getChildren().addAll(btnAbility1, btnAbility2, btnAbility3, btnEndTurn, btnLeaderAbility);
 		actions.add(btnAbility1);
@@ -1861,17 +1783,9 @@ public class View extends Application implements Initializable {
 			actions.add(btnPunch);
 		} else {
 			((Pane) root3.getBottom()).getChildren().add(attackOptions);
-//			actions.add(btnAttackUp);
-//			actions.add(btnAttackDown);
-//			actions.add(btnAttackRight);
-//			actions.add(btnAttackLeft);
 		}
 
 		((Pane) root3.getBottom()).getChildren().add(moveOptions);
-//		actions.add(btnMoveUp);
-//		actions.add(btnMoveDown);
-//		actions.add(btnMoveRight);
-//		actions.add(btnMoveLeft);
 		
 		if (!(View.game.getFirstPlayer().getLeader() == current || View.game.getSecondPlayer().getLeader() == current)) {
 			btnLeaderAbility.setTooltip(new Tooltip("Current champion is not a leader"));
@@ -1887,11 +1801,11 @@ public class View extends Application implements Initializable {
 	public static void showHelp() {
 		Stage helpStage = new Stage();
 		helpStage.setTitle("Game Manual");
-		helpStage.setMinWidth(500);
+		helpStage.setMinWidth(600);
 		helpStage.setMinHeight(300);
 		BorderPane helpRoot = new BorderPane();
 		Scene helpScene = new Scene(helpRoot, 750, 450);
-		Image backgroundImage = new Image("./application/media/backgrounds/helpBackground.png");
+		Image backgroundImage = new Image("./application/media/backgrounds/helpBackground2.jpg");
 		ImageView background = new ImageView(backgroundImage);
 		background.fitHeightProperty().bind(helpStage.heightProperty());
 		background.fitWidthProperty().bind(helpStage.widthProperty());
@@ -1908,20 +1822,74 @@ public class View extends Application implements Initializable {
 		Button covers = new Button("Covers");
 		Button abilities = new Button("Abilities");
 		Button effects = new Button("Effects");
-		Button tactics = new Button("Tactics");
-		Button invalid = new Button("Invalid\nActions");
-		navigation.getChildren().addAll(game, champions, covers, abilities, effects, tactics, invalid);
+//		Button tactics = new Button("Tactics");
+//		Button invalid = new Button("Invalid\nActions");
+		navigation.getChildren().addAll(game, champions, covers, abilities, effects);
 		navigation.setPadding(new Insets(10,10,10,10));
 		navigation.setAlignment(Pos.CENTER);
 		navigation.setMaxWidth(220);
 		navigation.setMinWidth(220);
-		
+		content.setPadding(new Insets(10,10,10,10));;
+		content.setAlignment(Pos.CENTER);
+		content.setMinWidth(380);
+		content.setMaxWidth(380);
 		for (Node n : navigation.getChildren()) {
 			((Button)n).setStyle("-fx-font: 16px \"Serif\"; -fx-padding: 10; -fx-background-color: #011627;"
 					+ "-fx-text-fill: #FDFFFC; -fx-alignment: CENTER; -fx-background-radius: 20;");
 			((Button)n).setMinWidth(200);
 			((Button)n).setMaxWidth(200);
 		}
+		
+		game.setOnAction(e -> {
+			content.getChildren().clear();
+			Text text = new Text("WELCOME TO MARVEL ULTIMATE WAR!\nIn this game, your goal is to kill all enemy champions before the other player kills yours.");
+			text.setTextAlignment(TextAlignment.CENTER);
+			text.setFont(Font.font(null, FontWeight.BOLD, 15));
+			text.setStyle("-fx-fill: #000;");
+			text.setWrappingWidth(450);
+			content.getChildren().add(text);
+		});
+		
+		champions.setOnAction(e -> {
+			content.getChildren().clear();
+			Text text = new Text("Champions are the units that the player can use to win the game.\nEach champion has a fixed number of action points at the beginning of each new round. Moving costs 1 action point, attacking costs 2 action points, and each ability has a ceratin cost.\nEach champion starts the game with a certain amount of mana, each ability they cast consumes a ceratin amount of mana.\nEach champion begins with a certain amount of HP, once it reaches 0, the champion dies.\nThere are three types of champions: Heros, AntiHeros, and Villains.\n\nOne champion in each team is a leader, depending on their type, they deal a critical change in the game.\nHeroes remove all the negative effects on all their team members and adds to them an Embrace effect.\nAntiHeroes allows no champion on the board to take turns except the leaders of both teams for 2 rounds.\nVillains instantly kill all enemy champions that have their HP less than 30%.");
+			text.setTextAlignment(TextAlignment.CENTER);
+			text.setFont(Font.font(null, FontWeight.BOLD, 15));
+			text.setStyle("-fx-fill: #000;");
+			text.setWrappingWidth(450);
+			content.getChildren().add(text);
+		});
+		
+		covers.setOnAction(e -> {
+			content.getChildren().clear();
+			Text text = new Text("On each game start, 5 covers generate in random places on the board with random HP from 100 to 1000.\n\nYou may not need to destroy them to win the game, but if they stop you from reaching your enemy, crush them!");
+			text.setTextAlignment(TextAlignment.CENTER);
+			text.setFont(Font.font(null, FontWeight.BOLD, 15));
+			text.setStyle("-fx-fill: #000;");
+			text.setWrappingWidth(450);
+			content.getChildren().add(text);
+		});
+		
+		abilities.setOnAction(e -> {
+			content.getChildren().clear();
+			Text text = new Text("Each champion has 3 abilities, each of which could be a Damaging Ability, Healing Ability, or Crowd Control Ability.\nDamaging Abilities deal a certain amount of damage to specified targets.\n Healing Abilities add a certain amount of HP to specified targets.\n Crowd Control Abilities apply a certain effect on specified targets.\n\nEach Ability requires a specific amount of action points and mana to be casted.\n");
+			text.setTextAlignment(TextAlignment.CENTER);
+			text.setFont(Font.font(null, FontWeight.BOLD, 15));
+			text.setStyle("-fx-fill: #000;");
+			text.setWrappingWidth(450);
+			content.getChildren().add(text);
+		});
+		
+		effects.setOnAction(e -> {
+			content.getChildren().clear();
+			Text text = new Text("Effects cause changes to happen on a champion when they are applied to them.\n There are 5 BUFF effects: Dodge, Embrace, PowerUp, Shield and SpeedUp.\n There are 5 DEBUFF effects: Disarm, Root, Shield, Shock, Silence and Stun.\n\nDisarm: targets cannot attack, but acquire an extra damaging ability.\nDodge: targets have 50% chance of not receiving an attack.\nEmbrace: adds 20% HP and mana, increases speed and attack damage by 20%.\nPowerUp: increases damaging and healing abilities' amount by 20%.\nRoot: targets cannot move.\nShield: next attack on targets will be blocked and shield break.\nShock: decrease target's speed and attack damage by 10%, decrease max action points by 1.\nSilence: target cannot use abilities, increase max action pionts by 2.\nSpeedUp: increase speed by 15%, increase max action points by 1.\nStun: target's next turn will be passed.");
+			text.setTextAlignment(TextAlignment.CENTER);
+			text.setFont(Font.font(null, FontWeight.BOLD, 15));
+			text.setStyle("-fx-fill: #000;");
+			text.setWrappingWidth(450);
+			content.getChildren().add(text);
+		});
+		
 		
 		
 		helpStage.show();
