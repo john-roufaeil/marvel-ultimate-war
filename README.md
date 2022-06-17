@@ -1,9 +1,9 @@
-# Marvel - Ultimate War
----
+<h1 align="center">MARVEL ULTIMATE WAR 🔥</h1>
 
 
 
-Two-player game with the theme of Marvel Ultimate War in which each player chooses 3 champions
+## Description
+This is a two-player game with the theme of Marvel Ultimate War in which each player chooses 3 champions
 and promotes one of the champions to be a leader. The goal of the game is to defeat all champions
 of the opponent team. During each turn, a champion has a limited number of action points with which he can move on the board, attack, and cast abilities.
 On a leader champion's turn, he can also cast a leader ability, which can only be used once throughout the game. Abilities have three types: Damaging
@@ -11,10 +11,16 @@ Abilities, Healing Abilities, and Crowd Control Abilities. Damaging abilities de
 targets' health points, whereas crowd control abilities apply a certain effect on targets. There are 10 effects in the game: 5 positive effects (buff)
 and 5 negative effects (debuff), each with different usages.
 
-## Contents 
-1. OOP concepts (Inheritance - Polymorphism - Abstraction - Encapsulation ).
-2. Exception Handling.
-3. GUI
+## How to Run
+It's pretty easy to run the game but a little long, please hold on!
+- Install Eclipse and JDK from [here](https://www.eclipse.org/downloads/packages/installer)
+- Install JavaFX from [here](https://gluonhq.com/products/javafx/) (make sure to remember where you installed it)
+- Download the game's ZIP file OR clone into your local respository
+- Open Eclipse, Navigate to window -> preferences -> search for "user libraries" -> new -> type "JavaFX" -> Add External JARs... -> select the JARs you installed from step 2.
+- Open the project using Eclipse, right click on it and choose Build Path -> Configure Build Path -> Add Library -> User Library -> JavaFX
+- Right Click on the project, Run as -> Run configurations -> Select "View" from left bar -> Arguments and paste the following under VM arguments:
+"--module-path {PATH TO LIB INSTALLED IN STEP 2} --add-modules javafx.controls,javafx.fxml,javafx.media"
+- Press Run, and enjoy!
 
 ## Project Structure
 <details>
