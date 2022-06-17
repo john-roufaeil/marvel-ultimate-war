@@ -160,7 +160,7 @@ public class View extends Application implements Initializable {
 		      }
 		});
 		songPlayer.setAutoPlay(true);
-		songPlayer.setVolume(0.75);
+		songPlayer.setVolume(0.55);
 		songPlayer.play();
 		
 		// Scene Organisation
@@ -680,7 +680,8 @@ public class View extends Application implements Initializable {
 		// Scene organisation
 		root3 = new BorderPane();
 		root3.getChildren().add(backgroundBoardIV);
-		scene.setRoot(root3);
+		showWelcome(root3);
+//		scene.setRoot(root3);
 //		Scene gameview = new Scene(root3);
 		keyMoved();
 //		primaryStage.setScene(gameview);
@@ -2533,48 +2534,60 @@ public class View extends Application implements Initializable {
 
 	}
 	
-	public static void putFadeAnimation(Button b)
-	{
-		 FadeTransition trans2 = new FadeTransition();
-	        trans2.setDuration(Duration.seconds(1));
-			trans2.setFromValue(1.0f);
-			trans2.setToValue(0.4f);
-			trans2.setAutoReverse(true);
-			trans2.setCycleCount(Animation.INDEFINITE);
-			trans2.setNode(b);
-			trans2.play();;
-	}
+	public static void showWelcome(BorderPane root3) {
+		Media nickWelcome = new Media(new File("./src/application/media/backgrounds/nick.wav").toURI().toString());
+		MediaPlayer nickPlayer = new MediaPlayer(nickWelcome);
+		nickPlayer.play();
+		
+		Image welcomeImage = new Image("./application/media/backgrounds/welcomeBackground.jpg");
+		ImageView welcomeIV = new ImageView(welcomeImage);
+		welcomeIV.fitHeightProperty().bind(primaryStage.heightProperty());
+		welcomeIV.fitWidthProperty().bind(primaryStage.widthProperty());
+		
+		BorderPane welcomeRoot = new BorderPane();
+		welcomeRoot.getChildren().add(welcomeIV);
+		scene.setRoot(welcomeRoot);
+		
+		StackPane stack = new StackPane();
+		
+		Rectangle shade = new Rectangle();
+		shade.setFill(Color.BLACK);
+		shade.setOpacity(0.6);
+		shade.setArcWidth(30.0); 
+	    shade.setArcHeight(30.0);  
+		shade.setWidth(500);
+		shade.setHeight(350);
+		
+		VBox welcomeBox = new VBox(15);
+		VBox emptyBox = new VBox();
+		welcomeRoot.setRight(emptyBox);
+		emptyBox.setMinWidth(700);
+		welcomeRoot.setLeft(welcomeBox);
+		Text welcomeText = new Text("Welcome to Marvel Ultimate War\nYou must defeat all enemy champions to win the game!\nSee you on the other side.\n\n");
+		welcomeText.setWrappingWidth(800);
+		welcomeBox.setPadding(new Insets(10,10,10,10));
+		welcomeBox.setAlignment(Pos.CENTER);
+		welcomeText.setTextAlignment(TextAlignment.CENTER);
+		welcomeText.setFont(Font.font(null, FontWeight.BOLD, 25));
+		welcomeText.setFill(Color.color(1, 1, 1)); 
+		welcomeBox.setMaxWidth(800);
+		welcomeBox.setMinWidth(800);
+		Text instructions = new Text("Here are some useful shortcuts:\nW: Move Up\nA: Move Left\nS: Move Down\nD: Move Right\nNUMPAD 8: Attack Up\nNUMPAD 4: Attack Left\nNUMPAD 2: Attack Down\nNUMPAD 6: Attack Right\n1: Cast First Ability\n2:Cast Second Ability\n3: Cast Third Ability\n4: Cast Punch\n5: Use Leader Ability\nE: End Turn");
+		Button proceed = new Button("Proceed");
+		instructions.setFont(Font.font(null, FontWeight.BOLD, 15));
+		instructions.setFill(Color.color(1, 1, 1));
+		instructions.setTextAlignment(TextAlignment.CENTER);
+		stack.getChildren().addAll(shade, instructions);
 
-	public static void putGlowAnimation(Button b , Color c){
-		 int depth = 70; //Setting the uniform variable for the glow width and height
-	        
-	        DropShadow borderGlow= new DropShadow();
-	        borderGlow.setOffsetY(0f);
-	        borderGlow.setOffsetX(0f);
-	        borderGlow.setColor(c); 
-	        borderGlow.setWidth(depth);
-	        borderGlow.setHeight(depth);
-	         
-	        b.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
-	 }
-	 
-	public static void putGlowAnimationForMainMenu(Button b , Color c){
-		    int depth = 70; //Setting the uniform variable for the glow width and height
-	        DropShadow borderGlow= new DropShadow();
-	        borderGlow.setOffsetY(0f);
-	        borderGlow.setOffsetX(0f);
-	        borderGlow.setColor(c); 
-	        borderGlow.setWidth(depth);
-	        borderGlow.setHeight(depth); 
-	        b.setEffect(null);
-	        
-	        b.setOnMouseEntered( f ->{ 
-	        b.setEffect(borderGlow);
-		});
-		b.setOnMouseExited( h -> {
-		 b.setEffect(null);
-		});
-	 }
+		
+		proceed.setStyle("-fx-font: 16px \"Serif\"; -fx-padding: 10; -fx-background-color: #561D25;"
+				+ "-fx-text-fill: #ECDD7B; -fx-alignment: CENTER; -fx-background-radius: 20;");
+		proceed.setMinWidth(200);
+		proceed.setPadding(new Insets(0,200,0,0));
+		proceed.setOnAction(e -> scene.setRoot(root3));
+		welcomeBox.getChildren().addAll(welcomeText, stack, proceed);
+	}
+	
 	
 	public static void keyMoved() {
 		root3.setOnKeyPressed(e -> {
