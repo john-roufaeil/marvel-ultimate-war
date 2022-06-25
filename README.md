@@ -13,14 +13,35 @@ and 5 negative effects (debuff), each with different usages.
 
 ## How to Run
 It's pretty easy to run the game but a little long, please hold on!
-- Install Eclipse and JDK from [here](https://www.eclipse.org/downloads/packages/installer)
-- Install JavaFX from [here](https://gluonhq.com/products/javafx/) (make sure to remember where you installed it)
-- Download the game's ZIP file OR clone into your local respository
-- Open Eclipse, Navigate to window -> preferences -> search for "user libraries" -> new -> type "JavaFX" -> Add External JARs... -> select the JARs you installed from step 2.
-- Open the project using Eclipse, right click on it and choose Build Path -> Configure Build Path -> Add Library -> User Library -> JavaFX
-- Right Click on the project, Run as -> Run configurations -> Select "View" from left bar -> Arguments and paste the following under VM arguments:
+#### Easiest Solution
+1. Install JavaFX from [here](https://gluonhq.com/products/javafx/) (make sure to remember where you installed it)
+2. Download the game's ZIP file OR fork and clone into your local respository
+3. Choose your OS
+<details>
+<summary> Linux & MacOS </summary>
+Open the command line terminal, navigate to the local repository and run:
+    
+```java --module-path {PATH TO LIB INSTALLED IN STEP 2} --add-modules javafx.controls,javafx.fxml,javafx.media -jar Ultimate-War-Linux.jar```
+
+</details><details>
+
+<summary> Windows </summary>
+    Open PowerShell, navigate to the local respository and run: 
+    
+```java --module-path {PATH TO LIB INSTALLED IN STEP 2} --add-modules javafx.controls,javafx.fxml,javafx.media -jar Ultimate-War-Windows.jar```
+</details>
+
+
+#### Developer's Solution
+1. Install Eclipse and JDK from [here](https://www.eclipse.org/downloads/packages/installer)
+2. Install JavaFX from [here](https://gluonhq.com/products/javafx/) (make sure to remember where you installed it)
+3. Download the game's ZIP file OR fork and clone into your local respository
+4. Open Eclipse, Navigate to window -> preferences -> search for "user libraries" -> new -> type "JavaFX" -> Add External JARs... -> select the JARs you installed from step 2.
+5. Open the project using Eclipse, right click on it and choose Build Path -> Configure Build Path -> Add Library -> User Library -> JavaFX
+6. Right Click on the project, Run as -> Run configurations -> Select "View" from left bar -> Arguments and paste the following under VM arguments:
 "--module-path {PATH TO LIB INSTALLED IN STEP 2} --add-modules javafx.controls,javafx.fxml,javafx.media"
-- Press Run, and enjoy!
+7. Press Run, and enjoy!
+
 
 ## Project Structure
 <details>
@@ -28,44 +49,44 @@ It's pretty easy to run the game but a little long, please hold on!
 ```bash
 src/
 ├── application
-│   ├── View.java
-│   └── ..............
+│   ├── View.java
+│   └── ..............
 ├── engine
-│   ├── Game.java
-│   ├── Player.java
-│   ├── PriorityQueue.java
-│   └── ..............
+│   ├── Game.java
+│   ├── Player.java
+│   ├── PriorityQueue.java
+│   └── ..............
 ├── exceptions
-│   ├── AbilityUseException.java
-│   ├── ChampionDisarmedException.java
-│   ├── GameActionException.java
-│   ├── InvalidTargetException.java
-│   ├── LeaderAbilityAlreadyUsedException.java
-│   ├── LeaderNotCurrentException.java
-│   ├── NotEnoughResourcesException.java
-│   ├── UnallowedMovementException.java
-│   └── .......................
+│   ├── AbilityUseException.java
+│   ├── ChampionDisarmedException.java
+│   ├── GameActionException.java
+│   ├── InvalidTargetException.java
+│   ├── LeaderAbilityAlreadyUsedException.java
+│   ├── LeaderNotCurrentException.java
+│   ├── NotEnoughResourcesException.java
+│   ├── UnallowedMovementException.java
+│   └── .......................
 └── model
     ├── abilities
-    │   ├── Ability.java
-    │   ├── AreaOfEffect.java
-    │   ├── CrowdControlAbility.java
+    │   ├── Ability.java
+    │   ├── AreaOfEffect.java
+    │   ├── CrowdControlAbility.java
     │   ├── DamagingAbility.java
     │   └── HealingAbility.java
     ├── effects
-    │   ├── Disarm.java
-    │   ├── Dodge.java
-    │   ├── Effect.java
-    │   ├── EffectType.java
-    │   ├── Embrace.java
-    │   ├── PowerUp.java
-    │   ├── Root.java
-    │   ├── Shield.java
-    │   ├── Shock.java
-    │   ├── Silence.java
-    │   ├── SpeedUp.java
-    │   ├── Stun.java
-    │   └── .....................
+    │   ├── Disarm.java
+    │   ├── Dodge.java
+    │   ├── Effect.java
+    │   ├── EffectType.java
+    │   ├── Embrace.java
+    │   ├── PowerUp.java
+    │   ├── Root.java
+    │   ├── Shield.java
+    │   ├── Shock.java
+    │   ├── Silence.java
+    │   ├── SpeedUp.java
+    │   ├── Stun.java
+    │   └── .....................
     └── world
         ├── AntiHero.java
         ├── Champion.java
