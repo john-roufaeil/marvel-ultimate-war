@@ -3,7 +3,7 @@
 </p>
 <p align="center">
     <img alt="GitHub" src="https://img.shields.io/github/license/john-louis1/marvel-ultimate-war">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/john-louis1/marvel-ultimate-war">
+    <img alt="GitHub commits" src="https://badgen.net/github/commits/john-louis1/marvel-ultimate-war/main">
 </p>
 
 ## Description
