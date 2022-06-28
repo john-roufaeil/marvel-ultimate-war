@@ -36,6 +36,25 @@ java --module-path "{PATH TO LIB INSTALLED IN STEP 2}" --add-modules javafx.cont
 ``` 
 and run.
 
+---
+
+| <img src="https://user-images.githubusercontent.com/97978852/176070833-10bbfb19-1f2f-406a-8dc3-c606320b9065.png"> |
+|:--:| 
+| **Choosing Champions View** |
+
+<br>
+
+| ![grid](https://user-images.githubusercontent.com/97978852/176071934-7dfcc034-00c1-47c0-b16b-90f69238c32b.png) |
+| :--: |
+| **Gameplay View** |
+
+<br>
+
+| ![damage](https://user-images.githubusercontent.com/97978852/176072015-17f2b63f-ed61-4088-bdaa-fecda9f3329d.png) |
+| :--: |
+| **Using Damaging Effect** |
+
+<br>
 
 ## Project Structure
 <details>
