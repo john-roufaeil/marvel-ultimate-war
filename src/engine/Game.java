@@ -427,8 +427,6 @@ public class Game {
 		if (target instanceof Cover) {
 			Cover spot = (Cover) target;
 			spot.setCurrentHP(spot.getCurrentHP() - damage);
-//			if (spot.getCurrentHP() == 0)
-//				board[spot.getLocation().x][spot.getLocation().y] = null;
 		}
 		else if (target instanceof Champion) {
 			Champion spot = (Champion) target;
@@ -467,13 +465,6 @@ public class Game {
 			 else if(current instanceof AntiHero && (spot instanceof Villain || spot instanceof Hero)) {
 				 spot.setCurrentHP(spot.getCurrentHP() - (int)(damage * 0.5));
 			 }
-			
-//			if(spot.getCurrentHP()==0) {
-//				spot.setCondition(Condition.KNOCKEDOUT);
-//				Point p = spot.getLocation();
-//				board[p.x][p.y] = null; 
-//				removeFromTurnOrder((Champion) spot);
-//			}
 		}
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
 		targets.add(target);
@@ -655,14 +646,6 @@ public class Game {
 		for (Effect e : appliedEffects) 
 			if (e instanceof Silence) 
 				throw new AbilityUseException("Cannot cast ability, champion is silenced!");
-//		if (d == Direction.UP && x == 4) 
-//			throw new InvalidTargetException("There is no cell upside to apply " + a.getName() + " on!");
-//		if (d == Direction.DOWN && x == 0) 
-//			throw new InvalidTargetException("There is no cell downside to apply " + a.getName() + " on!");
-//		if (d == Direction.RIGHT && y == 4) 
-//			throw new InvalidTargetException("There is no cell on the right to apply " + a.getName() + " on!");
-//		if (d == Direction.LEFT && y == 0) 
-//			throw new InvalidTargetException("There is no cell on the left to apply " + a.getName() + " on!");
 
 		while (range-- > 0) {
 			if (d == Direction.UP && x < 4)
@@ -996,10 +979,6 @@ public class Game {
 					((Champion)d).setCurrentHP(0);
 					((Champion)d).setCondition(Condition.KNOCKEDOUT);
 					board[p.x][p.y] = null;
-//					if (team1(((Champion)d))) 
-//						getFirstPlayer().getTeam().remove(((Champion)d));
-//					else if (team2(((Champion)d)))
-//						getSecondPlayer().getTeam().remove(((Champion)d));
 					removeFromTurnOrder((Champion) d);
 				}
 			}
