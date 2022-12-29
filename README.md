@@ -7,15 +7,41 @@
 </p>
 
 ## Description
-This is a two-player game with the theme of Marvel Ultimate War in which each player chooses 3 champions
+<p>This is a two-player game with the theme of Marvel Ultimate War in which each player chooses 3 champions
 and promotes one of the champions to be a leader. The goal of the game is to defeat all champions
 of the opponent team. During each turn, a champion has a limited number of action points with which he can move on the board, attack, and cast abilities.
 On a leader champion's turn, he can also cast a leader ability, which can only be used once throughout the game. Abilities have three types: Damaging
 Abilities, Healing Abilities, and Crowd Control Abilities. Damaging abilities decrease the targets' health points, while healing abilities increase the
 targets' health points, whereas crowd control abilities apply a certain effect on targets. There are 10 effects in the game: 5 positive effects (buff)
-and 5 negative effects (debuff), each with different usages.
+and 5 negative effects (debuff), each with different usages.</p>
+
+---
+
+## Preview
+<strong>You can check out a video of the game [here](https://www.linkedin.com/feed/update/urn:li:activity:6943592137154281472/)</strong>
+
+| <img src="https://user-images.githubusercontent.com/97978852/176070833-10bbfb19-1f2f-406a-8dc3-c606320b9065.png"> |
+|:--:| 
+| **Choosing Champions View** |
+
+<br>
+
+| ![grid](https://user-images.githubusercontent.com/97978852/176071934-7dfcc034-00c1-47c0-b16b-90f69238c32b.png) |
+| :--: |
+| **Gameplay View** |
+
+<br>
+
+| ![damage](https://user-images.githubusercontent.com/97978852/176072015-17f2b63f-ed61-4088-bdaa-fecda9f3329d.png) |
+| :--: |
+| **Using Damaging Effect** |
+
+<br>
+
+----
 
 ## How to Run
+
 #### Users Installation
 1. Install JDK from [here](https://www.oracle.com/java/technologies/downloads/) and JavaFX from [here](https://gluonhq.com/products/javafx/) (make sure to remember where you installed JavaFX)
 2. Download the game's ZIP file OR fork and clone into your local respository
@@ -37,24 +63,6 @@ replace {...} with the path to the "lib" folder inside JavaFX that you installed
 replace {...} with the path to the "lib" folder inside JavaFX that you installed in step 1 and run.
 
 ---
-
-| <img src="https://user-images.githubusercontent.com/97978852/176070833-10bbfb19-1f2f-406a-8dc3-c606320b9065.png"> |
-|:--:| 
-| **Choosing Champions View** |
-
-<br>
-
-| ![grid](https://user-images.githubusercontent.com/97978852/176071934-7dfcc034-00c1-47c0-b16b-90f69238c32b.png) |
-| :--: |
-| **Gameplay View** |
-
-<br>
-
-| ![damage](https://user-images.githubusercontent.com/97978852/176072015-17f2b63f-ed61-4088-bdaa-fecda9f3329d.png) |
-| :--: |
-| **Using Damaging Effect** |
-
-<br>
 
 ## Project Structure
 <details>
